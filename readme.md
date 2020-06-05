@@ -1,9 +1,10 @@
 The Avro Enchiridion
 ====================
 
-_[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): A small manual or handbook._  It's a bit like a tech [cook book](https://ssearch.oreilly.com/?q=cookbook), but a bigger, fancier, SEO-optimizabler word.
+_[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): A small manual or handbook._  It's a bit like a tech [cook book](https://www.oreilly.com/search/?query=cookbook), but a bigger, fancier, SEO-optimizabler word.
 
-<!-- 2020/05/25: 920 O'Reilly results -->
+<!-- 2020/05/25: 920 O'Reilly results
+     2020/06/05: 4758 O'Reilly results (but changed the search URL) -->
 
 This project describes how to do many common Java tasks using the Avro serialization library.
 
@@ -19,8 +20,8 @@ Java Topics
 | Read/write one datum to an Avro JSON String |  
 | Read from/write to an Avro file | [AvroFileTest][AvroFileTest]
 
-[SerializeToBytesTest]: src/main/java/com/skraba/avro/enchiridion/core/SerializeToBytesTest.java
-[AvroFileTest]: src/main/java/com/skraba/avro/enchiridion/core/file/AvroFileTest.java
+[SerializeToBytesTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToBytesTest.java
+[AvroFileTest]: core/src/test/java/com/skraba/avro/enchiridion/core/file/AvroFileTest.java
 
 ### Logical Types
 
@@ -30,7 +31,7 @@ Java Topics
 
 [BigDecimal]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html
 [GenericData]: https://avro.apache.org/docs/current/api/java/org/apache/avro/generic/GenericData.html
-[DecimalPrecisionAndScaleTest]: src/main/java/com/skraba/avro/enchiridion/core/logical/DecimalPrecisionAndScaleTest
+[DecimalPrecisionAndScaleTest]: core/src/test/java/com/skraba/avro/enchiridion/core/logical/DecimalPrecisionAndScaleTest
 
 Modules
 -------
