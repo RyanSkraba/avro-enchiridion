@@ -10,11 +10,11 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>avro-enchiridion-core</artifactId>
+  <artifactId>avro-enchiridion-using-plugin</artifactId>
   <packaging>jar</packaging>
 
-  <name>Avro Enchiridion :: Core</name>
-  <description>Avro core examples.</description>
+  <name>Avro Enchiridion :: Plugin</name>
+  <description>Avro examples using the Maven plugin.</description>
 
   <properties>
     <maven.deploy.skip>false</maven.deploy.skip>
@@ -53,5 +53,26 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>${avro.version}</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+            <configuration>
+              <fieldVisibility>public</fieldVisibility>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

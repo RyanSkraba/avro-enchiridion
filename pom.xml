@@ -24,7 +24,6 @@
     <scala.minor.version>2.12</scala.minor.version>
     <scala.version>2.12.11</scala.version>
     <spotless.version>1.25.1</spotless.version>
-
   </properties>
 
   <profiles>
@@ -47,8 +46,9 @@
         </repository>
       </repositories>
     </profile>
+
     <!--
-      Use this profile if using Apache SNAPSHOT artifacts.
+      Use this profile if using SNAPSHOT artifacts built by Apache.
     -->
     <profile>
       <id>apache-snapshots</id>
@@ -65,6 +65,39 @@
           </snapshots>
         </repository>
       </repositories>
+    </profile>
+
+    <!--
+      Use this profile if using Apache staging release artifacts.
+    -->
+    <profile>
+      <id>apache-staging</id>
+      <repositories>
+        <repository>
+          <id>apache.staging</id>
+          <name>Apache Development Staging Repository</name>
+          <url>https://repository.apache.org/content/repositories/staging/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>apache.staging</id>
+          <name>Apache Development Staging Repository</name>
+          <url>https://repository.apache.org/content/repositories/staging/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
     </profile>
   </profiles>
 
@@ -93,6 +126,12 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.7.0-M1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
         <version>5.7.0-M1</version>
         <scope>test</scope>
       </dependency>
@@ -145,6 +184,11 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.scalatest</groupId>
+          <artifactId>scalatest-maven-plugin</artifactId>
+          <version>2.0.0</version>
         </plugin>
       </plugins>
 
@@ -209,6 +253,7 @@
     <module>core18x</module>
     <module>core19x</module>
     <module>core-master-snapshot</module>
+    <module>plugin</module>
   </modules>
 
 </project>

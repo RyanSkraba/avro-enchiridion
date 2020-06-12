@@ -1,0 +1,74 @@
+{
+  "type" : "record",
+  "name" : "Recipe",
+  "namespace" : "com.skraba.avro.enchiridion.recipe",
+  "fields" : [ {
+    "name" : "title",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "id",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "from_id",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "source",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "note",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    }
+  }, {
+    "name" : "makes",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "ingredients",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Ingredient",
+        "fields" : [ {
+          "name" : "q",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "n",
+          "type" : "string"
+        }, {
+          "name" : "option",
+          "type" : [ "null", "Ingredient" ]
+        }, {
+          "name" : "note",
+          "type" : [ "null", "string" ]
+        } ]
+      }
+    }
+  }, {
+    "name" : "todo",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    }
+  }, {
+    "name" : "steps",
+    "type" : "com.skraba.avro.enchiridion.recipe.Recipe"
+  }, {
+    "name" : "bake",
+    "type" : {
+      "type" : "record",
+      "name" : "Bake",
+      "fields" : [ {
+        "name" : "temp",
+        "type" : [ "null", "string" ]
+      }, {
+        "name" : "time",
+        "type" : [ "null", "string" ]
+      }, {
+        "name" : "note",
+        "type" : [ "null", "string" ]
+      } ]
+    }
+  } ]
+}

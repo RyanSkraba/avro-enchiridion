@@ -13,7 +13,7 @@
     <artifactId>avro-enchiridion-core17x</artifactId>
     <packaging>jar</packaging>
 
-    <name>Avro Enchiridion :: Core 1.7</name>
+    <name>Avro Enchiridion :: Core 1.7.x</name>
     <description>Avro core examples with the latest 1.7.x version.</description>
 
     <properties>
