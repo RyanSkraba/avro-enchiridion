@@ -3,7 +3,6 @@ package com.skraba.avro.enchiridion.resources
 import play.api.libs.json.{JsObject, JsString, Json}
 
 import scala.collection.immutable.ListMap
-import scala.reflect.io.{File, Path}
 
 /**
  * Generate valid and invalid schemas for checking named schema types.
@@ -342,15 +341,12 @@ object AvroNames {
 
   /** Create the two files in the /tmp directory. */
   def main(args: Array[String]) {
-    val dst: Path = sys.env.get("AVRO_ENCHIRIDION_REPO_DIR")
-      .map(File(_).resolve("avro-resources/src/test/resources/"))
-      .getOrElse(File("/tmp"))
+    val dst = AvroTestResources.Base.resolve("avro-resources/src/test/resources/").createDirectory()
 
-    // val dst = s"${System.getProperty("user.home")}/working/github/avro/lang/java/avro/src/test/resources"
     dst.resolve("name-validation-good.txt").toFile.writeAll(
-      Valid.map { kv => kv._1 + ":" + Json.stringify(kv._2) + "\n" }.toSeq: _*)
+      Valid.map { case (tag, json) => tag + ":" + Json.stringify(json) + "\n" }.toSeq: _*)
     dst.resolve("name-validation-bad.txt").toFile.writeAll(
-      Invalid.map { kv => kv._1 + ":" + Json.stringify(kv._2) + "\n" }.toSeq: _*)
+      Invalid.map { case (tag, json) => tag + ":" + Json.stringify(json) + "\n" }.toSeq: _*)
   }
 
 }

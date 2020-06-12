@@ -11,9 +11,9 @@ class BasicSpec extends AnyFunSpecLike with Matchers with BeforeAndAfterEach {
 
   describe("Prettify") {
     it("should convert a JSON string to a pretty version.") {
-      val pretty = Json.prettyPrint(Json.parse(AvroFieldDefaults.Avro2844))
+      val pretty = Json.prettyPrint(Json.parse(AvroTestResources.SimpleRecord))
       // print(pretty)
-      pretty shouldBe AvroFieldDefaults.Avro2844
+      pretty shouldBe AvroTestResources.SimpleRecord
     }
   }
 }
