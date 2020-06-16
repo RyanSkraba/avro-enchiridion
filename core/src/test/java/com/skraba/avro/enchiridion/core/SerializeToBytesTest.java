@@ -11,9 +11,9 @@ import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
-import org.apache.avro.io.BinaryDecoder;
-import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class SerializeToBytesTest {
 
   public static <T> byte[] toBytes(GenericData model, Schema schema, T datum) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
+      Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
       GenericDatumWriter<T> w = new GenericDatumWriter<>(schema, model);
       w.write(datum, encoder);
       encoder.flush();
@@ -34,7 +34,7 @@ public class SerializeToBytesTest {
 
   public static <T> T fromBytes(GenericData model, Schema schema, byte[] serialized) {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(serialized)) {
-      BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
+      Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
       GenericDatumReader<T> r = new GenericDatumReader<T>(schema, schema, model);
       return r.read(null, decoder);
     } catch (IOException ioe) {
