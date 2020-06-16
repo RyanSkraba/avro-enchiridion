@@ -1,4 +1,4 @@
-package com.skraba.avro.enchiridion.plugin.evolution;
+package com.skraba.avro.enchiridion.core.evolution;
 
 import com.skraba.avro.enchiridion.resources.NumericValues;
 import java.util.stream.Stream;
@@ -16,8 +16,8 @@ public class DefaultsTest {
 
   @ParameterizedTest
   @MethodSource("getNumberDefaults")
-  // hmm, no method name ...
   void testDoubleWithNumbers(Object defaultVal) {
+    // Currently only finite numbers can be used as default values.
     if (isFinite(defaultVal)) {
       Schema schema =
           SchemaBuilder.record("RecordWithDoubleDefault")
