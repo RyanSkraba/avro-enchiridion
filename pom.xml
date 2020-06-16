@@ -80,9 +80,6 @@
           <releases>
             <enabled>true</enabled>
           </releases>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
         </repository>
       </repositories>
       <pluginRepositories>
@@ -90,12 +87,6 @@
           <id>apache.staging</id>
           <name>Apache Development Staging Repository</name>
           <url>https://repository.apache.org/content/repositories/staging/</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
         </pluginRepository>
       </pluginRepositories>
     </profile>
