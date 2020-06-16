@@ -1,13 +1,13 @@
 package com.skraba.avro.enchiridion.plugin;
 
-import com.skraba.avro.enchiridion.simple.SimpleRecord;
-import org.apache.avro.generic.GenericRecord;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+
+import com.skraba.avro.enchiridion.simple.SimpleRecord;
+import org.apache.avro.generic.GenericRecord;
+import org.junit.jupiter.api.Test;
 
 public class SimpleRecordTest {
 
