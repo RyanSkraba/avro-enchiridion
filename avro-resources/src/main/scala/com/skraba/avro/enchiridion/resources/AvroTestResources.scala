@@ -11,6 +11,17 @@ object AvroTestResources {
 
   val Base: Directory = Directory(sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion").toString)
 
+  def SimpleRecordWithColumn(recordName: String, fieldName: String, fieldType: Any, fieldDefault: Any): String =
+    s"""{
+      |  "type" : "record",
+      |  "name" : "$recordName",
+      |  "fields" : [ {
+      |    "name" : "$fieldName",
+      |    "type" : "$fieldType",
+      |    "type" : "$fieldDefault"
+      |  } ]
+      |}""".stripMargin
+
   val SimpleRecord: String =
     """{
       |  "type" : "record",
@@ -61,7 +72,6 @@ object AvroTestResources {
       ), // list of strings.
     )
   ))
-
 
   val Avro1965: String =
     """{

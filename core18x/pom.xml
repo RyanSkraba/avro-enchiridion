@@ -28,23 +28,7 @@
       <artifactId>avro</artifactId>
       <version>${avro.version}</version>
     </dependency>
-
     <!-- Tests -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>com.skraba.avro.enchiridion</groupId>
       <artifactId>avro-enchiridion-core</artifactId>
