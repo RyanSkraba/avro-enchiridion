@@ -28,4 +28,7 @@ public class Aggregated {
 
   @Nested
   public class LogicalAggregated extends com.skraba.avro.enchiridion.core.logical.Aggregated {}
+
+  @Nested
+  public class SchemaAggregated extends com.skraba.avro.enchiridion.core.schema.Aggregated {}
 }

@@ -99,6 +99,25 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
+  val Avro2299CanonicalMisplacedSize: String =
+    """{
+      |  "type" : "record",
+      |  "name" : "Avro2299CanonicalMisplacedSize",
+      |  "user-property" : "There is no size attribute in a record.",
+      |  "size" : 100,
+      |  "namespace" : "default",
+      |  "fields" : [ {
+      |    "name" : "a",
+      |    "user-property" : "There is no size attribute in a field.",
+      |    "size" : 200,
+      |    "type" : {
+      |      "name" : "a",
+      |      "type" : "fixed",
+      |      "user-property" : "There is a size attribute in a fixed.",
+      |      "size" : 123
+      |    }
+      |  } ]
+      |}""".stripMargin
 
   /** Write all of these schemas to the plugin directory. */
   def main(args: Array[String]) {

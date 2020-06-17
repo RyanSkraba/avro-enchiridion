@@ -18,6 +18,13 @@ public class Aggregated17Test extends Aggregated {
   @Nested
   public class LogicalAggregated {}
 
+  @Nested
+  public class SchemaAggregated extends com.skraba.avro.enchiridion.core.schema.Aggregated {
+    /** User properties were handled only as Jackson JsonNode in 1.7.x */
+    @Nested
+    public class UserPropertiesTest {}
+  }
+
   /** Some of the methods tested need to be adapted to Avro 1.7 */
   private static class SchemaApi17x extends AvroUtil.SchemaApi {
     @Override
