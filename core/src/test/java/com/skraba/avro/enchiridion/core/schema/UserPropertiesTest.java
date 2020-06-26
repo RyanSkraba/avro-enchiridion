@@ -6,6 +6,8 @@ import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static com.skraba.avro.enchiridion.core.AvroUtil.api;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserPropertiesTest {
 
   @Test
-  public void testAPropertyToAPrimitive() {
+  public void testAddAPropertyToAPrimitive() {
     Schema schema = Schema.create(Schema.Type.NULL);
     schema.addProp("user-property", 100);
 
@@ -26,9 +28,35 @@ public class UserPropertiesTest {
   }
 
   @Test
-  public void testTryToAddAReservedProperty() {
+  public void testAddAReservedPropertyToPrimitiveSize() {
     assertThrows(
-        AvroRuntimeException.class, () -> Schema.create(Schema.Type.NULL).addProp("size", 100));
+            AvroRuntimeException.class, () -> Schema.create(Schema.Type.NULL).addProp("size", 100));
+  }
+
+  @Test
+  public void testAddAReservedPropertyToPrimitiveDefault() {
+    // TODO: This should probably throw an exception?
+Schema.create(Schema.Type.NULL).addProp("default", 100);
+  }
+
+  @Test
+  public void testAddAReservedPropertyToSchema() {
+    assertThrows(
+            AvroRuntimeException.class, () -> api().parse(AvroTestResources.SimpleRecord()).addProp("size", 100));
+  }
+
+  @Test
+  public void testAddAReservedPropertyToEnum() {
+    assertThrows(
+            AvroRuntimeException.class,
+            () -> Schema.createEnum("a", null, null, Arrays.asList("a", "b", "c")).addProp("size", 100));
+  }
+
+  @Test
+  public void testAddAReservedPropertyToField() {
+    Schema schema = api().parse(AvroTestResources.SimpleRecord());
+    // TODO: This should probably throw an exception?
+    schema.getFields().get(0).addProp("size", 100);
   }
 
   @Test
@@ -40,14 +68,19 @@ public class UserPropertiesTest {
     assertThat(record.getProp("size"), nullValue());
 
     // Out-of-place reserved attribute is ignored.
-    Schema.Field fixedField = record.getFields().get(0);
-    assertThat(fixedField.getProp("user-property"), is("There is no size attribute in a field."));
-    assertThat(fixedField.getProp("size"), nullValue());
+    Schema.Field a1Field = record.getFields().get(0);
+    assertThat(a1Field.getObjectProp("user-property"), is("There is no size attribute in a field."));
+    // TODO: This should be invalid.
+    assertThat(a1Field.getObjectProp("size"), is(200));
 
-    Schema fixed = fixedField.schema();
-    assertThat(fixed.getProp("user-property"), is("There is a size attribute in a fixed."));
-    assertThat(fixed.getProp("size"), nullValue());
-    assertThat(fixed.getFixedSize(), is(123));
+    Schema a1 = a1Field.schema();
+    assertThat(a1.getObjectProp("user-property"), is("There is no size attribute in an enum."));
+    assertThat(a1.getObjectProp("size"), nullValue());
+
+    Schema a2 = record.getFields().get(1).schema();
+    assertThat(a2.getObjectProp("user-property"), is("There is a size attribute in a fixed."));
+    assertThat(a2.getObjectProp("size"), nullValue());
+    assertThat(a2.getFixedSize(), is(123));
 
     Schema pcRecord = api().parse(SchemaNormalization.toParsingForm(record));
     assertThat(pcRecord.getObjectProps().entrySet(), hasSize(0));

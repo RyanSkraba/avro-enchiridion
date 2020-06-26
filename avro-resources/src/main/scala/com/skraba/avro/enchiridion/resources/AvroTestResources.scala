@@ -105,13 +105,21 @@ object AvroTestResources {
       |  "name" : "Avro2299CanonicalMisplacedSize",
       |  "user-property" : "There is no size attribute in a record.",
       |  "size" : 100,
-      |  "namespace" : "default",
       |  "fields" : [ {
-      |    "name" : "a",
+      |    "name" : "a1",
       |    "user-property" : "There is no size attribute in a field.",
       |    "size" : 200,
       |    "type" : {
-      |      "name" : "a",
+      |      "name" : "MyEnum",
+      |      "type" : "enum",
+      |      "symbols" : ["one", "two", "three"],
+      |      "user-property" : "There is no size attribute in an enum.",
+      |      "size" : 300
+      |    }
+      |  }, {
+      |    "name" : "a2",
+      |    "type" : {
+      |      "name" : "MyFixed",
       |      "type" : "fixed",
       |      "user-property" : "There is a size attribute in a fixed.",
       |      "size" : 123

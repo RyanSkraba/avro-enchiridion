@@ -7,16 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
-import com.skraba.avro.enchiridion.resources.AvroTestResources$;
+import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import com.skraba.avro.enchiridion.resources.NumericValues;
 import java.util.Collections;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.SchemaParseException;
-import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,7 +33,7 @@ public class DefaultsTest {
   void testDoubleWithNumbers(String tag, Object defaultVal) throws Throwable {
 
     // Create the schema from the Schema API.
-    ThrowingSupplier<Schema> viaSchemaApi =
+    Supplier<Schema> viaSchemaApi =
         () ->
             api()
                 .createRecord(
@@ -47,7 +47,7 @@ public class DefaultsTest {
                                 "a", Schema.create(Schema.Type.DOUBLE), null, defaultVal)));
 
     // Create the schema from the SchemaBuilder API.
-    ThrowingSupplier<Schema> viaSchemaBuilder =
+    Supplier<Schema> viaSchemaBuilder =
         () ->
             SchemaBuilder.record("FieldDoubleDefault" + tag)
                 .fields()
@@ -57,11 +57,11 @@ public class DefaultsTest {
                 .endRecord();
 
     // Create the schema from a JSON String.
-    ThrowingSupplier<Schema> viaSchemaParser =
+    Supplier<Schema> viaSchemaParser =
         () ->
             api()
                 .parse(
-                    AvroTestResources$.MODULE$.SimpleRecordWithColumn(
+                    AvroTestResources.SimpleRecordWithColumn(
                         "FieldDoubleDefault" + tag, "a", "'double'", AvroUtil.jsonify(defaultVal)));
 
     if (isFinite(defaultVal)) {
@@ -71,11 +71,12 @@ public class DefaultsTest {
 
       if (AvroVersion.avro_1_8.orAfter()
           && (defaultVal instanceof Short || defaultVal instanceof Byte)) {
-        // TODO: This shouldn't throw exception
+        // TODO: This shouldn't throw exception.
         Exception exception1 = assertThrows(AvroRuntimeException.class, viaSchemaApi::get);
       } else {
         Schema schemaApi = viaSchemaApi.get();
         if (!(defaultVal instanceof Float) || AvroVersion.avro_1_9.orAfter())
+          // Before Avro 1.9, Float values changed precision between these two.
           assertThat(schemaApi.toString(), is(schemaBuilder.toString()));
       }
 
