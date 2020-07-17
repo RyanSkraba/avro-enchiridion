@@ -1,8 +1,13 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+
 import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
-
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.SchemaCompatibility;
@@ -13,13 +18,6 @@ import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 
 /** Test reading data with a schema that has evolved by adding a field. */
 public class EvolveAddAFieldTest {

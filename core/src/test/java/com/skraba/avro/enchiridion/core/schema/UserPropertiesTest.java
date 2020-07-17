@@ -1,19 +1,18 @@
 package com.skraba.avro.enchiridion.core.schema;
 
-import com.skraba.avro.enchiridion.resources.AvroTestResources;
-import org.apache.avro.AvroRuntimeException;
-import org.apache.avro.Schema;
-import org.apache.avro.SchemaNormalization;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-
 import static com.skraba.avro.enchiridion.core.AvroUtil.api;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.skraba.avro.enchiridion.resources.AvroTestResources;
+import java.util.Arrays;
+import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.Schema;
+import org.apache.avro.SchemaNormalization;
+import org.junit.jupiter.api.Test;
 
 /** Unit tests for custom properties in a schema. */
 public class UserPropertiesTest {
@@ -30,26 +29,28 @@ public class UserPropertiesTest {
   @Test
   public void testAddAReservedPropertyToPrimitiveSize() {
     assertThrows(
-            AvroRuntimeException.class, () -> Schema.create(Schema.Type.NULL).addProp("size", 100));
+        AvroRuntimeException.class, () -> Schema.create(Schema.Type.NULL).addProp("size", 100));
   }
 
   @Test
   public void testAddAReservedPropertyToPrimitiveDefault() {
     // TODO: This should probably throw an exception?
-Schema.create(Schema.Type.NULL).addProp("default", 100);
+    Schema.create(Schema.Type.NULL).addProp("default", 100);
   }
 
   @Test
   public void testAddAReservedPropertyToSchema() {
     assertThrows(
-            AvroRuntimeException.class, () -> api().parse(AvroTestResources.SimpleRecord()).addProp("size", 100));
+        AvroRuntimeException.class,
+        () -> api().parse(AvroTestResources.SimpleRecord()).addProp("size", 100));
   }
 
   @Test
   public void testAddAReservedPropertyToEnum() {
     assertThrows(
-            AvroRuntimeException.class,
-            () -> Schema.createEnum("a", null, null, Arrays.asList("a", "b", "c")).addProp("size", 100));
+        AvroRuntimeException.class,
+        () ->
+            Schema.createEnum("a", null, null, Arrays.asList("a", "b", "c")).addProp("size", 100));
   }
 
   @Test
@@ -69,7 +70,8 @@ Schema.create(Schema.Type.NULL).addProp("default", 100);
 
     // Out-of-place reserved attribute is ignored.
     Schema.Field a1Field = record.getFields().get(0);
-    assertThat(a1Field.getObjectProp("user-property"), is("There is no size attribute in a field."));
+    assertThat(
+        a1Field.getObjectProp("user-property"), is("There is no size attribute in a field."));
     // TODO: This should be invalid.
     assertThat(a1Field.getObjectProp("size"), is(200));
 

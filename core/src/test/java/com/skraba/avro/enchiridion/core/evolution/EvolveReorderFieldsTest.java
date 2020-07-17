@@ -1,13 +1,12 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
-
 import static com.skraba.avro.enchiridion.core.evolution.EvolveAddAFieldTest.BINARY_V1;
 import static com.skraba.avro.enchiridion.core.evolution.EvolveAddAFieldTest.SIMPLE_V1;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
+import com.skraba.avro.enchiridion.core.AvroVersion;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.avro.Schema;
