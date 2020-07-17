@@ -79,9 +79,9 @@ public class SerializeToJsonTest {
 
     // Numeric conversions are only supported after Avro 1.10
     if (AvroVersion.avro_1_10.orAfter()) {
-      assertThat(roundTripJson(GenericData.get(), schema, 1), is(1.0));
-      assertThat(roundTripJson(GenericData.get(), schema, 0), is(0.0));
-      assertThat(roundTripJson(GenericData.get(), schema, -1), is(-1.0));
+      assertThat(roundTripJson(GenericData.get(), schema, (Number) 1), is(1.0));
+      assertThat(roundTripJson(GenericData.get(), schema, (Number) 0), is(0.0));
+      assertThat(roundTripJson(GenericData.get(), schema, (Number) (-1)), is(-1.0));
     }
 
     // These can be encoded by all versions.
