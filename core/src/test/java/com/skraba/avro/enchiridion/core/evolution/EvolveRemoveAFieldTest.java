@@ -1,0 +1,64 @@
+package com.skraba.avro.enchiridion.core.evolution;
+
+import com.skraba.avro.enchiridion.core.AvroVersion;
+
+import static com.skraba.avro.enchiridion.core.evolution.EvolveAddAFieldTest.BINARY_V1;
+import static com.skraba.avro.enchiridion.core.evolution.EvolveAddAFieldTest.SIMPLE_V1;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
+import org.apache.avro.SchemaCompatibility;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
+import org.junit.jupiter.api.Test;
+
+/** Test reading data with a schema that has evolved by removing a field. */
+public class EvolveRemoveAFieldTest {
+
+  /** The same as the original schema but with one less field. */
+  private static final Schema SIMPLE_V2 =
+      SchemaBuilder.record("com.skraba.avro.enchiridion.simple.SimpleRecord")
+          .fields()
+          .requiredString("name")
+          .endRecord();
+
+
+  @Test
+  public void testSchemaCompatibility() {
+    SchemaCompatibility.SchemaPairCompatibility compatibility =
+        SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V2, SIMPLE_V1);
+    assertThat(compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.COMPATIBLE));
+    if (AvroVersion.avro_1_9.orAfter()) {
+      assertThat(
+          compatibility.getResult(),
+          is(SchemaCompatibility.SchemaCompatibilityResult.compatible()));
+    }
+  }
+
+  @Test
+  public void testRemoveAFieldFromARecord() {
+    // Check that schema resolution is OK by reading with the new schema.
+    GenericRecord recordV2;
+    try (ByteArrayInputStream bais = new ByteArrayInputStream(BINARY_V1)) {
+      Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
+      GenericDatumReader<GenericRecord> r =
+          new GenericDatumReader<>(SIMPLE_V1, SIMPLE_V2, GenericData.get());
+      recordV2 = r.read(null, decoder);
+    } catch (IOException ioe) {
+      throw new RuntimeException((ioe));
+    }
+
+    // Ensure that the new field is read with the defaults.
+    assertThat(recordV2.getSchema(), is(SIMPLE_V2));
+    assertThat(recordV2.getSchema().getFields(), hasSize(1));
+    assertThat(recordV2.get("name").toString(), is("one"));
+  }
+}

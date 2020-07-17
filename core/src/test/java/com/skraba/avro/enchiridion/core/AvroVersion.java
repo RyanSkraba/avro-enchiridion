@@ -8,7 +8,7 @@ import org.apache.avro.Schema;
  * A little utility for detecting the current Avro version.
  *
  * <pre>
- * if (AvroVersion.avro_1_8.orLater()) {
+ * if (AvroVersion.avro_1_8.orAfter()) {
  *   // Code to run if the version of Avro is 1.8.x or later.
  * } else {
  *   // Code to run if the version of Avro is 1.7.x or earlier.

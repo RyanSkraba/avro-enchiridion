@@ -16,22 +16,41 @@ Java Topics
 | I want to...  | See... |
 | ------------- | ------------- |
 | Read/write one datum to a byte array | [SerializeToBytesTest][SerializeToBytesTest]
-| Read/write one datum to a ByteBuffer |   
-| Read/write one datum to an Avro JSON String |  
+| Read/write one datum to a ByteBuffer | 
+| Read/write one datum to an Avro JSON String | [SerializeToJsonTest][SerializeToJsonTest]  
 | Read from/write to an Avro file | [AvroFileTest][AvroFileTest]
 
 [SerializeToBytesTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToBytesTest.java
+[SerializeToJsonTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToJsonTest.java
 [AvroFileTest]: core/src/test/java/com/skraba/avro/enchiridion/core/file/AvroFileTest.java
 
 ### Logical Types
 
 | I want to...  | See... |
 | ------------- | ------------- |
-| Use [BigDecimal][BigDecimal] datum with a [GenericData][GenericData] model | [DecimalPrecisionAndScaleTest] (static block)
+| Use [BigDecimal][BigDecimal] datum with a [GenericData][GenericData] model | [DecimalPrecisionAndScaleTest] (see the static block)
 
 [BigDecimal]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html
 [GenericData]: https://avro.apache.org/docs/current/api/java/org/apache/avro/generic/GenericData.html
 [DecimalPrecisionAndScaleTest]: core/src/test/java/com/skraba/avro/enchiridion/core/logical/DecimalPrecisionAndScaleTest
+
+### Schema resolution
+
+| I want to...  | See... |
+| ------------- | ------------- |
+| Evolve my schema by adding a field | [EvolveAddAFieldTest]
+| ... by removing a field | [EvolveRemoveAFieldTest]
+| ... by renaming a field | [EvolveRenameAFieldTest]
+| ... by reordering fields | [EvolveReorderFieldsTest]
+| ... by widening a primitive | 
+| ... by adding a union | 
+| ... by adding an enum symbol | 
+| ... by removing an enum symbol | 
+
+[EvolveAddAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveAddAFieldTest.java
+[EvolveRemoveAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveRemoveAFieldTest.java
+[EvolveRenameAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveRenameAFieldTest.java
+[EvolveReorderFieldsTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveReorderFieldsTest.java
 
 Modules
 -------

@@ -37,7 +37,6 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
-
   val Recipe: String = Json.prettyPrint(Json.obj(
     "type" -> "record",
     "name" -> "Recipe",

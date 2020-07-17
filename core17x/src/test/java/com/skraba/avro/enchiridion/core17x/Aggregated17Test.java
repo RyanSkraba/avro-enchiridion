@@ -25,6 +25,19 @@ public class Aggregated17Test extends Aggregated {
     public class UserPropertiesTest {}
   }
 
+  @Nested
+  public class EvolutionAggregated extends com.skraba.avro.enchiridion.core.evolution.Aggregated {
+
+    @Nested
+    public class EvolveRemoveAFieldTest {}
+
+    @Nested
+    public class EvolveRenameAFieldTest {}
+
+    @Nested
+    public class EvolveReorderFieldsTest {}
+  }
+
   /** Some of the methods tested need to be adapted to Avro 1.7 */
   private static class SchemaApi17x extends AvroUtil.SchemaApi {
     @Override

@@ -7,4 +7,20 @@ public class Aggregated {
 
   @Nested
   public class DefaultsTest extends com.skraba.avro.enchiridion.core.evolution.DefaultsTest {}
+
+  @Nested
+  public class EvolveAddAFieldTest
+      extends com.skraba.avro.enchiridion.core.evolution.EvolveAddAFieldTest {}
+
+  @Nested
+  public class EvolveRemoveAFieldTest
+      extends com.skraba.avro.enchiridion.core.evolution.EvolveRemoveAFieldTest {}
+
+  @Nested
+  public class EvolveRenameAFieldTest
+      extends com.skraba.avro.enchiridion.core.evolution.EvolveRenameAFieldTest {}
+
+  @Nested
+  public class EvolveReorderFieldsTest
+      extends com.skraba.avro.enchiridion.core.evolution.EvolveReorderFieldsTest {}
 }
