@@ -22,7 +22,7 @@ public enum AvroVersion {
   avro_1_10,
   avro_1_11,
   /** An avro version far, far off in the future. */
-  never;
+  avro_infinity;
 
   /** Lazy auto-detected value of the installed Avro library. */
   private static final ThreadLocal<AvroVersion> installedAvro = new ThreadLocal<>();
@@ -50,7 +50,15 @@ public enum AvroVersion {
     }
   }
 
+  /**
+   * @return true if the currently used version of Avro is the same as or after the given version.
+   */
   public boolean orAfter() {
     return getInstalledAvro().compareTo(this) >= 0;
+  }
+
+  /** @return true if the currently used version of Avro before the given version. */
+  public boolean before() {
+    return getInstalledAvro().compareTo(this) < 0;
   }
 }

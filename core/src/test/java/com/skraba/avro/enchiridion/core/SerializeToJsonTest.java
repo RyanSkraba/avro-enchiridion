@@ -93,7 +93,7 @@ public class SerializeToJsonTest {
     assertThat(infNeg, is("\"-Infinity\""));
 
     // But nobody can decode them yet.
-    if (AvroVersion.never.orAfter()) {
+    if (AvroVersion.avro_infinity.orAfter()) {
       assertThat(fromJson(GenericData.get(), schema, nan), is(Double.NaN));
       assertThat(fromJson(GenericData.get(), schema, infPos), is(Double.POSITIVE_INFINITY));
       assertThat(fromJson(GenericData.get(), schema, infNeg), is(Double.NEGATIVE_INFINITY));
