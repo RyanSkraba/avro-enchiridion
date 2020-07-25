@@ -2,7 +2,7 @@ package com.skraba.avro.enchiridion.resources
 
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
-import scala.reflect.io.Directory
+import scala.reflect.io.{Directory, Path}
 
 /**
   * Reusable resources for Avro tests.
@@ -10,17 +10,17 @@ import scala.reflect.io.Directory
 object AvroTestResources {
 
   val Base: Directory = Directory(
-    sys.env
-      .getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion")
-      .toString
+      Path(sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion"))
   )
 
   /**
     * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
     */
-  private[this] def field(name: String,
-                          doc: String,
-                          fieldType: JsValue = JsString("string")): JsObject =
+  private[this] def field(
+      name: String,
+      doc: String,
+      fieldType: JsValue = JsString("string")
+  ): JsObject =
     Json.obj("name" -> name, "doc" -> doc, "type" -> fieldType)
 
   /**
@@ -28,9 +28,9 @@ object AvroTestResources {
     *         The type of the field is automatically unioned with "null".
     */
   private[this] def fieldOpt(
-    name: String,
-    doc: String,
-    fieldType: JsValue = JsString("string")
+      name: String,
+      doc: String,
+      fieldType: JsValue = JsString("string")
   ): JsObject =
     Json.obj(
       "name" -> name,
@@ -44,9 +44,9 @@ object AvroTestResources {
     *         The type of the field is an array of with the given itemType.
     */
   private[this] def fieldArray(
-    name: String,
-    doc: String,
-    itemType: JsValue = JsString("string")
+      name: String,
+      doc: String,
+      itemType: JsValue = JsString("string")
   ): JsObject =
     Json.obj(
       "name" -> name,
@@ -55,10 +55,12 @@ object AvroTestResources {
       "default" -> Json.arr()
     )
 
-  def SimpleRecordWithColumn(recordName: String,
-                             fieldName: String,
-                             fieldType: Any,
-                             fieldDefault: Any): String =
+  def SimpleRecordWithColumn(
+      recordName: String,
+      fieldName: String,
+      fieldType: Any,
+      fieldDefault: Any
+  ): String =
     s"""{
       |  "type" : "record",
       |  "name" : "$recordName",
@@ -109,7 +111,7 @@ object AvroTestResources {
                   fieldOpt("q", "Quantity"),
                   fieldOpt("n", "Name"),
                   fieldArray("option", "Options", JsString("Ingredient")),
-                  fieldArray("note", "Free text (information, hints)"),
+                  fieldArray("note", "Free text (information, hints)")
                 )
               )
           ),
@@ -131,7 +133,7 @@ object AvroTestResources {
               "fields" -> Json.arr(
                 fieldOpt("temp", "Temperature"),
                 fieldOpt("time", "Time"),
-                fieldOpt("note", "Note"),
+                fieldOpt("note", "Note")
               )
             )
           ),

@@ -277,6 +277,7 @@
     <module>core18x</module>
     <module>core19x</module>
     <module>core-master-snapshot</module>
+    <module>ipc</module>
     <module>plugin</module>
   </modules>
 

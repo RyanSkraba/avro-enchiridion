@@ -1,0 +1,20 @@
+@namespace("com.skraba.avro.enchiridion.ipc")
+protocol CalculatorProtocol {
+
+  // RPC messages -------------------------------------
+
+  /** Add two numbers together. */
+  double add(double augend, double addend = 0);
+
+  /** Subtract one number from another. */
+  double subtract(double minuend, double subtrahend = 0);
+
+  /** Multiply two numbers together. */
+  double multiply(double factor1, double factor2 = 1);
+
+  /** Divide one number by another. */
+  double divide(double dividend, double divisor = 1);
+
+  /** Log the number as a message and return the message. */
+  string log(double a);
+}
