@@ -55,8 +55,8 @@ object AvroFieldDefaults {
   }
 
   val (validNumeric: Seq[FieldDefaultCfg], invalidNumeric: Seq[FieldDefaultCfg]) = AllNumericDefaults.partition {
-    case FieldDefaultCfg(_, JsString("double"), num: JsNumber) => true
-    case FieldDefaultCfg(_, JsString("float"), num: JsNumber) => true
+    case FieldDefaultCfg(_, JsString("double"), _: JsNumber) => true
+    case FieldDefaultCfg(_, JsString("float"), _: JsNumber) => true
     case FieldDefaultCfg(_, JsString("long"), num: JsNumber) if num.value.isValidLong => true
     case FieldDefaultCfg(_, JsString("int"), num: JsNumber) if num.value.isValidInt => true
     case _ => false

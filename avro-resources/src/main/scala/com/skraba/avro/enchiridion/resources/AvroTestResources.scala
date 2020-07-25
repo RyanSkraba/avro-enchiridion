@@ -1,17 +1,64 @@
 package com.skraba.avro.enchiridion.resources
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 import scala.reflect.io.Directory
 
 /**
- * Reusable resources for Avro tests.
- */
+  * Reusable resources for Avro tests.
+  */
 object AvroTestResources {
 
-  val Base: Directory = Directory(sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion").toString)
+  val Base: Directory = Directory(
+    sys.env
+      .getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion")
+      .toString
+  )
 
-  def SimpleRecordWithColumn(recordName: String, fieldName: String, fieldType: Any, fieldDefault: Any): String =
+  /**
+    * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
+    */
+  private[this] def field(name: String,
+                          doc: String,
+                          fieldType: JsValue = JsString("string")): JsObject =
+    Json.obj("name" -> name, "doc" -> doc, "type" -> fieldType)
+
+  /**
+    * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
+    *         The type of the field is automatically unioned with "null".
+    */
+  private[this] def fieldOpt(
+    name: String,
+    doc: String,
+    fieldType: JsValue = JsString("string")
+  ): JsObject =
+    Json.obj(
+      "name" -> name,
+      "doc" -> doc,
+      "type" -> Json.arr("null", fieldType),
+      "default" -> null
+    )
+
+  /**
+    * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
+    *         The type of the field is an array of with the given itemType.
+    */
+  private[this] def fieldArray(
+    name: String,
+    doc: String,
+    itemType: JsValue = JsString("string")
+  ): JsObject =
+    Json.obj(
+      "name" -> name,
+      "doc" -> doc,
+      "type" -> Json.obj("type" -> "array", "items" -> itemType),
+      "default" -> Json.arr()
+    )
+
+  def SimpleRecordWithColumn(recordName: String,
+                             fieldName: String,
+                             fieldType: Any,
+                             fieldDefault: Any): String =
     s"""{
       |  "type" : "record",
       |  "name" : "$recordName",
@@ -37,40 +84,62 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
-  val Recipe: String = Json.prettyPrint(Json.obj(
-    "type" -> "record",
-    "name" -> "Recipe",
-    "namespace" -> "com.skraba.avro.enchiridion.recipe",
-    "fields" -> Json.arr(
-      Json.obj("name" -> "title", "type" -> Json.arr("null", "string")), // nullable
-      Json.obj("name" -> "id", "type" -> Json.arr("null", "string")), // nullable
-      Json.obj("name" -> "from_id", "type" -> Json.arr("null", "string")), // nullable
-      Json.obj("name" -> "source", "type" -> Json.arr("null", "string")), // nullable
-      Json.obj("name" -> "note", "type" -> Json.obj("type" -> "array", "items" -> "string")), // list of strings.
-      Json.obj("name" -> "makes", "type" -> Json.arr("null", "string")), // nullable
-      Json.obj("name" -> "ingredients", "type" -> Json.obj("type" -> "array", "items" ->
-        Json.obj("type" -> "record", "name" -> "Ingredient",
-          "fields" -> Json.arr(
-            Json.obj("name" -> "q", "type" -> Json.arr("null", "string")),
-            Json.obj("name" -> "n", "type" -> "string"),
-            Json.obj("name" -> "option", "type" -> Json.arr("null", "Ingredient")),
-            Json.obj("name" -> "note", "type" -> Json.arr("null", "string"))
-          )
+  val Recipe: String = Json.prettyPrint(
+    Json.obj(
+      "type" -> "record",
+      "name" -> "Recipe",
+      "namespace" -> "com.skraba.avro.enchiridion.recipe",
+      "doc" -> "A recipe containing ingredients and steps.",
+      "fields" -> Json.arr(
+        fieldOpt("title", "Recipe title"),
+        fieldOpt("step_id", "A unique tag for this step"),
+        fieldArray("from_step_id", "Recipe title"),
+        fieldOpt("source", "Where it came from (person, website, book)"),
+        fieldOpt("makes", "How much the recipe makes"),
+        fieldArray("note", "Free text (information, hints)"),
+        Json.obj(
+          "name" -> "ingredients",
+          "type" -> Json.obj(
+            "type" -> "array",
+            "items" ->
+              Json.obj(
+                "type" -> "record",
+                "name" -> "Ingredient",
+                "fields" -> Json.arr(
+                  fieldOpt("q", "Quantity"),
+                  fieldOpt("n", "Name"),
+                  fieldArray("option", "Options", JsString("Ingredient")),
+                  fieldArray("note", "Free text (information, hints)"),
+                )
+              )
+          ),
+          "default" -> Json.arr()
+        ),
+        fieldArray("todo", "Steps"),
+        fieldArray(
+          "steps",
+          "Subrecipes",
+          JsString("com.skraba.avro.enchiridion.recipe.Recipe")
+        ),
+        Json.obj(
+          "name" -> "bake",
+          "type" -> Json.arr(
+            "null",
+            Json.obj(
+              "type" -> "record",
+              "name" -> "Bake",
+              "fields" -> Json.arr(
+                fieldOpt("temp", "Temperature"),
+                fieldOpt("time", "Time"),
+                fieldOpt("note", "Note"),
+              )
+            )
+          ),
+          "default" -> null
         )
-      )), // list of strings.
-      Json.obj("name" -> "todo", "type" -> Json.obj("type" -> "array", "items" -> "string")), // list of strings.
-      Json.obj("name" -> "steps", "type" -> "com.skraba.avro.enchiridion.recipe.Recipe"),
-      Json.obj("name" -> "bake", "type" ->
-        Json.obj("type" -> "record", "name" -> "Bake",
-          "fields" -> Json.arr(
-            Json.obj("name" -> "temp", "type" -> Json.arr("null", "string")),
-            Json.obj("name" -> "time", "type" -> Json.arr("null", "string")),
-            Json.obj("name" -> "note", "type" -> Json.arr("null", "string"))
-          )
-        )
-      ), // list of strings.
+      )
     )
-  ))
+  )
 
   val Avro1965: String =
     """{
@@ -128,11 +197,22 @@ object AvroTestResources {
 
   /** Write all of these schemas to the plugin directory. */
   def main(args: Array[String]) {
-    val base: String = sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion")
-    val dst = Directory(base).resolve("plugin/src/test/avro/").createDirectory()
+    val base: String =
+      sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion")
 
-    dst.resolve("SimpleRecord.avsc").toFile.writeAll(Json.prettyPrint(Json.parse(SimpleRecord)))
-    dst.resolve("Recipe.avsc").toFile.writeAll(Json.prettyPrint(Json.parse(Recipe)))
+    Directory(base)
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
+      .createDirectory()
+      .resolve("SimpleRecord.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(Json.parse(SimpleRecord)))
+
+    Directory(base)
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/recipe")
+      .createDirectory()
+      .resolve("Recipe.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(Json.parse(Recipe)))
   }
 
 }
