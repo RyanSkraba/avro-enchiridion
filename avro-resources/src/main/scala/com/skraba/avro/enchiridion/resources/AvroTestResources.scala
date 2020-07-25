@@ -208,7 +208,7 @@ object AvroTestResources {
       .writeAll(Json.prettyPrint(Json.parse(SimpleRecord)))
 
     Directory(base)
-      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/recipe")
+      .resolve("plugin/src/main/avro/com/skraba/avro/enchiridion/recipe")
       .createDirectory()
       .resolve("Recipe.avsc")
       .toFile

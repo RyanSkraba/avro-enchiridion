@@ -99,6 +99,11 @@
         <artifactId>avro</artifactId>
         <version>${avro.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-ipc</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
 
       <!-- Scala -->
       <dependency>
@@ -182,7 +187,6 @@
           <version>2.0.0</version>
         </plugin>
       </plugins>
-
     </pluginManagement>
 
     <plugins>
@@ -233,7 +237,6 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 
@@ -267,7 +270,6 @@
     </dependency>
   </dependencies>
 
-
   <modules>
     <module>avro-resources</module>
     <module>core</module>
@@ -277,5 +279,15 @@
     <module>core-master-snapshot</module>
     <module>plugin</module>
   </modules>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>3.0.0-M5</version>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>
