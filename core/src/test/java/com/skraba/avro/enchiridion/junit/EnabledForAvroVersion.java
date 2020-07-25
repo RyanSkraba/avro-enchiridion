@@ -25,6 +25,9 @@ public @interface EnabledForAvroVersion {
   /** The first version of Avro where this test should start being enabled. */
   AvroVersion startingFrom();
 
+  /** Why this test is disabled for some versions. */
+  String reason();
+
   /** The version of Avro where this test should stop being enabled. */
   AvroVersion until() default AvroVersion.avro_infinity;
 }

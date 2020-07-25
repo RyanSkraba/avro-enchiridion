@@ -7,6 +7,10 @@ import static org.hamcrest.io.FileMatchers.aFileNamed;
 import static org.hamcrest.io.FileMatchers.aFileWithSize;
 import static org.hamcrest.io.FileMatchers.anExistingFile;
 
+import com.skraba.avro.enchiridion.core.AvroUtil;
+import com.skraba.avro.enchiridion.core.AvroVersion;
+import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
+import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -17,6 +21,8 @@ import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.util.RandomData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -55,7 +61,7 @@ public class AvroFileTest {
    * @throws IOException If there was an error communicating with the file.
    */
   public static <T> T fromFile(File f, GenericData model) throws IOException {
-    // Using a null reader/writer schema will read the
+    // Using a null reader/writer schema will read the schema from the file.
     try (DataFileReader<T> dataFileReader =
         new DataFileReader<>(f, new GenericDatumReader<>(null, null, model))) {
       return dataFileReader.next(null);
@@ -76,5 +82,37 @@ public class AvroFileTest {
 
     Integer datum = fromFile(f, GenericData.get());
     assertThat(datum, is(1_234_567));
+  }
+
+  @EnabledForAvroVersion(
+      startingFrom = AvroVersion.avro_1_9,
+      reason = "RandomData moved in Avro 1.9.x")
+  @Test
+  public void testRoundTripBiggerFile(@TempDir Path tmpDir) throws IOException {
+    Schema schema = AvroUtil.api().parse(AvroTestResources.Recipe());
+    File f = tmpDir.resolve("recipes.avro").toFile();
+
+    // Write 500 records to the file using the RandomData instance.
+    try (DataFileWriter<Object> writer = new DataFileWriter<>(new GenericDatumWriter<>(schema))) {
+      writer.create(schema, f);
+      for (Object datum : new RandomData(schema, 5000, 0L)) {
+        writer.append(datum);
+      }
+    }
+
+    // Read all of the records from the file.
+    long recordCount = 0;
+    try (DataFileReader<GenericRecord> dataFileReader =
+        new DataFileReader<>(f, new GenericDatumReader<>())) {
+      for (GenericRecord r : dataFileReader) {
+        recordCount++;
+        if (recordCount == 100) {
+          // Just check one of the values for a "random" data.
+          assertThat(String.valueOf(r.get("makes")), is("rlvrpw"));
+        }
+      }
+    }
+
+    assertThat(recordCount, is(5000L));
   }
 }
