@@ -11,6 +11,8 @@ import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
@@ -23,7 +25,7 @@ public class SerializeToJsonTest {
   public static <T> String toJson(GenericData model, Schema schema, T datum) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
       Encoder encoder = EncoderFactory.get().jsonEncoder(schema, baos, false);
-      GenericDatumWriter<T> w = new GenericDatumWriter<>(schema, model);
+      DatumWriter<T> w = new GenericDatumWriter<>(schema, model);
       w.write(datum, encoder);
       encoder.flush();
       return new String(baos.toByteArray(), StandardCharsets.UTF_8);
@@ -35,7 +37,7 @@ public class SerializeToJsonTest {
   public static <T> T fromJson(GenericData model, Schema schema, String serialized) {
     try {
       Decoder decoder = DecoderFactory.get().jsonDecoder(schema, serialized);
-      GenericDatumReader<T> r = new GenericDatumReader<T>(schema, schema, model);
+      DatumReader<T> r = new GenericDatumReader<T>(schema, schema, model);
       return r.read(null, decoder);
     } catch (IOException ioe) {
       throw new RuntimeException((ioe));

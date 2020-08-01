@@ -1,10 +1,13 @@
 The Avro Enchiridion
 ====================
 
-_[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): A small manual or handbook._  It's a bit like a tech [cook book](https://www.oreilly.com/search/?query=cookbook), but a bigger, fancier, SEO-optimizabler word.
+![Java CI](https://github.com/RyanSkraba/avro-enchiridion/workflows/Java%20CI/badge.svg)
+
+_[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): **A small manual or handbook.**_  It's a bit like a tech [cook book](https://www.oreilly.com/search/?query=cookbook), but a bigger, fancier, SEO-optimizabler word.
 
 <!-- 2020/05/25: 920 O'Reilly results
-     2020/06/05: 4758 O'Reilly results (but changed the search URL) -->
+     2020/06/05: 4758 O'Reilly results (but changed the search URL)
+     2020/07/30: 5043 O'Reilly results -->
 
 This project describes how to do many common Java tasks using the Avro serialization library.
 
@@ -63,6 +66,8 @@ Modules
 | [core18x](core18x/readme.md)  | Helper project for running tests in Avro 1.8.x
 | [core19x](core19x/readme.md)  | Helper project for running tests in Avro 1.9.x
 | [core-master-snapshot](core-master-snapshot/readme.md)  | Helper project for running tests in the latest SNAPSHOT releases from the Avro master branch.
+| [ipc](ipc/readme.md)  | Unit tests and examples for client/server communication with Avro protocols.
+| [plugin](plugin/readme.md)  | Using the maven plugin to generate Avro classes.
 
 
 Building an Apache Avro SNAPSHOT locally.
