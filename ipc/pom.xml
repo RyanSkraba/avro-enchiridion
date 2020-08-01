@@ -18,6 +18,7 @@
 
   <properties>
     <maven.deploy.skip>false</maven.deploy.skip>
+    <avro.version>1.9.2</avro.version>
   </properties>
 
   <dependencies>
@@ -29,12 +30,21 @@
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-ipc</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-ipc-netty</artifactId>
+    </dependency>
 
     <!-- Tests -->
     <dependency>
       <groupId>com.skraba.avro.enchiridion</groupId>
       <artifactId>avro-enchiridion-resources</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
