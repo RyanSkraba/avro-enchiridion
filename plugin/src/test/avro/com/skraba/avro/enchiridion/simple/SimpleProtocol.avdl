@@ -1,0 +1,81 @@
+@namespace("com.skraba.avro.enchiridion.idl")
+protocol SimpleProtocol {
+
+  enum Shapes {
+    SQUARE, TRIANGLE, CIRCLE
+  } = CIRCLE;
+
+  fixed MD5(16);
+
+  record Employee {
+    string name;
+    boolean active = true;
+    long salary;
+  }
+
+  error Kaboom {
+    string explanation;
+    int result_code = -1;
+  }
+
+  record Job {
+    string jobid;
+    date submitDate;
+    time_ms submitTime;
+    timestamp_ms finishTime;
+    decimal(9,2) finishRatio;
+  }
+
+  enum Suit {
+    HEART, DIAMOND, CLUB, SPADE
+  }
+
+  record Card {
+    Suit suit; // refers to the enum Suit defined above
+    int number;
+  }
+
+  record Hand {
+    array<Card> hand;
+  }
+
+  record JobStuff {
+    map<Job> jobs;
+  }
+
+
+  record RecordWithUnion {
+    union { null, string } optionalString;
+  }
+
+  // RPC messages -------------------------------------
+
+  /** Add two numbers together */
+  int add(int foo, int bar = 0);
+
+  void logMessage(string message);
+
+  void fireAndForget(string message) oneway;
+
+  record MyRecord {
+    string @order("ascending") myAscendingSortField;
+    string @order("descending")  myDescendingField;
+    string @order("ignore") myIgnoredField;
+  }
+
+  record MyRecord2 {
+    @java-class("java.util.ArrayList") array<string> myStrings;
+  }
+
+  @namespace("org.apache.avro.someOtherNamespace")
+  record MyRecord3 {
+    @java-class("java.math.BigDecimal") string value;
+    @java-key-class("java.io.File") map<string> fileStates;
+    array<@java-class("java.math.BigDecimal") string> weights;
+  }
+
+  @aliases(["org.old.OldRecord", "org.ancient.AncientRecord"])
+  record MyRecord4 {
+    string @aliases(["oldField", "ancientField"]) myNewField;
+  }
+}
