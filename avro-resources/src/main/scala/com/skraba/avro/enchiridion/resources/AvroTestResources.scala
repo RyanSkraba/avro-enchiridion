@@ -2,7 +2,7 @@ package com.skraba.avro.enchiridion.resources
 
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
-import scala.reflect.io.{Directory, Path}
+import scala.reflect.io.{Directory, File, Path}
 
 /**
   * Reusable resources for Avro tests.
@@ -10,8 +10,18 @@ import scala.reflect.io.{Directory, Path}
 object AvroTestResources {
 
   val Base: Directory = Directory(
-      Path(sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion"))
+    Path(
+      sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion")
+    )
   )
+
+  /** The file of this source code. */
+  private[this] lazy val ThisFile: File =
+    Base
+      .resolve(
+        s"avro-resources/src/main/scala/${AvroTestResources.getClass.getName.replace('.', '/').replace("$", "")}.scala"
+      )
+      .toFile
 
   /**
     * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
@@ -86,6 +96,49 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
+  /** A schema containing itself. */
+  val Recursive: String =
+    """{
+      |  "type" : "record",
+      |  "name" : "A",
+      |  "fields" : [ {
+      |    "name" : "head",
+      |    "type" : "int"
+      |  }, {
+      |    "name" : "left",
+      |    "type" : [ "null", "A" ]
+      |  }, {
+      |    "name" : "right",
+      |    "type" : [ "null", "A" ]
+      |  } ]
+      |}""".stripMargin
+
+  /** A schema containing itself indirectly. */
+  val RecursiveIndirect: String =
+    """{
+      |  "type" : "record",
+      |  "name" : "A",
+      |  "fields" : [ {
+      |    "name" : "a1",
+      |    "type" : "int"
+      |  }, {
+      |    "name" : "a2",
+      |    "type" : {
+      |      "type" : "record",
+      |      "name" : "B",
+      |      "fields" : [ {
+      |        "name" : "b1",
+      |        "type" : "int"
+      |      }, {
+      |        "name" : "b2",
+      |        "type" : [ "null", "A" ],
+      |        "default" : null
+      |      } ]
+      |    }
+      |  } ]
+      |}""".stripMargin
+
+  /** A Schema of medium complexity. */
   val Recipe: String = Json.prettyPrint(
     Json.obj(
       "type" -> "record",
@@ -182,7 +235,7 @@ object AvroTestResources {
       |    "type" : {
       |      "name" : "MyEnum",
       |      "type" : "enum",
-      |      "symbols" : ["one", "two", "three"],
+      |      "symbols" : [ "one", "two", "three" ],
       |      "user-property" : "There is no size attribute in an enum.",
       |      "size" : 300
       |    }
@@ -197,24 +250,65 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
+  /**
+    * @return the given JSON string as pretty formatted scala code.
+    */
+  def prettifyCode(variableName: String, json: String): String = {
+    Json
+      .prettyPrint(Json.parse(json))
+      .split("\n")
+      .zipWithIndex
+      .map { case (s, i) => if (i == 0) "    \"\"\"" + s else s"      |$s" }
+      .mkString(start = "", sep = "\n", end = "\"\"\".stripMargin")
+  }
+
   /** Write all of these schemas to the plugin directory. */
   def main(args: Array[String]) {
-    val base: String =
-      sys.env.getOrElse("AVRO_ENCHIRIDION_REPO_DIR", "/tmp/avro-enchiridion")
 
-    Directory(base)
+    // Rewrite some AVSC files with resources from this file.
+    Base
       .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
       .createDirectory()
       .resolve("SimpleRecord.avsc")
       .toFile
       .writeAll(Json.prettyPrint(Json.parse(SimpleRecord)))
 
-    Directory(base)
+    Base
       .resolve("plugin/src/main/avro/com/skraba/avro/enchiridion/recipe")
       .createDirectory()
       .resolve("Recipe.avsc")
       .toFile
       .writeAll(Json.prettyPrint(Json.parse(Recipe)))
+
+    // Rewrite this source itself with prettified JSON.
+    val schemasToPrettify: Map[String, String] = Map(
+      "SimpleRecord" -> SimpleRecord,
+      "Recursive" -> Recursive,
+      "RecursiveIndirect" -> RecursiveIndirect,
+      "Avro1965" -> Avro1965,
+      "Avro2299CanonicalMisplacedSize" -> Avro2299CanonicalMisplacedSize
+    )
+    ThisFile.writeAll(
+      {
+        for (
+          scala <- ThisFile.safeSlurp().toArray;
+          block <- scala.split("val")
+        )
+          yield {
+            schemasToPrettify
+              .find {
+                case (k, _) => block.startsWith(s" $k:")
+              }
+              .map {
+                case (k, v) =>
+                  (s" $k: String =\n${prettifyCode(k, v)}" +: block
+                    .split("\n\n")
+                    .tail).mkString("\n\n")
+              }
+              .getOrElse(block)
+          }
+      }.mkString("val")
+    )
   }
 
 }
