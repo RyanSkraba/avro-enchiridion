@@ -22,14 +22,18 @@ public class EnabledForAvroVersionCondition implements ExecutionCondition {
   static final ConditionEvaluationResult ENABLED_ON_CURRENT_VERSION = //
       enabled("Enabled for " + AvroVersion.getInstalledAvro());
 
-  static final ConditionEvaluationResult DISABLED_ON_CURRENT_VERSION = //
-      disabled("Disabled for " + AvroVersion.getInstalledAvro());
-
   @Override
   public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
     return findAnnotation(context.getElement(), EnabledForAvroVersion.class)
-        .map(annotation -> annotation.startingFrom().orAfter() && annotation.until().before())
-        .map(enabled -> enabled ? ENABLED_ON_CURRENT_VERSION : DISABLED_ON_CURRENT_VERSION)
+        .map(
+            annotation -> {
+              if (annotation.startingFrom().orAfter() && annotation.until().before()) {
+                return ENABLED_ON_CURRENT_VERSION;
+              } else {
+                return disabled(
+                    "Disabled for " + AvroVersion.getInstalledAvro() + ": " + annotation.reason());
+              }
+            })
         .orElse(ENABLED_BY_DEFAULT);
   }
 }

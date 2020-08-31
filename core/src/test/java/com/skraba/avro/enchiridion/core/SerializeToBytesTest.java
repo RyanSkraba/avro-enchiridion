@@ -37,7 +37,7 @@ public class SerializeToBytesTest {
   public static <T> T fromBytes(GenericData model, Schema schema, byte[] serialized) {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(serialized)) {
       Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
-      DatumReader<T> r = new GenericDatumReader<T>(schema, schema, model);
+      DatumReader<T> r = new GenericDatumReader<>(schema, schema, model);
       return r.read(null, decoder);
     } catch (IOException ioe) {
       throw new RuntimeException((ioe));

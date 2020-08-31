@@ -4,10 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
+import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,10 @@ import org.junit.jupiter.api.Test;
 public class SchemaManipulationTest {
 
   @Test
+  @EnabledForAvroVersion(
+      startingFrom = AvroVersion.avro_1_8,
+      reason = "Avro API requires Jackson classes to create fields.")
   public void testAddAFieldToARecord() {
-    assumeTrue(
-        AvroVersion.avro_1_8.orAfter(), "Avro API requires Jackson classes to create fields.");
 
     // We have an original record.
     Schema schema = AvroUtil.api().parse(AvroTestResources.SimpleRecord());
