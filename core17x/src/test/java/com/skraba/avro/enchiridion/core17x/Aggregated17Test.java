@@ -14,7 +14,11 @@ public class Aggregated17Test extends Aggregated {
     AvroUtil.api = ThreadLocal.withInitial(SchemaApi17x::new);
   }
 
-  /** Logical types do not exist in Avro 1.7. Overriding the nested test causes it to be skipped. */
+  /** Disable {@link Aggregated.SerializeToMessageTest}. */
+  @Nested
+  public class SerializeToMessageTest {}
+
+  /** Disable {@link Aggregated.LogicalAggregated}. */
   @Nested
   public class LogicalAggregated {}
 

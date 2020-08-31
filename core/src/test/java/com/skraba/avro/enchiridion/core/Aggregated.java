@@ -18,6 +18,10 @@ public class Aggregated {
   public class SerializeToJsonTest extends com.skraba.avro.enchiridion.core.SerializeToJsonTest {}
 
   @Nested
+  public class SerializeToMessageTest
+      extends com.skraba.avro.enchiridion.core.SerializeToMessageTest {}
+
+  @Nested
   public class SimpleJiraTest extends com.skraba.avro.enchiridion.core.SimpleJiraTest {}
 
   @Nested
