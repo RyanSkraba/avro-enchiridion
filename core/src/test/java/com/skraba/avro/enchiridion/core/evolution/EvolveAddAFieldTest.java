@@ -1,11 +1,12 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
-import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.avro.Schema;
@@ -14,29 +15,12 @@ import org.apache.avro.SchemaCompatibility;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.junit.jupiter.api.Test;
 
 /** Test reading data with a schema that has evolved by adding a field. */
 public class EvolveAddAFieldTest {
-
-  /** A simple, original schema. */
-  public static final Schema SIMPLE_V1 =
-      SchemaBuilder.record("com.skraba.avro.enchiridion.simple.SimpleRecord")
-          .fields()
-          .requiredLong("id")
-          .requiredString("name")
-          .endRecord();
-
-  /** An example record for {@link #SIMPLE_V1}. */
-  public static final GenericRecord RECORD_V1 =
-      new GenericRecordBuilder(SIMPLE_V1).set("id", 1L).set("name", "one").build();
-
-  /** {@link #RECORD_V1} represented as binary. */
-  public static final byte[] BINARY_V1 =
-      SerializeToBytesTest.toBytes(GenericData.get(), SIMPLE_V1, RECORD_V1);
 
   /** The same as the original schema but with a new field. */
   private static final Schema SIMPLE_V2 =

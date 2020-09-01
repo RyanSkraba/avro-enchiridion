@@ -1,7 +1,7 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
-import static com.skraba.avro.enchiridion.core.evolution.EvolveAddAFieldTest.BINARY_V1;
-import static com.skraba.avro.enchiridion.core.evolution.EvolveAddAFieldTest.SIMPLE_V1;
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
