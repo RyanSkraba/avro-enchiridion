@@ -1,11 +1,9 @@
 package com.skraba.avro.enchiridion.resources
 
-
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funspec.AnyFunSpecLike
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Json
-
 
 class BasicSpec extends AnyFunSpecLike with Matchers with BeforeAndAfterEach {
 
@@ -17,4 +15,3 @@ class BasicSpec extends AnyFunSpecLike with Matchers with BeforeAndAfterEach {
     }
   }
 }
-
