@@ -1,0 +1,39 @@
+{
+  "type" : "record",
+  "name" : "DateLogicalTypeRecord",
+  "namespace" : "com.skraba.avro.enchiridion.simple",
+  "fields" : [ {
+    "name" : "name",
+    "type" : "string"
+  }, {
+    "name" : "datetime_ms",
+    "type" : {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    }
+  }, {
+    "name" : "datetime_us",
+    "type" : {
+      "type" : "long",
+      "logicalType" : "timestamp-micros"
+    }
+  }, {
+    "name" : "date",
+    "type" : {
+      "type" : "int",
+      "logicalType" : "date"
+    }
+  }, {
+    "name" : "time_ms",
+    "type" : {
+      "type" : "int",
+      "logicalType" : "time-millis"
+    }
+  }, {
+    "name" : "time_us",
+    "type" : {
+      "type" : "long",
+      "logicalType" : "time-micros"
+    }
+  } ]
+}

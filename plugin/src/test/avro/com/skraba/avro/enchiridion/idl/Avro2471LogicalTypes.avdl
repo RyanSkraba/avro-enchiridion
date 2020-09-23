@@ -1,4 +1,4 @@
-@namespace("com.skraba.avro.enchiridion.simple")
+@namespace("com.skraba.avro.enchiridion.idl")
 /**
  * Issues related to timestamp logical types when they are contained in a union.
  *

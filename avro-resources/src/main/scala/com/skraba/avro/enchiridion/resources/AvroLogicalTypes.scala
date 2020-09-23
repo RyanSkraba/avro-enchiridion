@@ -41,6 +41,7 @@ object AvroLogicalTypes {
   lazy val DateLogicalTypeRecordInvalid: JsObject = Json.obj(
     "type" -> "record",
     "name" -> "DateLogicalTypeRecordInvalid",
+    "namespace" -> "com.skraba.avro.enchiridion.simple",
     "fields" -> Json.arr(
       Json.obj("name" -> "name", "type" -> "string"),
       Json.obj("name" -> "datetime_ms") ++ TimestampMillis,
@@ -54,6 +55,7 @@ object AvroLogicalTypes {
   lazy val DateLogicalTypeRecord: JsObject = Json.obj(
     "type" -> "record",
     "name" -> "DateLogicalTypeRecord",
+    "namespace" -> "com.skraba.avro.enchiridion.simple",
     "fields" -> Json.arr(
       Json.obj("name" -> "name", "type" -> "string"),
       Json.obj("name" -> "datetime_ms", "type" -> TimestampMillis),

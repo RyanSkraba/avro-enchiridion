@@ -12,6 +12,8 @@ import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.junit.jupiter.api.Test;
@@ -71,6 +73,15 @@ public class SchemaManipulationTest {
       modifiedFields.add(newF);
     }
     modifiedFields.add(newField);
+
+    // This is the fast way to clone a list of fields using the copy constructor after Avro 1.9.x
+    if (AvroVersion.avro_1_9.orAfter()) {
+      List<Schema.Field> clonedFields =
+          schema.getFields().stream()
+              .map(f -> new Schema.Field(f, f.schema()))
+              .collect(Collectors.toList());
+      assertThat(clonedFields, is(schema.getFields()));
+    }
 
     // Now you can clone the original record schema.
     Schema modifiedSchema =

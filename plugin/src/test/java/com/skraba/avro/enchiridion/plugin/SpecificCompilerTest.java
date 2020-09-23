@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.io.FileMatchers.anExistingFile;
 
 import com.skraba.avro.enchiridion.recipe.Recipe;
-import com.skraba.avro.enchiridion.simple.TimestampAll;
+import com.skraba.avro.enchiridion.idl.TimestampAll;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.avro.compiler.specific.SpecificCompiler;
@@ -32,7 +32,7 @@ public class SpecificCompilerTest {
     sc.setStringType(GenericData.StringType.String);
     sc.compileToDestination(null, tmpDir.toFile());
     assertThat(
-        tmpDir.resolve("com/skraba/avro/enchiridion/simple/TimestampAll.java").toFile(),
+        tmpDir.resolve("com/skraba/avro/enchiridion/idl/TimestampAll.java").toFile(),
         anExistingFile());
   }
 }
