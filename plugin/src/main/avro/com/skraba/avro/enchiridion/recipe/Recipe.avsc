@@ -2,10 +2,10 @@
   "type" : "record",
   "name" : "Recipe",
   "namespace" : "com.skraba.avro.enchiridion.recipe",
-  "doc" : "A recipe containing ingredients and steps.",
+  "doc" : "A recipe containing ingredients and steps",
   "fields" : [ {
     "name" : "title",
-    "doc" : "Recipe title",
+    "doc" : "Name or title for this recipe",
     "type" : [ "null", "string" ],
     "default" : null
   }, {
@@ -15,15 +15,28 @@
     "default" : null
   }, {
     "name" : "from_step_id",
-    "doc" : "Recipe title",
+    "doc" : "The tag of the steps feeding into this step (if any)",
     "type" : {
       "type" : "array",
-      "items" : "string"
+      "items" : {
+        "type" : "record",
+        "name" : "FromStep",
+        "doc" : "",
+        "fields" : [ {
+          "name" : "fraction",
+          "doc" : "The fraction of the incoming step",
+          "type" : "double"
+        }, {
+          "name" : "step_id",
+          "doc" : "The unique tag for the incoming step",
+          "type" : "string"
+        } ]
+      }
     },
     "default" : [ ]
   }, {
     "name" : "source",
-    "doc" : "Where it came from (person, website, book)",
+    "doc" : "Where the recipe came from (person, website, book)",
     "type" : [ "null", "string" ],
     "default" : null
   }, {
@@ -33,7 +46,7 @@
     "default" : null
   }, {
     "name" : "note",
-    "doc" : "Free text (information, hints)",
+    "doc" : "Any free text (information, hints)",
     "type" : {
       "type" : "array",
       "items" : "string"
@@ -58,7 +71,7 @@
           "default" : null
         }, {
           "name" : "option",
-          "doc" : "Options",
+          "doc" : "Replacement options for this ingredient",
           "type" : {
             "type" : "array",
             "items" : "Ingredient"
@@ -66,7 +79,7 @@
           "default" : [ ]
         }, {
           "name" : "note",
-          "doc" : "Free text (information, hints)",
+          "doc" : "Any free text (information, hints)",
           "type" : {
             "type" : "array",
             "items" : "string"

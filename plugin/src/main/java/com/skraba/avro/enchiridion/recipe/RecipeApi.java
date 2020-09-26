@@ -39,8 +39,13 @@ public class RecipeApi<T> {
     return this;
   }
 
+  public RecipeApi<T> addFromStepId(String fromStepId) {
+    return addFromStepId(1.0, fromStepId);
+  }
+
   public RecipeApi<T> addFromStepId(double fraction, String fromStepId) {
-    self.getFromStepId().add(fromStepId);
+    self.getFromStepId()
+        .add(FromStep.newBuilder().setFraction(fraction).setStepId(fromStepId).build());
     return this;
   }
 
@@ -59,12 +64,30 @@ public class RecipeApi<T> {
     return this;
   }
 
+  public RecipeApi<T> addSimpleIngredient(String q, String n) {
+    return addIngredient(q, n).build();
+  }
+
   public IngredientApi<RecipeApi<T>> addIngredient(String q, String n) {
     return new IngredientApi<>(this, new Ingredient(q, n, new ArrayList<>(), new ArrayList<>()));
   }
 
   public RecipeApi<T> addIngredient(Ingredient ingredient) {
     self.getIngredients().add(ingredient);
+    return this;
+  }
+
+  public RecipeApi<RecipeApi<T>> addStepWithId(String stepId, String... fromStepIds) {
+    Recipe.Builder self = Recipe.newBuilder().setStepId(stepId);
+    if (fromStepIds.length > 0) {
+      self.setFromStepId(new ArrayList<>());
+      for (String id : fromStepIds) self.getFromStepId().add(new FromStep(1.0, id));
+    }
+    return new RecipeApi<>(this, self.build());
+  }
+
+  public RecipeApi<T> addStep(Recipe step) {
+    self.getSteps().add(step);
     return this;
   }
 

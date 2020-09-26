@@ -145,14 +145,33 @@ object AvroTestResources {
       "type" -> "record",
       "name" -> "Recipe",
       "namespace" -> "com.skraba.avro.enchiridion.recipe",
-      "doc" -> "A recipe containing ingredients and steps.",
+      "doc" -> "A recipe containing ingredients and steps",
       "fields" -> Json.arr(
-        fieldOpt("title", "Recipe title"),
+        fieldOpt("title", "Name or title for this recipe"),
         fieldOpt("step_id", "A unique tag for this step"),
-        fieldArray("from_step_id", "Recipe title"),
-        fieldOpt("source", "Where it came from (person, website, book)"),
+        fieldArray(
+          "from_step_id",
+          "The tag of the steps feeding into this step (if any)",
+          Json.obj(
+            "type" -> "record",
+            "name" -> "FromStep",
+            "doc" -> "",
+            "fields" -> Json.arr(
+              field(
+                "fraction",
+                "The fraction of the incoming step",
+                JsString("double")
+              ),
+              field("step_id", "The unique tag for the incoming step")
+            )
+          )
+        ),
+        fieldOpt(
+          "source",
+          "Where the recipe came from (person, website, book)"
+        ),
         fieldOpt("makes", "How much the recipe makes"),
-        fieldArray("note", "Free text (information, hints)"),
+        fieldArray("note", "Any free text (information, hints)"),
         Json.obj(
           "name" -> "ingredients",
           "type" -> Json.obj(
@@ -164,8 +183,12 @@ object AvroTestResources {
                 "fields" -> Json.arr(
                   fieldOpt("q", "Quantity"),
                   fieldOpt("n", "Name"),
-                  fieldArray("option", "Options", JsString("Ingredient")),
-                  fieldArray("note", "Free text (information, hints)")
+                  fieldArray(
+                    "option",
+                    "Replacement options for this ingredient",
+                    JsString("Ingredient")
+                  ),
+                  fieldArray("note", "Any free text (information, hints)")
                 )
               )
           ),
