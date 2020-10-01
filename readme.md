@@ -19,7 +19,7 @@ Java Topics
 | I want to...  | See... |
 | ------------- | ------------- |
 | Read/write one datum to a byte array | [SerializeToBytesTest][SerializeToBytesTest]
-| Read/write one datum to a ByteBuffer | 
+| Read/write one datum to a ByteBuffer | [SerializeToBytesTest][SerializeToBytesTest]
 | Read/write one datum to an Avro JSON String | [SerializeToJsonTest][SerializeToJsonTest]  
 | Read from/write to an Avro file | [AvroFileTest][AvroFileTest]
 
