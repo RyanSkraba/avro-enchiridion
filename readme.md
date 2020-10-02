@@ -46,7 +46,7 @@ Java Topics
 | ... by renaming a field | [EvolveRenameAFieldTest]
 | ... by reordering fields | [EvolveReorderFieldsTest]
 | ... by widening a primitive | 
-| ... by adding a union | 
+| ... by adding a union | [EvolveUnionTest]
 | ... by adding an enum symbol | 
 | ... by removing an enum symbol | 
 
@@ -54,6 +54,7 @@ Java Topics
 [EvolveRemoveAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveRemoveAFieldTest.java
 [EvolveRenameAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveRenameAFieldTest.java
 [EvolveReorderFieldsTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveReorderFieldsTest.java
+[EvolveUnionTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveUnionTest.java
 
 Modules
 -------
