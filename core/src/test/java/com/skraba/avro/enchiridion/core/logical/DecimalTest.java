@@ -1,13 +1,28 @@
 package com.skraba.avro.enchiridion.core.logical;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.fail;
+import com.skraba.avro.enchiridion.core.file.AvroFileTest;
 
+import org.apache.avro.Conversions;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
+import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumWriter;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /** Unit tests for the Avro decimal type. */
 public class DecimalTest {
@@ -47,5 +62,54 @@ public class DecimalTest {
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage(), is("fixed(1) cannot store 5 digits (max 2)"));
     }
+  }
+
+  @Test
+  public void testAddingConversionToGenericDataForFileWrite(@TempDir Path tmpDir) throws IOException {
+
+    // Create a record with one field that is a nullable decimal logical type.
+    GenericRecord r =
+        new GenericData.Record(
+            SchemaBuilder.record(
+                    "com.skraba.avro.enchiridion.core.logical.testAddingConversionToGenericData")
+                .fields()
+                .name("value")
+                .type()
+                .unionOf()
+                .nullType()
+                .and()
+                .type(bytesSchema)
+                .endUnion()
+                .noDefault()
+                .endRecord());
+    r.put("value", BigDecimal.valueOf(10.0));
+
+    // This fails because the GenericData model does not know the logical type by default.
+    assertThrows(
+        org.apache.avro.file.DataFileWriter.AppendWriteException.class,
+        () -> {
+          DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(r.getSchema());
+          try (DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter)) {
+            File testFile = tmpDir.resolve("should_fail.avro").toFile();
+            dataFileWriter.create(r.getSchema(), testFile);
+            dataFileWriter.append(r);
+          }
+        });
+
+    // So create and use a model that knows about this logical type conversion.
+    GenericData model = new GenericData();
+    model.addLogicalTypeConversion(new Conversions.DecimalConversion());
+
+    DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(r.getSchema(), model);
+    try (DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter)) {
+      File testFile = tmpDir.resolve("succeeds.avro").toFile();
+      dataFileWriter.create(r.getSchema(), testFile);
+      dataFileWriter.append(r);
+    }
+
+    // Check that the record did succeed.
+    GenericData.Record read =
+        AvroFileTest.fromFile(tmpDir.resolve("succeeds.avro").toFile(), model);
+    assertThat(read.get(0), is(new BigDecimal("10.00")));
   }
 }

@@ -35,7 +35,7 @@ Java Topics
 
 [BigDecimal]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html
 [GenericData]: https://avro.apache.org/docs/current/api/java/org/apache/avro/generic/GenericData.html
-[DecimalPrecisionAndScaleTest]: core/src/test/java/com/skraba/avro/enchiridion/core/logical/DecimalPrecisionAndScaleTest
+[DecimalPrecisionAndScaleTest]: core/src/test/java/com/skraba/avro/enchiridion/core/logical/DecimalPrecisionAndScaleTest.java
 
 ### Schema resolution
 
