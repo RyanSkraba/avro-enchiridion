@@ -77,8 +77,8 @@ object AvroTestResources {
       |  "name" : "$recordName",
       |  "fields" : [ {
       |    "name" : "$fieldName",
-      |    "type" : "$fieldType",
-      |    "type" : "$fieldDefault"
+      |    "type" : $fieldType,
+      |    "default" : $fieldDefault
       |  } ]
       |}""".stripMargin
 

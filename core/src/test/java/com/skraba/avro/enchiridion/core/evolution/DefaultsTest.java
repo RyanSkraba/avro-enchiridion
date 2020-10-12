@@ -1,31 +1,86 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
-import static com.skraba.avro.enchiridion.core.AvroUtil.api;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import com.skraba.avro.enchiridion.resources.NumericValues;
-import java.util.Collections;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.SchemaParseException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.Collections;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import static com.skraba.avro.enchiridion.core.AvroUtil.api;
+import static com.skraba.avro.enchiridion.core.AvroUtil.jsonify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** Unit tests for default values in schemas. */
 public class DefaultsTest {
 
   public static boolean isFinite(Object defaultVal) {
     return defaultVal instanceof Number && Double.isFinite(((Number) defaultVal).doubleValue());
+  }
+
+  @Test
+  void testParsingValidDefault() throws Throwable {
+    String schema =
+        AvroTestResources.SimpleRecordWithColumn(
+            "ValidDefault", "id", jsonify("long"), jsonify(-1));
+    Schema s = new Schema.Parser().parse(schema);
+    assertThat(s, notNullValue());
+  }
+
+  @Test
+  void testParsingValidNullableDefault() throws Throwable {
+    String schema =
+        AvroTestResources.SimpleRecordWithColumn(
+            "ValidNullableDefault", "id", "[\"long\", \"null\"]", jsonify(-1));
+    Schema s = new Schema.Parser().parse(schema);
+    assertThat(s, notNullValue());
+  }
+
+  @Test
+  void testParsingValidNullDefault() throws Throwable {
+    String schema =
+        AvroTestResources.SimpleRecordWithColumn(
+            "ValidNullDefault", "id", "[\"null\", \"long\"]", jsonify(null));
+    Schema s = new Schema.Parser().parse(schema);
+    assertThat(s, notNullValue());
+  }
+
+  /** See https://issues.apache.org/jira/browse/AVRO-2817 */
+  @Test
+  void testParsingInvalidNullDefault() throws Throwable {
+    String schema =
+        AvroTestResources.SimpleRecordWithColumn(
+            "InvalidNullDefault", "id", "[\"long\", \"null\"]", jsonify(null));
+
+    if (AvroVersion.avro_1_9.before()) {
+      // Previous to 1.9, this would have succeeded.
+      Schema s = new Schema.Parser().parse(schema);
+      assertThat(s, notNullValue());
+    } else {
+      // After 1.9, this became an exception.
+      AvroTypeException ex =
+          assertThrows(
+              AvroTypeException.class,
+              () -> {
+                Schema s = new Schema.Parser().parse(schema);
+              });
+      assertThat(
+          ex.getMessage(), is("Invalid default for field id: null not a [\"long\",\"null\"]"));
+    }
   }
 
   @ParameterizedTest
@@ -62,7 +117,7 @@ public class DefaultsTest {
             api()
                 .parse(
                     AvroTestResources.SimpleRecordWithColumn(
-                        "FieldDoubleDefault" + tag, "a", "'double'", AvroUtil.jsonify(defaultVal)));
+                        "FieldDoubleDefault" + tag, "a", jsonify("double"), jsonify(defaultVal)));
 
     if (isFinite(defaultVal)) {
       Schema schemaBuilder = viaSchemaBuilder.get();

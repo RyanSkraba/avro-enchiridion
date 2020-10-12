@@ -22,7 +22,7 @@
 
     <avro.version>1.10.0</avro.version>
     <scala.minor.version>2.12</scala.minor.version>
-    <scala.version>2.12.11</scala.version>
+    <scala.version>2.12.12</scala.version>
     <spotless.version>1.25.1</spotless.version>
   </properties>
 
