@@ -6,6 +6,12 @@ import org.junit.jupiter.api.Nested;
 public class Aggregated {
 
   @Nested
+  public class BuildersTest extends com.skraba.avro.enchiridion.core.schema.BuildersTest {}
+
+  @Nested
+  public class FingerprintTest extends com.skraba.avro.enchiridion.core.schema.FingerprintTest {}
+
+  @Nested
   public class SchemaManipulationTest
       extends com.skraba.avro.enchiridion.core.schema.SchemaManipulationTest {}
 
