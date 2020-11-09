@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "com.skraba.avro.enchiridion.simple.static",
+  "fields" : [ {
+    "name" : "switch",
+    "type" : {
+      "type" : "record",
+      "name" : "case",
+      "fields" : [ {
+        "name" : "default",
+        "type" : "long"
+      } ]
+    }
+  } ]
+}
