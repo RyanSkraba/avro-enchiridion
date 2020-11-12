@@ -19,6 +19,14 @@ object AvroLogicalTypes {
   lazy val TimeMicros: JsObject =
     Json.obj("type" -> "long", "logicalType" -> "time-micros")
 
+  /** Added in 1.10.0 */
+  lazy val LocalTimestampMillis: JsObject =
+    Json.obj("type" -> "long", "logicalType" -> "local-timestamp-millis")
+
+  /** Added in 1.10.0 */
+  lazy val LocalTimestampMicros: JsObject =
+    Json.obj("type" -> "long", "logicalType" -> "local-timestamp-micros")
+
   /**
     * In a field, the logicalType attribute needs to be nested. None of these fields have logical types.
     *
@@ -46,6 +54,8 @@ object AvroLogicalTypes {
       Json.obj("name" -> "name", "type" -> "string"),
       Json.obj("name" -> "datetime_ms") ++ TimestampMillis,
       Json.obj("name" -> "datetime_us") ++ TimestampMicros,
+      Json.obj("name" -> "local_datetime_ms") ++ LocalTimestampMillis,
+      Json.obj("name" -> "local_datetime_us") ++ LocalTimestampMicros,
       Json.obj("name" -> "date") ++ Date,
       Json.obj("name" -> "time_ms") ++ TimeMillis,
       Json.obj("name" -> "time_us") ++ TimeMicros
@@ -60,6 +70,8 @@ object AvroLogicalTypes {
       Json.obj("name" -> "name", "type" -> "string"),
       Json.obj("name" -> "datetime_ms", "type" -> TimestampMillis),
       Json.obj("name" -> "datetime_us", "type" -> TimestampMicros),
+      Json.obj("name" -> "local_datetime_ms", "type" -> LocalTimestampMillis),
+      Json.obj("name" -> "local_datetime_us", "type" -> LocalTimestampMicros),
       Json.obj("name" -> "date", "type" -> Date),
       Json.obj("name" -> "time_ms", "type" -> TimeMillis),
       Json.obj("name" -> "time_us", "type" -> TimeMicros)
