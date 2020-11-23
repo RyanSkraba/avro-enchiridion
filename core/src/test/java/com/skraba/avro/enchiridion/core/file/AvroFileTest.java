@@ -14,6 +14,7 @@ import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.RandomData;
+import org.apache.avro.util.Utf8;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -64,9 +65,9 @@ public class AvroFileTest {
    */
   public static <T> T fromFile(File f, GenericData model) throws IOException {
     // Using a null reader/writer schema will read the schema from the file.
-    try (DataFileReader<T> dataFileReader =
+    try (DataFileReader<T> reader =
         new DataFileReader<>(f, new GenericDatumReader<>(null, null, model))) {
-      return dataFileReader.next(null);
+      return reader.next(null);
     }
   }
 
@@ -116,5 +117,29 @@ public class AvroFileTest {
     }
 
     assertThat(recordCount, is(5000L));
+  }
+
+  @Test
+  public void testEmptyFile(@TempDir Path tmpDir) throws IOException {
+
+    // An empty file can exist and contain no records (but can contain schema and metadata).
+    File f = tmpDir.resolve("empty.avro").toFile();
+
+    Schema schema = AvroUtil.api().parse(AvroTestResources.Recipe());
+    try (DataFileWriter<GenericRecord> writer =
+        new DataFileWriter<>(new GenericDatumWriter<>(schema, GenericData.get()))) {
+      // writer.setCodec(CodecFactory.snappyCodec());
+      writer.setMeta("my.metadata", "This is my file");
+      writer.create(schema, f);
+    }
+
+    assertThat(f, anExistingFile());
+    try (DataFileReader<GenericRecord> reader =
+        new DataFileReader<>(f, new GenericDatumReader<>(null, null, GenericData.get()))) {
+      assertThat(reader.hasNext(), is(false));
+      assertThat(reader.getMetaString("my.metadata"), is("This is my file"));
+      assertThat(reader.getBlockCount(), is(0L));
+      assertThat(reader.getSchema(), is(schema));
+    }
   }
 }
