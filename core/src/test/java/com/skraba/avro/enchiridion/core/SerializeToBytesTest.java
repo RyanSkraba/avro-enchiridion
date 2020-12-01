@@ -1,5 +1,13 @@
 package com.skraba.avro.enchiridion.core;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -14,15 +22,6 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.util.ByteBufferInputStream;
 import org.apache.avro.util.ByteBufferOutputStream;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 /** Unit tests and helper methods to serialize Avro datum to binary. */
 public class SerializeToBytesTest {
@@ -111,5 +110,4 @@ public class SerializeToBytesTest {
     assertThat(roundTripByteBuffers(GenericData.get(), schema, 0), is(0));
     assertThat(roundTripByteBuffers(GenericData.get(), schema, -1), is(-1));
   }
-
 }

@@ -1,9 +1,18 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
+import static com.skraba.avro.enchiridion.core.AvroUtil.api;
+import static com.skraba.avro.enchiridion.core.AvroUtil.jsonify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import com.skraba.avro.enchiridion.resources.NumericValues;
-
+import java.util.Collections;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
@@ -13,17 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.Collections;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static com.skraba.avro.enchiridion.core.AvroUtil.api;
-import static com.skraba.avro.enchiridion.core.AvroUtil.jsonify;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** Unit tests for default values in schemas. */
 public class DefaultsTest {

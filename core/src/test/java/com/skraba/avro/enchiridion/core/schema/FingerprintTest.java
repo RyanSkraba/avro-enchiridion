@@ -1,16 +1,14 @@
 package com.skraba.avro.enchiridion.core.schema;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
-
+import java.security.NoSuchAlgorithmException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.junit.jupiter.api.Test;
-
-import java.security.NoSuchAlgorithmException;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 /** Unit tests for fingerprinting a schema. */
 public class FingerprintTest {

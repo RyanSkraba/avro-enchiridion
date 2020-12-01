@@ -1,7 +1,15 @@
 package com.skraba.avro.enchiridion.core.logical;
 
-import com.skraba.avro.enchiridion.core.file.AvroFileTest;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import com.skraba.avro.enchiridion.core.file.AvroFileTest;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Path;
 import org.apache.avro.Conversions;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
@@ -13,16 +21,6 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumWriter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /** Unit tests for the Avro decimal type. */
 public class DecimalTest {
@@ -65,7 +63,8 @@ public class DecimalTest {
   }
 
   @Test
-  public void testAddingConversionToGenericDataForFileWrite(@TempDir Path tmpDir) throws IOException {
+  public void testAddingConversionToGenericDataForFileWrite(@TempDir Path tmpDir)
+      throws IOException {
 
     // Create a record with one field that is a nullable decimal logical type.
     GenericRecord r =

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.junit.jupiter.api.Test;

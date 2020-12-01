@@ -1,8 +1,15 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+
 import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
-
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.SchemaCompatibility;
@@ -14,27 +21,18 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
-import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-
 /**
  * Test reading data with a schema that has evolved by changing to/from a union.
  *
- * The schema goes through several iterations:
+ * <p>The schema goes through several iterations:
  *
  * <ol>
- *   <li><b>V1 (both fields required)</b> { id: LONG, name: STRING }</li>
- *   <li><b>V2 (both fields nullable)</b> { id: NULL|LONG, name: NULL|STRING }</li>
- *   <li><b>V3 (required id again)</b> { id: LONG, name: NULL|STRING|BYTES }</li>
- *   <li><b>V4 (narrow union for name)</b> { id: LONG, name: STRING|BYTES }</li>
+ *   <li><b>V1 (both fields required)</b> { id: LONG, name: STRING }
+ *   <li><b>V2 (both fields nullable)</b> { id: NULL|LONG, name: NULL|STRING }
+ *   <li><b>V3 (required id again)</b> { id: LONG, name: NULL|STRING|BYTES }
+ *   <li><b>V4 (narrow union for name)</b> { id: LONG, name: STRING|BYTES }
  * </ol>
- * */
+ */
 public class EvolveUnionTest {
 
   /** The same as the original schema but with both fields changed to nullable. */

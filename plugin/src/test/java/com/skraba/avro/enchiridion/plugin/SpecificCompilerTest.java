@@ -3,8 +3,8 @@ package com.skraba.avro.enchiridion.plugin;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.io.FileMatchers.anExistingFile;
 
-import com.skraba.avro.enchiridion.recipe.Recipe;
 import com.skraba.avro.enchiridion.idl.TimestampAll;
+import com.skraba.avro.enchiridion.recipe.Recipe;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.avro.compiler.specific.SpecificCompiler;
