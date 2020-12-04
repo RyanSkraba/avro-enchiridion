@@ -1,0 +1,17 @@
+@namespace("com.skraba.avro.enchiridion.idl")
+/**
+ * Issues related to keywords used in IDL
+ *
+ * https://issues.apache.org/jira/browse/AVRO-2956
+ */
+protocol Avro2956ReservedKeyword {
+
+  /* Java reserves the keyword "case". */
+  record case {
+    string value;
+  }
+
+  record Avro2956ReservedKeywordWrapper {
+    case inner;
+  }
+}
