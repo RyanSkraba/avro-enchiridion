@@ -3,6 +3,7 @@ package com.skraba.avro.enchiridion.plugin;
 import static com.skraba.avro.enchiridion.plugin.SimpleRecordTest.fromBytes;
 import static com.skraba.avro.enchiridion.plugin.SimpleRecordTest.toBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,7 +35,7 @@ public class Avro2956ReservedKeywordTest {
                     is(wrapper)));
     assertThat(
         ex.getMessage(),
-        is(
-            "org.apache.avro.generic.GenericData$Record cannot be cast to com.skraba.avro.enchiridion.idl.case$"));
+        containsString(
+            "org.apache.avro.generic.GenericData$Record cannot be cast"));
   }
 }
