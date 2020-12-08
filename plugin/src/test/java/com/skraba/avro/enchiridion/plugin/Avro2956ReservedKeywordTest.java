@@ -35,7 +35,6 @@ public class Avro2956ReservedKeywordTest {
                     is(wrapper)));
     assertThat(
         ex.getMessage(),
-        containsString(
-            "org.apache.avro.generic.GenericData$Record cannot be cast"));
+        containsString("org.apache.avro.generic.GenericData$Record cannot be cast"));
   }
 }
