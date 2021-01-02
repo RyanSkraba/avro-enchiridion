@@ -12,6 +12,9 @@ public class Aggregated {
   }
 
   @Nested
+  public class GenericDataTest extends com.skraba.avro.enchiridion.core.GenericDataTest {}
+
+  @Nested
   public class SerializeToBytesTest extends com.skraba.avro.enchiridion.core.SerializeToBytesTest {}
 
   @Nested
