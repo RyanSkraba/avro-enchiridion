@@ -207,6 +207,7 @@
     </pluginManagement>
 
     <plugins>
+      <!-- Format Java with mvn spotless:apply -->
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
@@ -217,6 +218,25 @@
             <googleJavaFormat/>
           </java>
         </configuration>
+      </plugin>
+
+      <!-- Format scala with mvn mvn-scalafmt_2.12:format -->
+      <plugin>
+        <groupId>org.antipathy</groupId>
+        <artifactId>mvn-scalafmt_${scala.minor.version}</artifactId>
+        <version>1.0.3</version>
+        <configuration>
+          <configLocation>.scalafmt.conf</configLocation>
+          <validateOnly>true</validateOnly>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>format</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>

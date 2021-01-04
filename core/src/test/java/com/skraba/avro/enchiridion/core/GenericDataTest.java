@@ -1,18 +1,17 @@
 package com.skraba.avro.enchiridion.core;
 
-import com.skraba.avro.enchiridion.resources.AvroTestResources;
+import static com.skraba.avro.enchiridion.core.AvroUtil.api;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaCompatibility;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
 import org.junit.jupiter.api.Test;
-
-import static com.skraba.avro.enchiridion.core.AvroUtil.api;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Unit tests for working with the {@link GenericData} class. */
 public class GenericDataTest {
@@ -33,6 +32,7 @@ public class GenericDataTest {
 
     SchemaCompatibility.SchemaPairCompatibility compatibility =
         SchemaCompatibility.checkReaderWriterCompatibility(simpleV1, simpleV2);
-    assertThat(compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
+    assertThat(
+        compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
   }
 }
