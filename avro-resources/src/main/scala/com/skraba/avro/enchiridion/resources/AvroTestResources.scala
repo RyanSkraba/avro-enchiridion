@@ -66,7 +66,7 @@ object AvroTestResources {
       "default" -> Json.arr()
     )
 
-  def SimpleRecordWithColumn(
+  def RecordOneFieldWithDefault(
       recordName: String,
       fieldName: String,
       fieldType: Any,

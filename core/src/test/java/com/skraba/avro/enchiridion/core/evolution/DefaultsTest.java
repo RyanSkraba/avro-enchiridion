@@ -33,7 +33,7 @@ public class DefaultsTest {
   @Test
   void testParsingValidDefault() throws Throwable {
     String schema =
-        AvroTestResources.SimpleRecordWithColumn(
+        AvroTestResources.RecordOneFieldWithDefault(
             "ValidDefault", "id", jsonify("long"), jsonify(-1));
     Schema s = new Schema.Parser().parse(schema);
     assertThat(s, notNullValue());
@@ -42,7 +42,7 @@ public class DefaultsTest {
   @Test
   void testParsingValidNullableDefault() throws Throwable {
     String schema =
-        AvroTestResources.SimpleRecordWithColumn(
+        AvroTestResources.RecordOneFieldWithDefault(
             "ValidNullableDefault", "id", "[\"long\", \"null\"]", jsonify(-1));
     Schema s = new Schema.Parser().parse(schema);
     assertThat(s, notNullValue());
@@ -51,7 +51,7 @@ public class DefaultsTest {
   @Test
   void testParsingValidNullDefault() throws Throwable {
     String schema =
-        AvroTestResources.SimpleRecordWithColumn(
+        AvroTestResources.RecordOneFieldWithDefault(
             "ValidNullDefault", "id", "[\"null\", \"long\"]", jsonify(null));
     Schema s = new Schema.Parser().parse(schema);
     assertThat(s, notNullValue());
@@ -61,7 +61,7 @@ public class DefaultsTest {
   @Test
   void testParsingInvalidNullDefault() throws Throwable {
     String schema =
-        AvroTestResources.SimpleRecordWithColumn(
+        AvroTestResources.RecordOneFieldWithDefault(
             "InvalidNullDefault", "id", "[\"long\", \"null\"]", jsonify(null));
 
     if (AvroVersion.avro_1_9.before()) {
@@ -114,7 +114,7 @@ public class DefaultsTest {
         () ->
             api()
                 .parse(
-                    AvroTestResources.SimpleRecordWithColumn(
+                    AvroTestResources.RecordOneFieldWithDefault(
                         "FieldDoubleDefault" + tag, "a", jsonify("double"), jsonify(defaultVal)));
 
     if (isFinite(defaultVal)) {
