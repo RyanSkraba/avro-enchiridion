@@ -18,6 +18,7 @@ The Avro maven plugin
             </goals>
             <configuration>
               <fieldVisibility>public</fieldVisibility>
+              <stringType>String</stringType>
             </configuration>
           </execution>
         </executions>

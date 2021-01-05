@@ -11,33 +11,35 @@ _[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): **A small manual 
 
 This project describes how to do many common Java tasks using the Avro serialization library.
 
-The main project uses the latest release of [Avro 1.10.0](https://mvnrepository.com/artifact/org.apache.avro/avro/1.10.0), but includes modules that run the same tests on previous versions of Avro.
+The main project uses the latest release of [Avro 1.10.1](https://mvnrepository.com/artifact/org.apache.avro/avro/1.10.1), but includes modules that run the same tests on previous versions of Avro.
 
 Java Topics
 -----------
 
 | I want to...  | See... |
 | ------------- | ------------- |
-| Read/write one datum to a byte array | [SerializeToBytesTest][SerializeToBytesTest]
-| Read/write one datum to a ByteBuffer | [SerializeToBytesTest][SerializeToBytesTest]
-| Read/write one datum to an Avro JSON String | [SerializeToJsonTest][SerializeToJsonTest]  
-| Read from/write to an Avro file | [AvroFileTest][AvroFileTest]
+| Read/write one datum to a byte array | [SerializeToBytesTest]
+| Read/write one datum to a ByteBuffer | [SerializeToBytesTest]
+| Read/write one datum to an Avro JSON String | [SerializeToJsonTest]  
+| Read from/write to an Avro file | [AvroFileTest]
 
 [SerializeToBytesTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToBytesTest.java
 [SerializeToJsonTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToJsonTest.java
 [AvroFileTest]: core/src/test/java/com/skraba/avro/enchiridion/core/file/AvroFileTest.java
 
-### Logical Types
+### Logical Types ([spec][AvroSpecLogicalType])
 
 | I want to...  | See... |
 | ------------- | ------------- |
 | Use [BigDecimal][BigDecimal] datum with a [GenericData][GenericData] model | [DecimalPrecisionAndScaleTest] (see the static block)
+| Create my own logical type | TODO
 
+[AvroSpecLogicalType]: https://avro.apache.org/docs/current/spec.html#Logical+Types
 [BigDecimal]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html
 [GenericData]: https://avro.apache.org/docs/current/api/java/org/apache/avro/generic/GenericData.html
 [DecimalPrecisionAndScaleTest]: core/src/test/java/com/skraba/avro/enchiridion/core/logical/DecimalPrecisionAndScaleTest.java
 
-### Schema resolution
+### Schema resolution ([spec][AvroSpecSchemaResolution])
 
 | I want to...  | See... |
 | ------------- | ------------- |
@@ -45,15 +47,17 @@ Java Topics
 | ... by removing a field | [EvolveRemoveAFieldTest]
 | ... by renaming a field | [EvolveRenameAFieldTest]
 | ... by reordering fields | [EvolveReorderFieldsTest]
-| ... by widening a primitive | 
+| ... by widening a primitive |
 | ... by adding a union | [EvolveUnionTest]
 | ... by adding an enum symbol | 
-| ... by removing an enum symbol | 
+| ... by removing an enum symbol |
 
+[AvroSpecSchemaResolution]: https://avro.apache.org/docs/current/spec.html#Schema+Resolution
 [EvolveAddAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveAddAFieldTest.java
 [EvolveRemoveAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveRemoveAFieldTest.java
 [EvolveRenameAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveRenameAFieldTest.java
 [EvolveReorderFieldsTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveReorderFieldsTest.java
+[EvolveWidenPrimitiveTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveWidenPrimitiveTest.java
 [EvolveUnionTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveUnionTest.java
 
 Modules
