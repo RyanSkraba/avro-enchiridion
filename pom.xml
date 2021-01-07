@@ -207,7 +207,7 @@
     </pluginManagement>
 
     <plugins>
-      <!-- Format Java with mvn spotless:apply -->
+      <!-- Format Java and Scala with mvn spotless:apply -->
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>

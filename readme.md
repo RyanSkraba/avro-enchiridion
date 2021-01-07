@@ -47,7 +47,7 @@ Java Topics
 | ... by removing a field | [EvolveRemoveAFieldTest]
 | ... by renaming a field | [EvolveRenameAFieldTest]
 | ... by reordering fields | [EvolveReorderFieldsTest]
-| ... by widening a primitive |
+| ... by widening a primitive | [EvolveWidenPrimitiveTest]
 | ... by adding a union | [EvolveUnionTest]
 | ... by adding an enum symbol | 
 | ... by removing an enum symbol |

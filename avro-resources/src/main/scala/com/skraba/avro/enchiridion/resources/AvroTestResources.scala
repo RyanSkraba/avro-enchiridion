@@ -82,6 +82,20 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
+  def RecordOneFieldNoDefault(
+      recordName: String,
+      fieldName: String,
+      fieldType: Any
+  ): String =
+    s"""{
+       |  "type" : "record",
+       |  "name" : "$recordName",
+       |  "fields" : [ {
+       |    "name" : "$fieldName",
+       |    "type" : $fieldType
+       |  } ]
+       |}""".stripMargin
+
   val SimpleRecord: String =
     """{
       |  "type" : "record",
