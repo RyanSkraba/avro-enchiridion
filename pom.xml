@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.skraba.avro.enchiridion</groupId>
@@ -20,10 +20,26 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
+    <!-- Dependencies -->
     <avro.version>1.10.1</avro.version>
+    <hamcrest.version>2.2</hamcrest.version>
+    <junit5.version>5.7.0</junit5.version>
+    <play.json.version>2.9.2</play.json.version>
     <scala.minor.version>2.12</scala.minor.version>
-    <scala.version>2.12.12</scala.version>
+    <scala.version>2.12.13</scala.version>
+    <scalafmt.version>2.6.1</scalafmt.version>
     <spotless.version>1.25.1</spotless.version>
+    <scalatest.version>3.2.2</scalatest.version>
+    <slf4j.version>1.7.30</slf4j.version>
+
+    <!-- Plugins -->
+    <plugin.spotless.version>2.7.0</plugin.spotless.version>
+    <plugin.surefire.maven.version>3.0.0-M5</plugin.surefire.maven.version>
+    <plugin.enforcer.maven.version>3.0.0-M3</plugin.enforcer.maven.version>
+    <plugin.failsafe.maven.version>3.0.0-M5</plugin.failsafe.maven.version>
+    <plugin.jar.maven.version>3.2.0</plugin.jar.maven.version>
+    <plugin.maven.scala.version>4.4.0</plugin.maven.scala.version>
+    <plugin.maven.scalatest.version>2.0.2</plugin.maven.scalatest.version>
   </properties>
 
   <profiles>
@@ -121,42 +137,47 @@
         <artifactId>scala-library</artifactId>
         <version>${scala.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.typesafe.play</groupId>
+        <artifactId>play-json_${scala.minor.version}</artifactId>
+        <version>${play.json.version}</version>
+      </dependency>
 
       <!-- Tests -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.7.0-M1</version>
+        <version>${junit5.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.7.0-M1</version>
+        <version>${junit5.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.7.0-M1</version>
+        <version>${junit5.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-library</artifactId>
-        <version>2.2</version>
+        <version>${hamcrest.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest_${scala.minor.version}</artifactId>
-        <version>3.1.2</version>
+        <version>${scalatest.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>1.7.30</version>
+        <version>${slf4j.version}</version>
         <scope>test</scope>
       </dependency>
 
@@ -168,18 +189,18 @@
       <plugins>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M4</version>
+          <version>${plugin.surefire.maven.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M4</version>
+          <version>${plugin.failsafe.maven.version}</version>
         </plugin>
 
         <!-- Build both java and scala classes, and they can rely on each other. -->
         <plugin>
           <groupId>net.alchim31.maven</groupId>
           <artifactId>scala-maven-plugin</artifactId>
-          <version>4.4.0</version>
+          <version>${plugin.maven.scala.version}</version>
           <executions>
             <execution>
               <id>scala-compile-first</id>
@@ -201,7 +222,21 @@
         <plugin>
           <groupId>org.scalatest</groupId>
           <artifactId>scalatest-maven-plugin</artifactId>
-          <version>2.0.0</version>
+          <version>${plugin.maven.scalatest.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${plugin.jar.maven.version}</version>
+          <executions>
+            <!-- automatically build a test jar for each component (so test modules
+              can depend on each other) -->
+            <execution>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -211,15 +246,15 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>${spotless.version}</version>
+        <version>${plugin.spotless.version}</version>
         <configuration>
           <java>
-            <removeUnusedImports/>
-            <googleJavaFormat/>
+            <removeUnusedImports />
+            <googleJavaFormat />
           </java>
           <scala>
             <scalafmt>
-              <version>2.6.1</version>
+              <version>${scalafmt.version}</version>
             </scalafmt>
           </scala>
         </configuration>
@@ -228,7 +263,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>${plugin.enforcer.maven.version}</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -246,20 +281,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.2</version>
-        <executions>
-          <!-- automatically build a test jar for each component (so test modules
-            can depend on each other) -->
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
