@@ -28,6 +28,7 @@
             <artifactId>avro</artifactId>
             <version>${avro.version}</version>
         </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>com.skraba.avro.enchiridion</groupId>

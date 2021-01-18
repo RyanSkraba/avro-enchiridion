@@ -8,8 +8,7 @@ import scala.collection.immutable.ListMap
 /** Lists of useful numeric values that can be applied to tests. */
 object NumericValues {
 
-  /**
-    * Examples and edge cases for IEEE 754 64 bit floating point numbers.
+  /** Examples and edge cases for IEEE 754 64 bit floating point numbers.
     */
   val Doubles: Map[String, Double] = ListMap(
     "DoubleZero" -> 0d,
@@ -23,8 +22,7 @@ object NumericValues {
     "DoubleMaxValue" -> Double.MaxValue
   )
 
-  /**
-    * Examples and edge cases for IEEE 754 32 bit floating point numbers.
+  /** Examples and edge cases for IEEE 754 32 bit floating point numbers.
     */
   val Floats: Map[String, Float] = ListMap(
     "FloatZero" -> 0f,
@@ -38,8 +36,7 @@ object NumericValues {
     "FloatMaxValue" -> Float.MaxValue
   )
 
-  /**
-    * Examples and edge cases for 64 bit integer numbers.
+  /** Examples and edge cases for 64 bit integer numbers.
     */
   val Longs: Map[String, Long] = ListMap(
     "LongZero" -> 0L,
@@ -48,8 +45,7 @@ object NumericValues {
     "LongMaxValue" -> Long.MaxValue
   )
 
-  /**
-    * Examples and edge cases for 32 bit integer numbers.
+  /** Examples and edge cases for 32 bit integer numbers.
     */
   val Ints: Map[String, Int] = ListMap(
     "IntZero" -> Int.box(0),
@@ -58,8 +54,7 @@ object NumericValues {
     "IntMaxValue" -> Int.MaxValue
   )
 
-  /**
-    * Examples and edge cases for 16 bit integer numbers.
+  /** Examples and edge cases for 16 bit integer numbers.
     */
   val Shorts: Map[String, Short] = ListMap(
     "ShortZero" -> Short.box(0),
@@ -68,8 +63,7 @@ object NumericValues {
     "ShortMaxValue" -> Short.MaxValue
   )
 
-  /**
-    * Examples and edge cases for 8 bit integer numbers.
+  /** Examples and edge cases for 8 bit integer numbers.
     */
   val Bytes: Map[String, Byte] = ListMap(
     "ByteZero" -> 0,

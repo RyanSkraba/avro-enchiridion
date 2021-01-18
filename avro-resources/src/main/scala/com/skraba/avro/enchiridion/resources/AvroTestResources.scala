@@ -5,8 +5,7 @@ import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 import scala.reflect.io.{Directory, File, Path}
 
-/**
-  * Reusable resources for Avro tests.
+/** Reusable resources for Avro tests.
   */
 object AvroTestResources {
 
@@ -24,8 +23,7 @@ object AvroTestResources {
       )
       .toFile
 
-  /**
-    * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
+  /** @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
     */
   private[this] def field(
       name: String,
@@ -34,8 +32,7 @@ object AvroTestResources {
   ): JsObject =
     Json.obj("name" -> name, "doc" -> doc, "type" -> fieldType)
 
-  /**
-    * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
+  /** @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
     *         The type of the field is automatically unioned with "null".
     */
   private[this] def fieldOpt(
@@ -50,8 +47,7 @@ object AvroTestResources {
       "default" -> null
     )
 
-  /**
-    * @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
+  /** @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
     *         The type of the field is an array of with the given itemType.
     */
   private[this] def fieldArray(
@@ -288,8 +284,7 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
-  /**
-    * @return the given JSON string as pretty formatted scala code.
+  /** @return the given JSON string as pretty formatted scala code.
     */
   def prettifyCode(variableName: String, json: String): String = {
     Json
@@ -341,14 +336,13 @@ object AvroTestResources {
         )
           yield {
             schemasToPrettify
-              .find {
-                case (k, _) => block.startsWith(s" $k:")
+              .find { case (k, _) =>
+                block.startsWith(s" $k:")
               }
-              .map {
-                case (k, v) =>
-                  (s" $k: String =\n${prettifyCode(k, v)}" +: block
-                    .split("\n\n")
-                    .tail).mkString("\n\n")
+              .map { case (k, v) =>
+                (s" $k: String =\n${prettifyCode(k, v)}" +: block
+                  .split("\n\n")
+                  .tail).mkString("\n\n")
               }
               .getOrElse(block)
           }
