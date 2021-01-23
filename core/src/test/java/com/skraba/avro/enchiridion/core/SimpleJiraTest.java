@@ -7,6 +7,9 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
@@ -14,11 +17,40 @@ import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.util.Utf8;
 import org.junit.jupiter.api.Test;
 
 public class SimpleJiraTest {
+
+  /** @see <a href="https://issues.apache.org/jira/browse/AVRO-1799">AVRO-1799</a> */
+  @Test
+  public void testAvro1799BytesTypeNotRewoundOnToString() throws IOException {
+    // Create an input record with a required Schema.Type.BYTES field.
+    Schema s = SchemaBuilder.record("A").fields().requiredBytes("a1").endRecord();
+    IndexedRecord r = new GenericData.Record(s);
+    r.put(0, ByteBuffer.wrap(new byte[] {0x01, 0x02, 0x03}));
+
+    // This is the code that shows the bug.
+    String logMsg = "Processing:" + r;
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    GenericDatumWriter<IndexedRecord> writer = new GenericDatumWriter<>(s);
+    writer.write(r, EncoderFactory.get().directBinaryEncoder(baos, null));
+    baos.close();
+
+    // Check that the record was logged AND fully serialized.
+    if (AvroVersion.avro_1_8.orAfter()) {
+      // This was actually fixed in 1.8.1
+      assertThat(logMsg, is("Processing:{\"a1\": \"\\u0001\\u0002\\u0003\"}"));
+      assertThat(baos.toByteArray().length, is(4)); // length + 3 bytes data.
+    } else {
+      assertThat(logMsg, is("Processing:{\"a1\": {\"bytes\": \"\u0001\u0002\u0003\"}}"));
+      assertThat(baos.toByteArray().length, is(4)); // length + 3 bytes data.
+    }
+  }
 
   /** @see <a href="https://issues.apache.org/jira/browse/AVRO-2837">AVRO-2837</a> */
   @Test
