@@ -42,13 +42,14 @@ public class SimpleJiraTest {
     baos.close();
 
     // Check that the record was logged AND fully serialized.
-    if (AvroVersion.avro_1_8.orAfter()) {
+    assertThat(baos.toByteArray().length, is(4)); // length + 3 bytes data.
+    if (AvroVersion.avro_1_9.orAfter()) {
       // This was actually fixed in 1.8.1
       assertThat(logMsg, is("Processing:{\"a1\": \"\\u0001\\u0002\\u0003\"}"));
-      assertThat(baos.toByteArray().length, is(4)); // length + 3 bytes data.
+    } else if (AvroVersion.avro_1_8.orAfter()) {
+      assertThat(logMsg, is("Processing:{\"a1\": {\"bytes\": \"\\u0001\\u0002\\u0003\"}}"));
     } else {
       assertThat(logMsg, is("Processing:{\"a1\": {\"bytes\": \"\u0001\u0002\u0003\"}}"));
-      assertThat(baos.toByteArray().length, is(4)); // length + 3 bytes data.
     }
   }
 
@@ -83,36 +84,6 @@ public class SimpleJiraTest {
       assertThat(
           aCopy.getField("b").schema().getField("c").schema().getFullName(), is("default.c"));
     }
-  }
-
-  /** @see <a href="https://issues.apache.org/jira/browse/AVRO-2943">AVRO-2943</a> */
-  @Test
-  public void testAvro2943MapEquality() {
-    Schema schema =
-        SchemaBuilder.record("A")
-            .fields()
-            .name("a1")
-            .type()
-            .map()
-            .values()
-            .stringType()
-            .noDefault()
-            .endRecord();
-
-    GenericRecord record1 = new GenericData.Record(schema);
-    record1.put(0, new HashMap<CharSequence, String>());
-    ((Map<CharSequence, String>) record1.get(0)).put("id", "one");
-    GenericRecord record2 = new GenericData.Record(schema);
-    record2.put(0, new HashMap<CharSequence, String>());
-    ((Map<CharSequence, String>) record2.get(0)).put(new Utf8("id"), "one");
-
-    AvroRuntimeException ex =
-        assertThrows(
-            AvroRuntimeException.class,
-            () -> assertThat(GenericData.get().compare(record1, record2, schema), is(0)));
-    assertThat(ex.getMessage(), is("Can't compare maps!"));
-    assertThat(record1, not(record2));
-    assertThat(record2, not(record1));
   }
 
   /** @see <a href="https://issues.apache.org/jira/browse/AVRO-2830">AVRO-2830</a> */
@@ -195,5 +166,35 @@ public class SimpleJiraTest {
     int count = 0;
     for (int i = 0; i < serialized1.length; i++) count += serialized1[i] != serialized2[i] ? 1 : 0;
     assertThat(count, is(1));
+  }
+
+  /** @see <a href="https://issues.apache.org/jira/browse/AVRO-2943">AVRO-2943</a> */
+  @Test
+  public void testAvro2943MapEquality() {
+    Schema schema =
+        SchemaBuilder.record("A")
+            .fields()
+            .name("a1")
+            .type()
+            .map()
+            .values()
+            .stringType()
+            .noDefault()
+            .endRecord();
+
+    GenericRecord record1 = new GenericData.Record(schema);
+    record1.put(0, new HashMap<CharSequence, String>());
+    ((Map<CharSequence, String>) record1.get(0)).put("id", "one");
+    GenericRecord record2 = new GenericData.Record(schema);
+    record2.put(0, new HashMap<CharSequence, String>());
+    ((Map<CharSequence, String>) record2.get(0)).put(new Utf8("id"), "one");
+
+    AvroRuntimeException ex =
+        assertThrows(
+            AvroRuntimeException.class,
+            () -> assertThat(GenericData.get().compare(record1, record2, schema), is(0)));
+    assertThat(ex.getMessage(), is("Can't compare maps!"));
+    assertThat(record1, not(record2));
+    assertThat(record2, not(record1));
   }
 }
