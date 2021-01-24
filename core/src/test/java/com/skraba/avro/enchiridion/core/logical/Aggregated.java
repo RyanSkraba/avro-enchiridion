@@ -6,10 +6,12 @@ import org.junit.jupiter.api.Nested;
 public class Aggregated {
 
   @Nested
+  public class DateAndTimeTests extends com.skraba.avro.enchiridion.core.logical.DateAndTimeTests {}
+
+  @Nested
   public class DecimalPrecisionAndScaleTest
       extends com.skraba.avro.enchiridion.core.logical.DecimalPrecisionAndScaleTest {}
 
   @Nested
-  public class DecimalTest
-      extends com.skraba.avro.enchiridion.core.logical.DecimalPrecisionAndScaleTest {}
+  public class DecimalTest extends com.skraba.avro.enchiridion.core.logical.DecimalTest {}
 }

@@ -28,6 +28,10 @@
       <artifactId>avro</artifactId>
       <version>${avro.version}</version>
     </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
 
     <!-- Tests -->
     <dependency>

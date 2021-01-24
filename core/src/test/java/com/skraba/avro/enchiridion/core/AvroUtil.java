@@ -2,7 +2,11 @@ package com.skraba.avro.enchiridion.core;
 
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import play.api.libs.json.JsObject;
+import play.api.libs.json.Json;
 
 /**
  * Collector of helper methods.
@@ -12,17 +16,16 @@ import org.apache.avro.Schema;
  */
 public class AvroUtil {
 
-  public static ThreadLocal<SchemaApi> api = ThreadLocal.withInitial(SchemaApi::new);
+  public static ThreadLocal<ApiCompatibility> api = ThreadLocal.withInitial(ApiCompatibility::new);
 
   /** Get an instance that wraps some Avro SDK methods that have evolved between versions. */
-  public static SchemaApi api() {
+  public static ApiCompatibility api() {
     return api.get();
   }
 
   /** Print information about a Java BigDecimal. */
-  public static void pbd(BigDecimal bd) {
-    System.out.println(
-        "BigDecimal(" + bd.precision() + ":" + bd.scale() + ":" + bd.toString() + ")");
+  public static String pbd(BigDecimal bd) {
+    return "BigDecimal(" + bd.precision() + ":" + bd.scale() + ":" + bd.toString() + ")";
   }
 
   public static String jsonify(Object defaultVal) {
@@ -35,7 +38,7 @@ public class AvroUtil {
    * This class provides a little indirection to methods that may or may not exist in different
    * versions of the Avro Schema API.
    */
-  public static class SchemaApi {
+  public static class ApiCompatibility {
 
     /**
      * See {@link org.apache.avro.Schema#createRecord(java.lang.String, java.lang.String,
@@ -57,6 +60,80 @@ public class AvroUtil {
 
     public Schema parse(String jsonString) {
       return new Schema.Parser().parse(jsonString);
+    }
+
+    public Schema parse(JsObject json) {
+      return new Schema.Parser().parse(Json.stringify(json));
+    }
+
+    /**
+     * Adds {@link Conversion} classes to the given models, using reflection on their names.
+     *
+     * <p>This is roundabout, but useful so that different versions of Avro can reuse the same tests
+     * without enforcing a compile-time dependency on the conversion class. Unfortunately, there's
+     * been a bit of churn in the names of these classes since they were introduced in Avro 1.8.x.
+     *
+     * @param conversionClasses A list of class names to be instantiated and added to the models.
+     * @param models A list of models to add the conversions to.
+     * @return The first model in the list. If the list is empty or null, a new GenericData with the
+     *     given conversions.
+     */
+    public GenericData withConversions(String[] conversionClasses, GenericData... models) {
+      if (models == null || models.length == 0) models = new GenericData[] {new GenericData()};
+      for (String cnv : conversionClasses)
+        try {
+          for (GenericData mdl : models)
+            mdl.addLogicalTypeConversion((Conversion<?>) Class.forName(cnv).newInstance());
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+          // This shouldn't happen and is unrecoverable.
+          throw new RuntimeException(e);
+        }
+      return models[0];
+    }
+
+    /**
+     * Add the decimal conversions to the models.
+     *
+     * @param models A list of models to add the conversions to.
+     * @return The first model in the list. If the list is empty or null, a new GenericData with the
+     *     given conversions.
+     */
+    public GenericData withDecimalConversions(GenericData... models) {
+      return withConversions(
+          new String[] {"org.apache.avro.Conversions$DecimalConversion"}, models);
+    }
+
+    /**
+     * Add any date/time conversions to the models that use joda-time classes.
+     *
+     * @param models A list of models to add the conversions to.
+     * @return The first model in the list. If the list is empty or null, a new GenericData with the
+     *     given conversions.
+     */
+    public GenericData withJodaTimeConversions(GenericData... models) {
+      // This does nothing, since there are no longer these conversions in the system
+      throw new UnsupportedOperationException("No joda-time in " + AvroVersion.getInstalledAvro());
+    }
+
+    /**
+     * Add the decimal conversions to the models.
+     *
+     * @param models A list of models to add the conversions to.
+     * @return The first model in the list. If the list is empty or null, a new GenericData with the
+     *     given conversions.
+     */
+    public GenericData withJavaTimeConversions(GenericData... models) {
+      return withConversions(
+          new String[] {
+            "org.apache.avro.data.TimeConversions$DateConversion",
+            "org.apache.avro.data.TimeConversions$LocalTimestampMicrosConversion",
+            "org.apache.avro.data.TimeConversions$LocalTimestampMillisConversion",
+            "org.apache.avro.data.TimeConversions$TimeMicrosConversion",
+            "org.apache.avro.data.TimeConversions$TimeMillisConversion",
+            "org.apache.avro.data.TimeConversions$TimestampMicrosConversion",
+            "org.apache.avro.data.TimeConversions$TimestampMillisConversion"
+          },
+          models);
     }
   }
 }

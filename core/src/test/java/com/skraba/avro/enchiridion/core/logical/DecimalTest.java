@@ -1,15 +1,21 @@
 package com.skraba.avro.enchiridion.core.logical;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.skraba.avro.enchiridion.core.AvroUtil;
+import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.core.file.AvroFileTest;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Conversions;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
@@ -62,6 +68,48 @@ public class DecimalTest {
     }
   }
 
+  /** Working with a decimal conversion and a logical type. */
+  @Test
+  public void testDecimalConversion() {
+    LogicalTypes.Decimal decimaltype = LogicalTypes.decimal(5, 4);
+    Conversions.DecimalConversion cnv = new org.apache.avro.Conversions.DecimalConversion();
+
+    // A decimal with a large scale and precision.
+    BigDecimal pi = BigDecimal.valueOf(Math.PI);
+    assertThat(pi.scale(), is(15));
+    assertThat(pi.precision(), is(16));
+
+    // The scale can't be stored automatically without data loss.
+    AvroTypeException t =
+        assertThrows(AvroTypeException.class, () -> cnv.toBytes(pi, null, decimaltype));
+    if (AvroVersion.avro_1_10.orAfter())
+      assertThat(
+          t.getMessage(), is("Cannot encode decimal with scale 15 as scale 4 without rounding"));
+    else assertThat(t.getMessage(), is("Cannot encode decimal with scale 15 as scale 4"));
+
+    // Round it down to the appropriate scale and convert it to bytes.
+    BigDecimal smallPi = pi.setScale(4, RoundingMode.HALF_UP);
+    ByteBuffer buffer = cnv.toBytes(smallPi, null, decimaltype);
+    assertThat(buffer.position(), is(0));
+    assertThat(buffer.remaining(), is(2));
+
+    BigDecimal roundTrip = cnv.fromBytes(buffer, null, decimaltype);
+    assertThat(AvroUtil.pbd(roundTrip), is("BigDecimal(5:4:3.1416)"));
+
+    if (AvroVersion.avro_1_9.orAfter()) {
+      assertThat(buffer.position(), is(0));
+      assertThat(buffer.remaining(), is(2));
+    } else {
+      assertThat(buffer.position(), is(2));
+      assertThat(buffer.remaining(), is(0));
+      // AVRO-2592: the rewind is required.
+      buffer.rewind();
+    }
+
+    BigDecimal reread = cnv.fromBytes(buffer, null, decimaltype);
+    assertThat(AvroUtil.pbd(reread), is("BigDecimal(5:4:3.1416)"));
+  }
+
   @Test
   public void testAddingConversionToGenericDataForFileWrite(@TempDir Path tmpDir)
       throws IOException {
@@ -81,19 +129,22 @@ public class DecimalTest {
                 .endUnion()
                 .noDefault()
                 .endRecord());
-    r.put("value", BigDecimal.valueOf(10.0));
+    r.put("value", BigDecimal.valueOf(1000L, 2));
 
     // This fails because the GenericData model does not know the logical type by default.
-    assertThrows(
-        org.apache.avro.file.DataFileWriter.AppendWriteException.class,
-        () -> {
-          DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(r.getSchema());
-          try (DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter)) {
-            File testFile = tmpDir.resolve("should_fail.avro").toFile();
-            dataFileWriter.create(r.getSchema(), testFile);
-            dataFileWriter.append(r);
-          }
-        });
+    DataFileWriter.AppendWriteException t =
+        assertThrows(
+            DataFileWriter.AppendWriteException.class,
+            () -> {
+              DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(r.getSchema());
+              try (DataFileWriter<GenericRecord> dataFileWriter =
+                  new DataFileWriter<>(datumWriter)) {
+                File testFile = tmpDir.resolve("should_fail.avro").toFile();
+                dataFileWriter.create(r.getSchema(), testFile);
+                dataFileWriter.append(r);
+              }
+            });
+    assertThat(t.getMessage(), endsWith("Unknown datum type java.math.BigDecimal: 10.00"));
 
     // So create and use a model that knows about this logical type conversion.
     GenericData model = new GenericData();

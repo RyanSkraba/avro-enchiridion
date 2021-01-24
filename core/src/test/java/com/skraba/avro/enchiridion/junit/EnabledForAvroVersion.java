@@ -23,7 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public @interface EnabledForAvroVersion {
 
   /** The first version of Avro where this test should start being enabled. */
-  AvroVersion startingFrom();
+  AvroVersion startingFrom() default AvroVersion.avro_1_7;
 
   /** Why this test is disabled for some versions. */
   String reason();

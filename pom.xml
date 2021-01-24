@@ -23,6 +23,7 @@
     <!-- Dependencies -->
     <avro.version>1.10.1</avro.version>
     <hamcrest.version>2.2</hamcrest.version>
+    <joda.version>2.10.9</joda.version>
     <junit5.version>5.7.0</junit5.version>
     <play.json.version>2.9.2</play.json.version>
     <scala.minor.version>2.12</scala.minor.version>
@@ -305,6 +306,13 @@
         <version>${avro.version}</version>
       </dependency>
 
+      <!-- Only used in Avro 1.8 and 1.9 for pre-JDK8 date/time conversions -->
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda.version}</version>
+      </dependency>
+
       <!-- Scala -->
       <dependency>
         <groupId>org.scala-lang</groupId>
@@ -354,7 +362,6 @@
         <version>${slf4j.version}</version>
         <scope>test</scope>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -391,10 +398,10 @@
   <modules>
     <module>avro-resources</module>
     <module>core</module>
-    <module>core17x</module>
-    <module>core18x</module>
-    <module>core19x</module>
     <module>core-master-snapshot</module>
+    <module>core19x</module>
+    <module>core18x</module>
+    <module>core17x</module>
     <module>ipc</module>
     <module>plugin</module>
   </modules>
