@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.io.FileMatchers.aFileNamed;
 import static org.hamcrest.io.FileMatchers.aFileWithSize;
 import static org.hamcrest.io.FileMatchers.anExistingFile;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
@@ -13,7 +14,9 @@ import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
+import java.util.NoSuchElementException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.file.DataFileReader;
@@ -22,6 +25,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.avro.util.RandomData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -82,6 +86,57 @@ public class AvroFileTest {
 
     Integer datum = fromFile(f, GenericData.get());
     assertThat(datum, is(1_234_567));
+  }
+
+  @Test
+  public void testAppendToFile(@TempDir Path tmpDir) throws IOException {
+    Schema schema = AvroUtil.api().parse(AvroTestResources.SimpleRecord());
+    File f = tmpDir.resolve("simple.avro").toFile();
+
+    GenericRecord one = new GenericRecordBuilder(schema).set("id", 1L).set("name", "one").build();
+    GenericRecord two = new GenericRecordBuilder(schema).set("id", 2L).set("name", "two").build();
+    GenericRecord three =
+        new GenericRecordBuilder(schema).set("id", 3L).set("name", "three").build();
+
+    // Write a single record to the file
+    toFile(f, GenericData.get(), schema, one);
+    assertThat(f, anExistingFile());
+    assertThat(f, aFileNamed(equalToIgnoringCase("simple.avro")));
+    assertThat(f, aFileWithSize(251L));
+
+    // Append the new records.
+    try (DataFileWriter<GenericRecord> writer =
+        new DataFileWriter<>(new GenericDatumWriter<>(schema, GenericData.get()))) {
+      writer.appendTo(f);
+      writer.append(two);
+      writer.append(three);
+    }
+    assertThat(f, aFileWithSize(281L));
+
+    // The two records are in the file.
+    try (DataFileReader<GenericRecord> reader =
+        new DataFileReader<>(f, new GenericDatumReader<>(null, null, GenericData.get()))) {
+      assertThat(reader.next(null), is(one));
+      assertThat(reader.next(null), is(two));
+      assertThat(reader.next(null), is(three));
+      assertThrows(NoSuchElementException.class, reader::next);
+    }
+
+    // Internally, the original write and the append are each stored in their own block.
+    try (DataFileReader<GenericRecord> reader =
+        new DataFileReader<>(f, new GenericDatumReader<>(null, null, GenericData.get()))) {
+      // The original block contains one record.
+      ByteBuffer b = reader.nextBlock();
+      assertThat(b.position(), is(0));
+      assertThat(b.remaining(), is(5));
+      assertThat(reader.getBlockCount(), is(1L));
+      // The second block contains the two appeneded records.
+      b = reader.nextBlock();
+      assertThat(b.position(), is(0));
+      assertThat(b.remaining(), is(12));
+      assertThat(reader.getBlockCount(), is(2L));
+      assertThrows(NoSuchElementException.class, reader::nextBlock);
+    }
   }
 
   @EnabledForAvroVersion(

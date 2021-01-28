@@ -22,6 +22,7 @@ Java Topics
 | Read/write one datum to a ByteBuffer | [SerializeToBytesTest]
 | Read/write one datum to an Avro JSON String | [SerializeToJsonTest]  
 | Read from/write to an Avro file | [AvroFileTest]
+| Append a record to an Avro file | [AvroFileTest]
 
 [SerializeToBytesTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToBytesTest.java
 [SerializeToJsonTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToJsonTest.java
