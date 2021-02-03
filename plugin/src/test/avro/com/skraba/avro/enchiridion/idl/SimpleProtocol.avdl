@@ -43,7 +43,6 @@ protocol SimpleProtocol {
     map<Job> jobs;
   }
 
-
   record RecordWithUnion {
     union { null, string } optionalString;
   }

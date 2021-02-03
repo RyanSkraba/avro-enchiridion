@@ -1,0 +1,16 @@
+@namespace("com.skraba.avro.enchiridion.idl")
+/**
+ * What sort of custom annotations can we use?
+ */
+protocol _CustomAnnotation {
+
+  record CustomAnnotation {
+    @MyAnnotation("one")
+    @MyAnnotationArray(["two", "three"])
+    string
+    @MyAnnotation("three")
+    @MyAnnotationArray(["four", "five"])
+    a1;
+  }
+
+}
