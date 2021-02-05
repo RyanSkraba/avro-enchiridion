@@ -51,7 +51,7 @@ public class EvolveAddAFieldTest {
     SchemaCompatibility.SchemaPairCompatibility compatibility =
         SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V2, SIMPLE_V1);
     assertThat(compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.COMPATIBLE));
-    if (AvroVersion.avro_1_9.orAfter()) {
+    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
       assertThat(
           compatibility.getResult(),
           is(SchemaCompatibility.SchemaCompatibilityResult.compatible()));
@@ -82,11 +82,10 @@ public class EvolveAddAFieldTest {
 
   @Test
   public void testAddAFieldToARecordWithoutADefault() {
-    // TODO: Why doesn't this work in Avro 1.8?
-    if (AvroVersion.avro_1_9.orAfter()) {
-      // Check schema compatibility
-      SchemaCompatibility.SchemaPairCompatibility check =
-          SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V2_MISSING_DEFAULT, SIMPLE_V1);
+    // SchemaCompatibility.getResult exists in Avro 1.9
+    SchemaCompatibility.SchemaPairCompatibility check =
+        SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V2_MISSING_DEFAULT, SIMPLE_V1);
+    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
       assertThat(
           check.getResult().getCompatibility(),
           is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
@@ -95,6 +94,31 @@ public class EvolveAddAFieldTest {
       assertThat(
           check.getResult().getIncompatibilities().get(0).getType(),
           is(SchemaCompatibility.SchemaIncompatibilityType.READER_FIELD_MISSING_DEFAULT_VALUE));
+    } else {
+      assertThat(check.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
     }
+  }
+
+  @Test
+  public void testAddANullableFieldToARecordWithoutADefault() {
+    Schema v1 = SchemaBuilder.record("A").fields().requiredString("a1").endRecord();
+    Schema v2 =
+        SchemaBuilder.record("A")
+            .fields()
+            .requiredString("a1")
+            .optionalString("a2")
+            .name("a3")
+            .type()
+            .unionOf()
+            .nullType()
+            .and()
+            .stringType()
+            .endUnion()
+            .noDefault()
+            .endRecord();
+
+    SchemaCompatibility.SchemaPairCompatibility check =
+        SchemaCompatibility.checkReaderWriterCompatibility(v2, v1);
+    assertThat(check.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
   }
 }

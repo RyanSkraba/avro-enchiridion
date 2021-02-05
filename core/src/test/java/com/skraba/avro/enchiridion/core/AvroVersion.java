@@ -53,12 +53,28 @@ public enum AvroVersion {
   /**
    * @return true if the currently used version of Avro is the same as or after the given version.
    */
-  public boolean orAfter() {
+  public boolean orAfter(String reason) {
     return getInstalledAvro().compareTo(this) >= 0;
   }
 
+  /**
+   * @return true if the currently used version of Avro is the same as or after the given version.
+   * @deprecated provide a reason for using a specific Avro version
+   */
+  public boolean orAfter() {
+    return orAfter("missing reason");
+  }
+
   /** @return true if the currently used version of Avro before the given version. */
-  public boolean before() {
+  public boolean before(String reason) {
     return getInstalledAvro().compareTo(this) < 0;
+  }
+
+  /**
+   * @return true if the currently used version of Avro before the given version.
+   * @deprecated provide a reason for using a specific Avro version
+   */
+  public boolean before() {
+    return before("missing reason");
   }
 }
