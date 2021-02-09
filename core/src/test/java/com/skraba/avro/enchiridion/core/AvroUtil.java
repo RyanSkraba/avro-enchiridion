@@ -2,6 +2,7 @@ package com.skraba.avro.enchiridion.core;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -47,6 +48,20 @@ public class AvroUtil {
     public Schema createRecord(
         String name, String namespace, String doc, boolean isError, List<Schema.Field> fields) {
       return Schema.createRecord(name, namespace, doc, isError, fields);
+    }
+
+    public Schema.Field createField(Schema.Field field, Schema schema) {
+      return new Schema.Field(field, schema);
+    }
+
+    protected Schema.Field createFieldOld(Schema.Field field, Schema schema) {
+      // A constructor was added to do this copy automatically in Avro 1.9.x
+      Schema.Field f =
+          createField(field.name(), schema, field.doc(), field.defaultVal(), field.order());
+      for (Map.Entry<? extends String, ?> e : f.getObjectProps().entrySet())
+        f.addProp(e.getKey(), e.getValue());
+      for (String alias : field.aliases()) f.addAlias(alias);
+      return f;
     }
 
     public Schema.Field createField(String name, Schema schema, String doc, Object defaultValue) {

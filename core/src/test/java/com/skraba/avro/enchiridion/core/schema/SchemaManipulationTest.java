@@ -1,11 +1,11 @@
 package com.skraba.avro.enchiridion.core.schema;
 
+import static com.skraba.avro.enchiridion.core.AvroUtil.api;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
 import org.junit.jupiter.api.Test;
 
 /** Changing a schema programmatically can be complicated in Avro. */
@@ -27,7 +28,7 @@ public class SchemaManipulationTest {
   public void testAddAFieldToARecord() {
 
     // We have an original record.
-    Schema schema = AvroUtil.api().parse(AvroTestResources.SimpleRecord());
+    Schema schema = api().parse(AvroTestResources.SimpleRecord());
     List<Schema.Field> fields = schema.getFields();
 
     // This is the field we want to add into the record.
@@ -96,5 +97,37 @@ public class SchemaManipulationTest {
         modifiedSchema.addProp(kv.getKey(), kv.getValue());
 
     assertThat(modifiedSchema.getFields(), hasSize(3));
+  }
+
+  /** Given two records, merge all of the fields into one record. */
+  @Test
+  @EnabledForAvroVersion(
+      startingFrom = AvroVersion.avro_1_8,
+      reason = "Avro API requires Jackson classes to create fields.")
+  public void testFlatMergeTwoSchemas() {
+    Schema recordA =
+        SchemaBuilder.builder()
+            .record("A")
+            .fields()
+            .requiredLong("a1")
+            .requiredLong("a2")
+            .requiredLong("a3")
+            .endRecord();
+    Schema recordB =
+        SchemaBuilder.builder()
+            .record("B")
+            .fields()
+            .requiredLong("b1")
+            .requiredLong("b2")
+            .endRecord();
+
+    // Merge by copying fields to a new list and using that to construct the new record.
+    List<Schema.Field> merged = new ArrayList<>();
+    for (Schema.Field f : recordA.getFields()) merged.add(api().createField(f, f.schema()));
+    for (Schema.Field f : recordB.getFields()) merged.add(api().createField(f, f.schema()));
+    Schema recordAB = Schema.createRecord("AB", null, null, false);
+    recordAB.setFields(merged);
+
+    assertThat(recordAB.getFields(), hasSize(5));
   }
 }
