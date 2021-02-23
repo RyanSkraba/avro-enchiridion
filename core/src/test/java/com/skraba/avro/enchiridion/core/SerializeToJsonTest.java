@@ -11,6 +11,7 @@ import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
@@ -52,7 +53,7 @@ public class SerializeToJsonTest {
   public void testRoundTripSerializeIntegerToJson() {
     Schema schema = SchemaBuilder.builder().intType();
 
-    // From an int to a byte array.
+    // From an int to a String.
     String serialized = toJson(null, schema, 1_234_567);
     assertThat(serialized.length(), is(7));
 
@@ -62,6 +63,28 @@ public class SerializeToJsonTest {
     assertThat(roundTripJson(GenericData.get(), schema, 1), is(1));
     assertThat(roundTripJson(GenericData.get(), schema, 0), is(0));
     assertThat(roundTripJson(GenericData.get(), schema, -1), is(-1));
+  }
+
+  @Test
+  public void testRoundTripSerializeFixedToJson() {
+    Schema schema = SchemaBuilder.builder().fixed("f4").size(4);
+    GenericFixed f4Datum = new GenericData.Fixed(schema, new byte[] {0x10, 0x20, 0x30, 0x40});
+
+    // From an fixed datum to a String.
+    String serialized = toJson(null, schema, f4Datum);
+    assertThat(serialized, is("\"\\u0010 0@\""));
+    assertThat(serialized.length(), is(11));
+
+    // And from that String to a datum.
+    GenericFixed datum = fromJson(GenericData.get(), schema, serialized);
+    assertThat(datum, is(f4Datum));
+
+    // There are other valid JSON representations of that data.
+    assertThat(
+        fromJson(GenericData.get(), schema, "\"\\u0010\\u0020\\u0030\\u0040\""), is(f4Datum));
+    assertThat(fromJson(GenericData.get(), schema, "\"\\u0010 \\u0030\\u0040\""), is(f4Datum));
+    assertThat(fromJson(GenericData.get(), schema, "\"\\u0010\\u00200\\u0040\""), is(f4Datum));
+    assertThat(fromJson(GenericData.get(), schema, "\"\\u0010\\u0020\\u0030@\""), is(f4Datum));
   }
 
   @Test
