@@ -76,6 +76,34 @@ object AvroLogicalTypes {
     )
   )
 
+  lazy val DateLogicalTypeOptionalRecord: JsObject = Json.obj(
+    "type" -> "record",
+    "name" -> "DateLogicalTypeOptionalRecord",
+    "namespace" -> "com.skraba.avro.enchiridion.simple",
+    "fields" -> Json.arr(
+      Json.obj("name" -> "name", "type" -> "string"),
+      Json.obj(
+        "name" -> "datetime_ms",
+        "type" -> Json.arr("null", TimestampMillis)
+      ),
+      Json.obj(
+        "name" -> "datetime_us",
+        "type" -> Json.arr("null", TimestampMicros)
+      ),
+      Json.obj(
+        "name" -> "local_datetime_ms",
+        "type" -> Json.arr("null", LocalTimestampMillis)
+      ),
+      Json.obj(
+        "name" -> "local_datetime_us",
+        "type" -> Json.arr("null", LocalTimestampMicros)
+      ),
+      Json.obj("name" -> "date", "type" -> Json.arr("null", Date)),
+      Json.obj("name" -> "time_ms", "type" -> Json.arr("null", TimeMillis)),
+      Json.obj("name" -> "time_us", "type" -> Json.arr("null", TimeMicros))
+    )
+  )
+
   def decimalBytes(precision: Object, scale: Object): String =
     s"""{
        |  "type":"bytes",

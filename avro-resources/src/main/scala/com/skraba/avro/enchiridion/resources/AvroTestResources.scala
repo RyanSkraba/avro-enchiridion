@@ -1,6 +1,9 @@
 package com.skraba.avro.enchiridion.resources
 
-import com.skraba.avro.enchiridion.resources.AvroLogicalTypes.DateLogicalTypeRecord
+import com.skraba.avro.enchiridion.resources.AvroLogicalTypes.{
+  DateLogicalTypeOptionalRecord,
+  DateLogicalTypeRecord
+}
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 import scala.reflect.io.{Directory, File, Path}
@@ -319,6 +322,13 @@ object AvroTestResources {
       .resolve("DateLogicalTypeRecord.avsc")
       .toFile
       .writeAll(Json.prettyPrint(DateLogicalTypeRecord))
+
+    Base
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
+      .createDirectory()
+      .resolve("DateLogicalTypeOptionalRecord.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(DateLogicalTypeOptionalRecord))
 
     // Rewrite this source itself with prettified JSON.
     val schemasToPrettify: Map[String, String] = Map(
