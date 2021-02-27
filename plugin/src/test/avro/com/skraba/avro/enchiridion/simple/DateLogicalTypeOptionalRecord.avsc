@@ -13,10 +13,10 @@
     } ]
   }, {
     "name" : "datetime_us",
-    "type" : {
+    "type" : [ "null", {
       "type" : "long",
       "logicalType" : "timestamp-micros"
-    }
+    } ]
   }, {
     "name" : "local_datetime_ms",
     "type" : [ "null", {
