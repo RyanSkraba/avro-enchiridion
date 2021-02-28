@@ -1,14 +1,25 @@
 package com.skraba.avro.enchiridion.core18x;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import com.skraba.avro.enchiridion.core.Aggregated;
 import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.junit.jupiter.api.Test;
 
 public class Aggregated18Test extends Aggregated {
   static {
     AvroUtil.api = ThreadLocal.withInitial(ApiCompatibility18x::new);
+  }
+
+  @Test
+  public void testAvroVersion() {
+    assertThat(AvroVersion.avro_1_9.before("Next major version"), is(true));
+    assertThat(AvroVersion.avro_1_8.orAfter("This major version"), is(true));
+    assertThat(AvroVersion.getInstalledAvro(), is(AvroVersion.avro_1_8));
   }
 
   /** Some of the methods tested need to be adapted to Avro 1.8 */

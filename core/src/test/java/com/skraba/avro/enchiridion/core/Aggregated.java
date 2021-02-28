@@ -11,6 +11,13 @@ public class Aggregated {
     System.out.println("==========");
   }
 
+  //  @Test
+  //  public void testAvroVersion() {
+  //    assertThat(AvroVersion.avro_1_11.before("Next major version"), is(true));
+  //    assertThat(AvroVersion.avro_1_10.orAfter("This major version"), is(true));
+  //    assertThat(AvroVersion.getInstalledAvro(), is(AvroVersion.avro_1_10));
+  //  }
+
   @Nested
   public class GenericDataTest extends com.skraba.avro.enchiridion.core.GenericDataTest {}
 
