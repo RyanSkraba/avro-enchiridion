@@ -285,9 +285,21 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- All of the artifacts published by the Apache Avro project -->
       <dependency>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-archetypes-parent</artifactId>
+        <version>${avro.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-codegen-test</artifactId>
         <version>${avro.version}</version>
       </dependency>
       <dependency>
@@ -297,13 +309,97 @@
       </dependency>
       <dependency>
         <groupId>org.apache.avro</groupId>
+        <artifactId>avro-grpc</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-integration-test</artifactId>
+        <version>${avro.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
         <artifactId>avro-ipc</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-ipc-jetty</artifactId>
         <version>${avro.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro-ipc-netty</artifactId>
         <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-parent</artifactId>
+        <version>${avro.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-mapred</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-perf</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-protobuf</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-service-archetype</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-test-custom-conversions</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-thrift</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-tools</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>trevni-avro</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>trevni-core</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>trevni-doc</artifactId>
+        <version>${avro.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>trevni-java</artifactId>
+        <version>${avro.version}</version>
+        <type>pom</type>
       </dependency>
 
       <!-- Only used in Avro 1.8 and 1.9 for pre-JDK8 date/time conversions -->
@@ -398,6 +494,7 @@
     <module>core19x</module>
     <module>core18x</module>
     <module>core17x</module>
+    <module>download-all</module>
     <module>ipc</module>
     <module>plugin</module>
   </modules>
