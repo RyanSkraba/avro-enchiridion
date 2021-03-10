@@ -381,6 +381,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.avro</groupId>
+        <artifactId>avro-tools</artifactId>
+        <version>${avro.version}</version>
+        <classifier>nodeps</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
         <artifactId>trevni-avro</artifactId>
         <version>${avro.version}</version>
       </dependency>
