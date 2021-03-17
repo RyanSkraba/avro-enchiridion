@@ -21,7 +21,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
 
     <!-- Dependencies -->
-    <avro.version>1.10.1</avro.version>
+    <avro.version>1.10.2</avro.version>
     <hamcrest.version>2.2</hamcrest.version>
     <joda.version>2.10.9</joda.version>
     <junit5.version>5.7.0</junit5.version>
