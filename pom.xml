@@ -468,7 +468,11 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- Nothing is assumed for subprojects. -->
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${avro.version}</version>
+    </dependency>
 
     <!-- Tests -->
     <dependency>
