@@ -1,25 +1,20 @@
 package com.skraba.avro.enchiridion.plugin;
 
-import com.skraba.avro.enchiridion.idl.Avro2956ReservedKeywordWrapper;
-import com.skraba.avro.enchiridion.iddl.goto$.case$;
-import com.skraba.avro.enchiridion.idl.break$.static$;
-
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.specific.SpecificData;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-
 import static com.skraba.avro.enchiridion.plugin.SimpleRecordTest.fromBytes;
 import static com.skraba.avro.enchiridion.plugin.SimpleRecordTest.toBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.skraba.avro.enchiridion.iddl.goto$.case$;
+import com.skraba.avro.enchiridion.idl.Avro2956ReservedKeywordWrapper;
+import com.skraba.avro.enchiridion.idl.break$.static$;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.specific.SpecificData;
+import org.junit.jupiter.api.Test;
 
 /** Unit tests related to AVRO-2956 */
 public class Avro2956ReservedKeywordTest {

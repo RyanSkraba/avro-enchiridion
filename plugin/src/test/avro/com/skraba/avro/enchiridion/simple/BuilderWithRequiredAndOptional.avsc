@@ -1,0 +1,28 @@
+{
+  "type" : "record",
+  "name" : "BuilderWithRequiredAndOptional",
+  "namespace" : "com.skraba.avro.enchiridion.simple",
+  "doc" : "A record with a variety of defaults and optional fields",
+  "fields" : [ {
+    "name" : "required",
+    "type" : "string",
+    "default" : ""
+  }, {
+    "name" : "optional",
+    "type" : ["string", "null"],
+    "default" : ""
+  }, {
+    "name" : "nullable",
+    "type" : ["null", "string"],
+    "default" : null
+  }, {
+    "name" : "required_no_default",
+    "type" : "string"
+  }, {
+    "name" : "optional_no_default",
+    "type" : ["string", "null"]
+  }, {
+    "name" : "nullable_no_default",
+    "type" : ["null", "string"]
+  } ]
+}
