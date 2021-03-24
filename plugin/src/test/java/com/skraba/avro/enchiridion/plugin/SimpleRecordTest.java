@@ -8,12 +8,12 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.simple.SimpleRecord;
-import com.skraba.avro.enchiridion.simple.case$;
-import com.skraba.avro.enchiridion.simple.static$;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import org.apache.avro.AvroMissingFieldException;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumReader;
@@ -70,7 +70,7 @@ public class SimpleRecordTest {
   }
 
   @Test
-  public void testSimpleRecordConstructorCloneViaBytes() {
+  public void testSimpleRecordCloneViaBytes() {
     SimpleRecord clone =
         fromBytes(
             SIMPLE.getSpecificData(),
@@ -81,7 +81,7 @@ public class SimpleRecordTest {
   }
 
   @Test
-  public void testSimpleRecordConstructorCloneViaMessage() throws IOException {
+  public void testSimpleRecordFactoryByteBufferClone() throws IOException {
     ByteBuffer bb = SIMPLE.toByteBuffer();
     bb.rewind();
 
@@ -91,32 +91,28 @@ public class SimpleRecordTest {
   }
 
   @Test
-  public void testReservedKeywordNames() {
-    case$ inner = new case$();
-    assertThat(inner, instanceOf(GenericRecord.class));
-    assertThat(inner.default$, is(0L));
+  public void testSimpleRecordBuilder() {
+    SimpleRecord sr = SimpleRecord.newBuilder().setId(123L).setName("abc").build();
+    assertThat(sr.id, is(123L));
+    assertThat(sr.name, is("abc"));
 
-    static$ wrapper = new static$();
-    assertThat(wrapper, instanceOf(GenericRecord.class));
-    assertThat(wrapper.switch$, nullValue());
+    SimpleRecord clone =
+        fromBytes(
+            sr.getSpecificData(),
+            sr.getSchema(),
+            toBytes(sr.getSpecificData(), sr.getSchema(), sr));
+    assertThat(clone, is(sr));
+  }
 
-    wrapper.setSwitch$(inner);
-
-    // This is the bug behaviour.
+  @Test
+  public void testSimpleRecordBuilderMissingRequired() {
+    // The name is a required field.
     assertThrows(
-        ClassCastException.class,
-        () -> {
-          assertThat(
-              fromBytes(
-                  wrapper.getSpecificData(),
-                  wrapper.getSchema(),
-                  toBytes(wrapper.getSpecificData(), wrapper.getSchema(), wrapper)),
-              equalTo(wrapper));
+        AvroMissingFieldException.class, () -> SimpleRecord.newBuilder().setId(123L).build());
 
-          byte[] bytes = toBytes(wrapper.getSpecificData(), wrapper.getSchema(), wrapper);
-          assertThat(bytes.length, is(1));
-          static$ cloned = fromBytes(wrapper.getSpecificData(), wrapper.getSchema(), bytes);
-          assertThat(cloned, equalTo(wrapper));
-        });
+    // Null is not a permitted value
+    assertThrows(
+        AvroRuntimeException.class,
+        () -> SimpleRecord.newBuilder().setId(123L).setName(null).build());
   }
 }
