@@ -6,12 +6,19 @@
  */
 protocol Avro2956ReservedKeyword {
 
-  /* Java reserves the keyword "case". */
+  /* Java reserves the keyword "goto", "case" and "default". */
+  @namespace("com.skraba.avro.enchiridion.iddl.goto")
   record case {
-    string value;
+    long default;
+  }
+
+  /* Java reserves the keyword "break", "switch" and "static". */
+  @namespace("com.skraba.avro.enchiridion.idl.break")
+  record static {
+    com.skraba.avro.enchiridion.iddl.goto.case switch;
   }
 
   record Avro2956ReservedKeywordWrapper {
-    case inner;
+    com.skraba.avro.enchiridion.iddl.goto.case inner;
   }
 }
