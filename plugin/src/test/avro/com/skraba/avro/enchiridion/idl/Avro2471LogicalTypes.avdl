@@ -4,7 +4,7 @@
  *
  * https://issues.apache.org/jira/browse/AVRO-2471
  */
-protocol Avro2471LogicalTypesUnion {
+protocol Avro2471LogicalTypes {
 
   /**
    * A record with a required timestamp-ms logical type.
@@ -48,4 +48,9 @@ protocol Avro2471LogicalTypesUnion {
     @logicalType("timestamp-ms") long timeMs = 0;
     union { null, timestamp_ms } timeMsOpt = null;
   }
+
+  /**
+   * Echo the request.
+   */
+  TimestampAll echo(TimestampAll in);
 }
