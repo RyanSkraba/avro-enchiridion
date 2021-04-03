@@ -39,8 +39,8 @@ public class LogicalTypesSpecificRecordTest {
     assertThat(DateLogicalTypeRecord.fromByteBuffer(bb), is(record));
   }
 
-  // This only works in 1.10.2-SNAPSHOT
-  // @Test
+  // This only works in 1.10.2
+  @Test
   public void testDateLogicalTypeOptionalRecord() throws IOException {
     // A record with one of every date or time logical type, but nullable.
     DateLogicalTypeOptionalRecord record = new DateLogicalTypeOptionalRecord();
@@ -56,6 +56,6 @@ public class LogicalTypesSpecificRecordTest {
     record.setTimeUs(LocalTime.ofNanoOfDay(0));
 
     ByteBuffer bb = record.toByteBuffer();
-    assertThat(bb.remaining(), is(28));
+    assertThat(bb.remaining(), is(29));
   }
 }
