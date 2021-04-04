@@ -4,23 +4,7 @@
  *
  * https://issues.apache.org/jira/browse/AVRO-2471
  */
-protocol Avro2471LogicalTypes {
-
-  /**
-   * A record with a required timestamp-ms logical type.
-   */
-  record TimestampMillisRequired {
-    string id = "ID";
-    timestamp_ms ts = 0;
-  }
-
-  /**
-   * A record with an optional timestamp-ms logical type.
-   */
-  record TimestampMillisOptional {
-    string id = "ID";
-    union { null, timestamp_ms } ts = null;
-  }
+protocol LogicalTypesProtocol {
 
   /**
    * A record with a required timestamp-micros logical type.
@@ -39,13 +23,40 @@ protocol Avro2471LogicalTypes {
   }
 
   /**
+   * A record with a required timestamp-ms logical type.
+   */
+  record TimestampMillisRequired {
+    string id = "ID";
+    timestamp_ms ts = 0;
+  }
+
+  /**
+   * A record with an optional timestamp-ms logical type.
+   */
+  record TimestampMillisOptional {
+    string id = "ID";
+    union { null, timestamp_ms } ts = null;
+  }
+
+  /**
+   * A record with timestamp-micros logical types in complex types.
+   */
+  record TimestampMicrosComplex {
+    string id = "ID";
+    map<@logicalType("timestamp-micros") long> tsUsMap;
+    map<union { null, @logicalType("timestamp-micros") long }> tsUsMapOpt;
+    array<@logicalType("timestamp-micros") long> tsUsList;
+    array<union { null, @logicalType("timestamp-micros") long }> tsUsListOpt;
+  }
+
+  /**
    * A record with required and optional timestamp millis/micros types.
    */
   record TimestampAll {
     string id = "ID";
     @logicalType("timestamp-micros") long timeUs = 0;
     union { null, @logicalType("timestamp-micros") long } timeUsOpt = null;
-    @logicalType("timestamp-ms") long timeMs = 0;
+    @logicalType("timestamp-millis") long timeMs = 0;
     union { null, timestamp_ms } timeMsOpt = null;
   }
 
