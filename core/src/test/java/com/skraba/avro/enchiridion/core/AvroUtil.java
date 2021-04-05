@@ -35,6 +35,11 @@ public class AvroUtil {
         : String.valueOf(defaultVal);
   }
 
+  /** @return the input string with all single quotes replaced by double quotes */
+  public static String qqify(String in) {
+    return in.replace('\'', '"');
+  }
+
   /**
    * This class provides a little indirection to methods that may or may not exist in different
    * versions of the Avro Schema API.
