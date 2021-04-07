@@ -1,12 +1,15 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -143,6 +146,15 @@ public class BasicTest {
   }
 
   @Test
+  public void testBinaryIncompatible() {
+    AvroTypeException ex =
+        assertThrows(
+            AvroTypeException.class,
+            () -> evolveUsingBinarySerialization(RECORD_V1, SIMPLE_V1, SIMPLE_V2_MISSING_DEFAULT));
+    assertThat(ex.getMessage(), containsString("missing required field rating"));
+  }
+
+  @Test
   public void testJsonEvolution() {
     IndexedRecord evolved = evolveUsingJsonSerialization(RECORD_V1, SIMPLE_V1, SIMPLE_V2);
     assertThat(
@@ -153,5 +165,14 @@ public class BasicTest {
                 .set("name", "one")
                 .set("rating", 2.5f)
                 .build()));
+  }
+
+  @Test
+  public void testJsonIncompatible() {
+    AvroTypeException ex =
+        assertThrows(
+            AvroTypeException.class,
+            () -> evolveUsingJsonSerialization(RECORD_V1, SIMPLE_V1, SIMPLE_V2_MISSING_DEFAULT));
+    assertThat(ex.getMessage(), containsString("missing required field rating"));
   }
 }
