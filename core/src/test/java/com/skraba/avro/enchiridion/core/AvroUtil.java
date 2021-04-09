@@ -29,6 +29,7 @@ public class AvroUtil {
     return "BigDecimal(" + bd.precision() + ":" + bd.scale() + ":" + bd.toString() + ")";
   }
 
+  /** @return the input string as a string, quoting it if it's a {@link CharSequence} */
   public static String jsonify(Object defaultVal) {
     return defaultVal instanceof CharSequence
         ? "\"" + defaultVal + '"'
