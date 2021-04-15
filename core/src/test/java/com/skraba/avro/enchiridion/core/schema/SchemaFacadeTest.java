@@ -1,15 +1,18 @@
 package com.skraba.avro.enchiridion.core.schema;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
+import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import java.util.AbstractList;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,7 @@ import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
+import org.apache.avro.util.RandomData;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -60,6 +64,40 @@ public class SchemaFacadeTest {
     SIMPLE_ANNOTATED.getField("name").schema().addProp("ann1nameSchema", "E");
   }
 
+  /**
+   * Helper method to add a bunch of test annotations to a schema. This modifies the schema in
+   * place, so be sure to use a deep copy if you need the original schema.
+   */
+  public static Schema addSomeAnnotations(
+      Set<Schema> visited, Schema schema, String name, Object value) {
+
+    if (!visited.contains(schema)) {
+      schema.addProp(name, value);
+      visited.add(schema);
+
+      // Complex types that can be annotated should be wrapped.
+      switch (schema.getType()) {
+        case RECORD:
+          for (Schema.Field f : schema.getFields()) {
+            f.addProp(name, value);
+            addSomeAnnotations(visited, f.schema(), name + "." + f.name(), value);
+          }
+          break;
+        case ARRAY:
+          addSomeAnnotations(visited, schema.getElementType(), name + ".element", value);
+          break;
+        case MAP:
+          addSomeAnnotations(visited, schema.getValueType(), name + ".value", value);
+          break;
+        case UNION:
+          for (int i = 0; i < schema.getTypes().size(); i++)
+            addSomeAnnotations(visited, schema.getTypes().get(i), name + "[" + i + "]", value);
+          break;
+      }
+    }
+    return schema;
+  }
+
   @Test
   public void wrapSimpleRecord() {
     // The original record.
@@ -72,6 +110,29 @@ public class SchemaFacadeTest {
     assertThat(facade.getSchema(), sameInstance(SIMPLE_ANNOTATED));
 
     assertTrue(GenericData.get().validate(SIMPLE_ANNOTATED, facade));
+  }
+
+  @Test
+  public void wrapComplexRecord() {
+
+    Schema original = AvroUtil.api().parse(AvroTestResources.Recipe());
+    Schema annotated =
+        addSomeAnnotations(
+            new HashSet<>(), AvroUtil.api().parse(AvroTestResources.Recipe()), ".", true);
+
+    for (Object record : new RandomData(original, 100, 0L)) {
+      // Create a facade on the original record.
+      GenericRecord facade = SchemaFacade.of((GenericRecord) record, annotated);
+
+      // Verify that it has the expected schema at the top level, and that all of the data is valid
+      assertThat(facade.getSchema(), sameInstance(annotated));
+      assertTrue(GenericData.get().validate(annotated, facade));
+
+      // Ensure that the facade is considered identical to a datum provided by a round trip.
+      GenericRecord roundTrip =
+          SerializeToBytesTest.roundTripBytes(GenericData.get(), annotated, facade);
+      assertThat(GenericData.get().compare(roundTrip, facade, annotated), is(0));
+    }
   }
 
   /** This is the factory for all of the facades and wrappers. */
