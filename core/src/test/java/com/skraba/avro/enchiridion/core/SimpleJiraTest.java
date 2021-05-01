@@ -1,5 +1,7 @@
 package com.skraba.avro.enchiridion.core;
 
+import static com.skraba.avro.enchiridion.core.AvroUtil.api;
+import static com.skraba.avro.enchiridion.core.AvroUtil.qqify;
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -196,5 +198,12 @@ public class SimpleJiraTest {
     assertThat(ex.getMessage(), is("Can't compare maps!"));
     assertThat(record1, not(record2));
     assertThat(record2, not(record1));
+  }
+
+  @Test
+  public void testAvro3129NullPointer() {
+    assertThrows(
+        NullPointerException.class,
+        () -> api().parse(qqify("{'type': 'enum', 'name': 'Suit', 'symbols' : [null] }")));
   }
 }
