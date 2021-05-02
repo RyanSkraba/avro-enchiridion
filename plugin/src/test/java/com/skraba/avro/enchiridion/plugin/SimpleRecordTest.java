@@ -105,6 +105,17 @@ public class SimpleRecordTest {
   }
 
   @Test
+  public void testSimpleRecordBuilderClone() {
+
+    SimpleRecord.Builder builder = SimpleRecord.newBuilder();
+
+    SimpleRecord sr1 = SimpleRecord.newBuilder(builder).setId(123L).setName("abc").build();
+    SimpleRecord sr2 = SimpleRecord.newBuilder(builder).setId(123L).setName("abc").build();
+
+    assertThat(sr1, is(sr2));
+  }
+
+  @Test
   public void testSimpleRecordBuilderMissingRequired() {
     // The name is a required field.
     assertThrows(
