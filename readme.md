@@ -11,7 +11,7 @@ _[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): **A small manual 
 
 This project describes how to do many common Java tasks using the Avro serialization library.
 
-The main project uses the latest release of [Avro 1.10.1](https://mvnrepository.com/artifact/org.apache.avro/avro/1.10.1), but includes modules that run the same tests on previous versions of Avro.
+The main project uses the latest release of [Avro 1.10.2](https://mvnrepository.com/artifact/org.apache.avro/avro/1.10.2), but includes modules that run the same tests on previous versions of Avro.
 
 Java Topics
 -----------
