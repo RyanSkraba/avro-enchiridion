@@ -18,6 +18,7 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
+import org.apache.avro.SchemaParseException;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
@@ -202,8 +203,15 @@ public class SimpleJiraTest {
 
   @Test
   public void testAvro3129NullPointer() {
-    assertThrows(
-        NullPointerException.class,
-        () -> api().parse(qqify("{'type': 'enum', 'name': 'Suit', 'symbols' : [null] }")));
+    if (AvroVersion.avro_1_11.orAfter("NullPointerException changed to specific exception.")) {
+      SchemaParseException e =
+          assertThrows(
+              SchemaParseException.class,
+              () -> api().parse(qqify("{'type': 'enum', 'name': 'Suit', 'symbols' : [null] }")));
+      assertThat(e.getMessage(), is("Null name"));
+    } else
+      assertThrows(
+          NullPointerException.class,
+          () -> api().parse(qqify("{'type': 'enum', 'name': 'Suit', 'symbols' : [null] }")));
   }
 }
