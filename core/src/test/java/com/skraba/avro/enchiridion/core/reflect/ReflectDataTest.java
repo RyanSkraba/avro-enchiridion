@@ -38,6 +38,18 @@ public class ReflectDataTest {
     }
   }
 
+  public static <T> byte[] toBytes(T datum, Class<T> c, ReflectData model) {
+    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+      Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
+      DatumWriter<T> w = new ReflectDatumWriter<>(c, model);
+      w.write(datum, encoder);
+      encoder.flush();
+      return baos.toByteArray();
+    } catch (IOException ioe) {
+      throw new RuntimeException((ioe));
+    }
+  }
+
   public static <T> T fromBytes(Schema schema, byte[] serialized) {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(serialized)) {
       Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
@@ -163,9 +175,14 @@ public class ReflectDataTest {
 
     byte[] serialized = toBytes(r);
     assertThat(serialized.length, is(1));
+    assertThat(serialized[0], is((byte) 0x04));
 
     EnumRecord datum = fromBytes(reflected, serialized);
     assertThat(datum.count, is(NumbersEnum.TWO));
+
+    serialized = toBytes(r, EnumRecord.class, ReflectData.get());
+    assertThat(serialized.length, is(1));
+    assertThat(serialized[0], is((byte) 0x04));
   }
 
   @Test
