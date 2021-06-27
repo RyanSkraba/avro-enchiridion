@@ -2,16 +2,21 @@ package com.skraba.avro.enchiridion.core.reflect;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
+import org.apache.avro.SchemaParseException;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
@@ -183,6 +188,18 @@ public class ReflectDataTest {
     serialized = toBytes(r, EnumRecord.class, ReflectData.get());
     assertThat(serialized.length, is(1));
     assertThat(serialized[0], is((byte) 0x04));
+
+    // This is currently a bug:t AvroVersion.avro_1_11.before("Bug in parsing enums in a union"))
+    AvroRuntimeException ex =
+        assertThrows(
+            AvroRuntimeException.class,
+            () -> toBytes(r, EnumRecord.class, ReflectData.AllowNull.get()));
+    assertThat(ex.getMessage(), containsString("Empty name"));
+    if (AvroVersion.avro_1_9.orAfter("Exception subclass changed"))
+      assertThat(ex, instanceOf(SchemaParseException.class));
+
+    ex = assertThrows(AvroRuntimeException.class, () -> toBytes(NumbersEnum.ONE));
+    assertThat(ex.getMessage(), containsString("Empty name"));
   }
 
   @Test
