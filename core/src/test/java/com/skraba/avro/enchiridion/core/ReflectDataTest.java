@@ -1,4 +1,4 @@
-package com.skraba.avro.enchiridion.core.reflect;
+package com.skraba.avro.enchiridion.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -9,7 +9,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -124,11 +123,11 @@ public class ReflectDataTest {
     if (AvroVersion.avro_1_9.orAfter("Removed invalid $ from reflected names"))
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest.SimpleRecord"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest.SimpleRecord"));
     else
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest$.SimpleRecord"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest$.SimpleRecord"));
     assertThat(reflected.getDoc(), nullValue());
     assertThat(reflected.isError(), is(false));
     assertThat(reflected.getFields(), hasSize(2));
@@ -145,11 +144,11 @@ public class ReflectDataTest {
     if (AvroVersion.avro_1_9.orAfter("Removed invalid $ from reflected names"))
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest.InstantRecord"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest.InstantRecord"));
     else
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest$.InstantRecord"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest$.InstantRecord"));
     assertThat(reflected.getDoc(), nullValue());
     assertThat(reflected.isError(), is(false));
     assertThat(reflected.getFields(), hasSize(1));
@@ -164,11 +163,11 @@ public class ReflectDataTest {
     if (AvroVersion.avro_1_9.orAfter("Removed invalid $ from reflected names"))
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest.EnumRecord"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest.EnumRecord"));
     else
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest$.EnumRecord"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest$.EnumRecord"));
     assertThat(reflected.getDoc(), nullValue());
     assertThat(reflected.isError(), is(false));
     assertThat(reflected.getFields(), hasSize(1));
@@ -209,11 +208,11 @@ public class ReflectDataTest {
     if (AvroVersion.avro_1_9.orAfter("Removed invalid $ from reflected names"))
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest.NumbersEnum"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest.NumbersEnum"));
     else
       assertThat(
           reflected.getFullName(),
-          is("com.skraba.avro.enchiridion.core.reflect.ReflectDataTest$.NumbersEnum"));
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest$.NumbersEnum"));
     assertThat(reflected.getDoc(), nullValue());
     assertThat(reflected.getEnumSymbols(), hasSize(4));
     assertThat(reflected.getEnumSymbols(), contains("ZERO", "ONE", "TWO", "THREE"));

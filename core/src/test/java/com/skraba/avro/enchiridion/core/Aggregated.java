@@ -11,15 +11,11 @@ public class Aggregated {
     System.out.println("==========");
   }
 
-  //  @Test
-  //  public void testAvroVersion() {
-  //    assertThat(AvroVersion.avro_1_11.before("Next major version"), is(true));
-  //    assertThat(AvroVersion.avro_1_10.orAfter("This major version"), is(true));
-  //    assertThat(AvroVersion.getInstalledAvro(), is(AvroVersion.avro_1_10));
-  //  }
-
   @Nested
   public class GenericDataTest extends com.skraba.avro.enchiridion.core.GenericDataTest {}
+
+  @Nested
+  public class ReflectDataTest extends com.skraba.avro.enchiridion.core.ReflectDataTest {}
 
   @Nested
   public class SerializeToBytesTest extends com.skraba.avro.enchiridion.core.SerializeToBytesTest {}
@@ -42,9 +38,6 @@ public class Aggregated {
 
   @Nested
   public class LogicalAggregated extends com.skraba.avro.enchiridion.core.logical.Aggregated {}
-
-  @Nested
-  public class ReflectAggregated extends com.skraba.avro.enchiridion.core.reflect.Aggregated {}
 
   @Nested
   public class SchemaAggregated extends com.skraba.avro.enchiridion.core.schema.Aggregated {}
