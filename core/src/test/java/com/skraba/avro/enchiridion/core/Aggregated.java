@@ -31,6 +31,9 @@ public class Aggregated {
   public class SimpleJiraTest extends com.skraba.avro.enchiridion.core.SimpleJiraTest {}
 
   @Nested
+  public class SpecificDataTest extends com.skraba.avro.enchiridion.core.SpecificDataTest {}
+
+  @Nested
   public class EvolutionAggregated extends com.skraba.avro.enchiridion.core.evolution.Aggregated {}
 
   @Nested
