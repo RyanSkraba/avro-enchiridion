@@ -1,0 +1,17 @@
+{
+  "type" : "record",
+  "name" : "DecimalLogicalTypeRecord",
+  "namespace" : "com.skraba.avro.enchiridion.simple",
+  "fields" : [ {
+    "name" : "name",
+    "type" : "string"
+  }, {
+    "name" : "bytes52",
+    "type" : {
+      "type" : "bytes",
+      "logicalType" : "decimal",
+      "precision" : 5,
+      "scale" : 2
+    }
+  } ]
+}

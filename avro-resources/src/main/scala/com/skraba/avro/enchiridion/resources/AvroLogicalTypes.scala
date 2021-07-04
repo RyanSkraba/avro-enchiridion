@@ -104,6 +104,24 @@ object AvroLogicalTypes {
     )
   )
 
+  lazy val DecimalBytes52: JsObject =
+    Json.obj(
+      "type" -> "bytes",
+      "logicalType" -> "decimal",
+      "precision" -> 5,
+      "scale" -> 2
+    )
+
+  lazy val DecimalLogicalTypeRecord: JsObject = Json.obj(
+    "type" -> "record",
+    "name" -> "DecimalLogicalTypeRecord",
+    "namespace" -> "com.skraba.avro.enchiridion.simple",
+    "fields" -> Json.arr(
+      Json.obj("name" -> "name", "type" -> "string"),
+      Json.obj("name" -> "bytes52", "type" -> DecimalBytes52)
+    )
+  )
+
   def decimalBytes(precision: Object, scale: Object): String =
     s"""{
        |  "type":"bytes",
