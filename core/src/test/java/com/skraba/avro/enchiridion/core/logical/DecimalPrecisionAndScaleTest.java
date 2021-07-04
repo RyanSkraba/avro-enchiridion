@@ -2,7 +2,9 @@ package com.skraba.avro.enchiridion.core.logical;
 
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.roundTripBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
@@ -12,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Conversions;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
@@ -87,7 +90,7 @@ public class DecimalPrecisionAndScaleTest {
   @Test
   public void testUsingOtherScalesAndPrecisionsWithBigDecimalDatum() {
     for (Schema schema : Arrays.asList(bytesSchema, fixedSchema, fixedSchemaBig)) {
-      if (AvroVersion.avro_1_10.orAfter()) {
+      if (AvroVersion.avro_1_10.orAfter("BigDecimals only accepted if it 'fits'")) {
         // After 1.10.x, a BigDecimal datum will only be accepted into the column when it can "fit"
         // into the decimal schema without overflowing or losing decimal places.
 
@@ -100,20 +103,26 @@ public class DecimalPrecisionAndScaleTest {
 
         for (String s : dApproximate) {
           BigDecimal bd = new BigDecimal(s);
-          try {
-            roundTripBytes(model, schema, bd);
-            fail("We should not allow values that will lose significant digits: " + bd);
-          } catch (RuntimeException ignored) {
-          }
+          AvroTypeException rte =
+              assertThrows(
+                  AvroTypeException.class,
+                  () -> roundTripBytes(model, schema, bd),
+                  "We should not allow values that will lose significant digits: " + bd);
+          assertThat(
+              rte.getMessage(),
+              is("Cannot encode decimal with scale 3 as scale 2 without rounding"));
         }
 
         for (String s : dOverflow) {
           BigDecimal bd = new BigDecimal(s);
-          try {
-            roundTripBytes(model, schema, bd);
-            fail("We should not allow values that will overflow: " + bd);
-          } catch (RuntimeException ignored) {
-          }
+          AvroTypeException rte =
+              assertThrows(
+                  AvroTypeException.class,
+                  () -> roundTripBytes(model, schema, bd),
+                  "We should not allow values that will overflow: " + bd);
+          assertThat(
+              rte.getMessage(),
+              containsString("Cannot encode decimal with precision 6 as max precision 5"));
         }
 
       } else {
