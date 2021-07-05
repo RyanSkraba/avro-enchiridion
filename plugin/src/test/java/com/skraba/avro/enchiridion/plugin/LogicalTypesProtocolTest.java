@@ -101,9 +101,11 @@ public class LogicalTypesProtocolTest {
   @Test
   public void testDecimal() throws IOException {
     // only with zeros and null
-    DecimalAll f = DecimalAll.newBuilder()
-        .setBytes52(new BigDecimal("1.23"))
-        .setFixed52(new BigDecimal("1.23")).build();
+    DecimalAll f =
+        DecimalAll.newBuilder()
+            .setBytes52(new BigDecimal("1.23"))
+            .setFixed52(new BigDecimal("1.23"))
+            .build();
     byte[] serialized = toBytes(f.getSpecificData(), f.getSchema(), f);
     assertThat(serialized.length, equalTo(10));
     // Round-trip should reconstitute an equal instance.
