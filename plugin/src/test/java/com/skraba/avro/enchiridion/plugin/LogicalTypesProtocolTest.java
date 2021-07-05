@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.skraba.avro.enchiridion.idl.DecimalAll;
 import com.skraba.avro.enchiridion.idl.LogicalTypesProtocol;
 import com.skraba.avro.enchiridion.idl.TimestampAll;
 import com.skraba.avro.enchiridion.idl.TimestampMicrosOptional;
@@ -15,6 +16,7 @@ import com.skraba.avro.enchiridion.idl.TimestampMicrosRequired;
 import com.skraba.avro.enchiridion.idl.TimestampMillisOptional;
 import com.skraba.avro.enchiridion.idl.TimestampMillisRequired;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Instant;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.data.TimeConversions;
@@ -93,6 +95,18 @@ public class LogicalTypesProtocolTest {
             .build();
     serialized = toBytes(f.getSpecificData(), f.getSchema(), f);
     assertThat(serialized.length, equalTo(9));
+    assertThat(fromBytes(f.getSpecificData(), f.getSchema(), serialized), is(f));
+  }
+
+  @Test
+  public void testDecimal() throws IOException {
+    // only with zeros and null
+    DecimalAll f = DecimalAll.newBuilder()
+        .setBytes52(new BigDecimal("1.23"))
+        .setFixed52(new BigDecimal("1.23")).build();
+    byte[] serialized = toBytes(f.getSpecificData(), f.getSchema(), f);
+    assertThat(serialized.length, equalTo(10));
+    // Round-trip should reconstitute an equal instance.
     assertThat(fromBytes(f.getSpecificData(), f.getSchema(), serialized), is(f));
   }
 

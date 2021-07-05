@@ -64,4 +64,20 @@ protocol LogicalTypesProtocol {
    * Echo the request.
    */
   TimestampAll echo(TimestampAll in);
+
+  /** You have to declare a fixed type outside the record to give it a name. */
+  @logicalType("decimal")
+  @precision(5)
+  @scale(2)
+  fixed FixedDecimal52(3);
+
+  /** A record with required and optional decimal types. */
+  record DecimalAll{
+    string id = "ID";
+    /** Precision of 5 and scale of 2 means between 000.00 and 999.99 */
+    decimal(5, 2) bytes52 = "";
+    union { null, decimal(5, 2) } bytes52Opt = null;
+    FixedDecimal52 fixed52 = "";
+    union { null, FixedDecimal52 } fixed52Opt = null;
+  }
 }

@@ -61,6 +61,7 @@
               <goal>idl-protocol</goal>
             </goals>
             <configuration>
+              <enableDecimalLogicalType>true</enableDecimalLogicalType>
               <fieldVisibility>public</fieldVisibility>
             </configuration>
           </execution>
