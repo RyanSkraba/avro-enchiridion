@@ -1,5 +1,5 @@
 Avro Resources
-==============
+==============================================================================
 
 While waiting anxiously for JDK13, Scala has multi-line strings today!
 

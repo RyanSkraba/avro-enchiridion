@@ -1,5 +1,5 @@
 Download all
-============
+==============================================================================
 
 This module doesn't do anything but depend on all of the Nexus artifacts
 published by the Apache Avro project.  It can be useful to download all of

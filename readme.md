@@ -1,5 +1,5 @@
 The Avro Enchiridion
-====================
+==============================================================================
 
 ![Java CI](https://github.com/RyanSkraba/avro-enchiridion/workflows/Java%20CI/badge.svg)
 
@@ -14,7 +14,7 @@ This project describes how to do many common Java tasks using the Avro serializa
 The main project uses the latest release of [Avro 1.10.2](https://mvnrepository.com/artifact/org.apache.avro/avro/1.10.2), but includes modules that run the same tests on previous versions of Avro.
 
 Java Topics
------------
+------------------------------------------------------------------------------
 
 | I want to...  | See... |
 | ------------- | ------------- |
@@ -62,7 +62,7 @@ Java Topics
 [EvolveUnionTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveUnionTest.java
 
 Modules
--------
+------------------------------------------------------------------------------
 
 | module  | description
 | ------------- | -------------
@@ -75,9 +75,8 @@ Modules
 | [ipc](ipc/readme.md)  | Unit tests and examples for client/server communication with Avro protocols.
 | [plugin](plugin/readme.md)  | Using the maven plugin to generate Avro classes.
 
-
 Building an Apache Avro SNAPSHOT locally.
--------------------------------------
+------------------------------------------------------------------------------
 
 ```bash
 # Get the Avro source code.
@@ -94,5 +93,3 @@ docker run --rm -t -i \
   -u $USER avro-build-$USER \
   ./build.sh test
 ```
-
-
