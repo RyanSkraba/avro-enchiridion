@@ -10,7 +10,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>avro-enchiridion-master-snapshot</artifactId>
+  <artifactId>avro-enchiridion-core-master-snapshot</artifactId>
   <packaging>jar</packaging>
 
   <properties>
