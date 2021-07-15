@@ -16,13 +16,13 @@ The main project uses the latest release of [Avro 1.10.2](https://mvnrepository.
 Java Topics
 ------------------------------------------------------------------------------
 
-| I want to...  | See... |
-| ------------- | ------------- |
-| Read/write one datum to a byte array | [SerializeToBytesTest]
-| Read/write one datum to a ByteBuffer | [SerializeToBytesTest]
-| Read/write one datum to an Avro JSON String | [SerializeToJsonTest]  
-| Read from/write to an Avro file | [AvroFileTest]
-| Append a record to an Avro file | [AvroFileTest]
+| I want to...                                | See...                 |
+|---------------------------------------------|------------------------|
+| Read/write one datum to a byte array        | [SerializeToBytesTest] |
+| Read/write one datum to a ByteBuffer        | [SerializeToBytesTest] |
+| Read/write one datum to an Avro JSON String | [SerializeToJsonTest]  |
+| Read from/write to an Avro file             | [AvroFileTest]         |
+| Append a record to an Avro file             | [AvroFileTest]         |
 
 [SerializeToBytesTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToBytesTest.java
 [SerializeToJsonTest]: core/src/test/java/com/skraba/avro/enchiridion/core/SerializeToJsonTest.java
@@ -30,10 +30,10 @@ Java Topics
 
 ### Logical Types ([spec][AvroSpecLogicalType])
 
-| I want to...  | See... |
-| ------------- | ------------- |
-| Use [BigDecimal][BigDecimal] datum with a [GenericData][GenericData] model | [DecimalPrecisionAndScaleTest] (see the static block)
-| Create my own logical type | TODO
+| I want to...                                                               | See...                                                |
+|----------------------------------------------------------------------------|-------------------------------------------------------|
+| Use [BigDecimal][BigDecimal] datum with a [GenericData][GenericData] model | [DecimalPrecisionAndScaleTest] (see the static block) |
+| Create my own logical type                                                 | TODO                                                  |
 
 [AvroSpecLogicalType]: https://avro.apache.org/docs/current/spec.html#Logical+Types
 [BigDecimal]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html
@@ -42,16 +42,16 @@ Java Topics
 
 ### Schema resolution ([spec][AvroSpecSchemaResolution])
 
-| I want to...  | See... |
-| ------------- | ------------- |
-| Evolve my schema by adding a field | [EvolveAddAFieldTest]
-| ... by removing a field | [EvolveRemoveAFieldTest]
-| ... by renaming a field | [EvolveRenameAFieldTest]
-| ... by reordering fields | [EvolveReorderFieldsTest]
-| ... by widening a primitive | [EvolveWidenPrimitivesTest]
-| ... by adding a union | [EvolveUnionTest]
-| ... by adding an enum symbol | 
-| ... by removing an enum symbol |
+| I want to...                       | See...                      |
+|------------------------------------|-----------------------------|
+| Evolve my schema by adding a field | [EvolveAddAFieldTest]       |
+| ... by removing a field            | [EvolveRemoveAFieldTest]    |
+| ... by renaming a field            | [EvolveRenameAFieldTest]    |
+| ... by reordering fields           | [EvolveReorderFieldsTest]   |
+| ... by widening a primitive        | [EvolveWidenPrimitivesTest] |
+| ... by adding a union              | [EvolveUnionTest]           |
+| ... by adding an enum symbol       |                             |
+| ... by removing an enum symbol     |                             |
 
 [AvroSpecSchemaResolution]: https://avro.apache.org/docs/current/spec.html#Schema+Resolution
 [EvolveAddAFieldTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveAddAFieldTest.java
@@ -64,16 +64,16 @@ Java Topics
 Modules
 ------------------------------------------------------------------------------
 
-| module  | description
-| ------------- | -------------
-| [avro-resources](avro-resources/readme.md)  | Reusable resources for testing Avro (Schema JSON strings, etc).
-| [core](core/readme.md)  | Unit tests and examples for the Avro Java SDK.
-| [core17x](core17x/readme.md)  | Helper project for running tests in Avro 1.7.x 
-| [core18x](core18x/readme.md)  | Helper project for running tests in Avro 1.8.x
-| [core19x](core19x/readme.md)  | Helper project for running tests in Avro 1.9.x
-| [core-master-snapshot](core-master-snapshot/readme.md)  | Helper project for running tests in the latest SNAPSHOT releases from the Avro master branch.
-| [ipc](ipc/readme.md)  | Unit tests and examples for client/server communication with Avro protocols.
-| [plugin](plugin/readme.md)  | Using the maven plugin to generate Avro classes.
+| module                                                 | description                                                                                   |
+|--------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| [avro-resources](avro-resources/readme.md)             | Reusable resources for testing Avro (Schema JSON strings, etc).                               |
+| [core](core/readme.md)                                 | Unit tests and examples for the Avro Java SDK.                                                |
+| [core17x](core17x/readme.md)                           | Helper project for running tests in Avro 1.7.x                                                |
+| [core18x](core18x/readme.md)                           | Helper project for running tests in Avro 1.8.x                                                |
+| [core19x](core19x/readme.md)                           | Helper project for running tests in Avro 1.9.x                                                |
+| [core-master-snapshot](core-master-snapshot/readme.md) | Helper project for running tests in the latest SNAPSHOT releases from the Avro master branch. |
+| [ipc](ipc/readme.md)                                   | Unit tests and examples for client/server communication with Avro protocols.                  |
+| [plugin](plugin/readme.md)                             | Using the maven plugin to generate Avro classes.                                              |
 
 Building an Apache Avro SNAPSHOT locally.
 ------------------------------------------------------------------------------
