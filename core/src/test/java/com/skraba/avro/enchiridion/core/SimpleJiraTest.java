@@ -4,6 +4,7 @@ import static com.skraba.avro.enchiridion.core.AvroUtil.api;
 import static com.skraba.avro.enchiridion.core.AvroUtil.qqify;
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -213,5 +214,23 @@ public class SimpleJiraTest {
       assertThrows(
           NullPointerException.class,
           () -> api().parse(qqify("{'type': 'enum', 'name': 'Suit', 'symbols' : [null] }")));
+  }
+
+  @Test
+  public void testAvro3182UnionType() {
+    // This works.
+    assertThat(AvroUtil.api().parse(qqify("'string'")), is(Schema.create(Schema.Type.STRING)));
+    assertThat(
+        AvroUtil.api().parse(qqify("{'type': 'string'}")), is(Schema.create(Schema.Type.STRING)));
+
+    // But this doesn't.
+    assertThat(
+        AvroUtil.api().parse(qqify("['null', 'string']")),
+        is(Schema.createUnion(Schema.create(Schema.Type.NULL), Schema.create(Schema.Type.STRING))));
+    AvroRuntimeException ex =
+        assertThrows(
+            AvroRuntimeException.class,
+            () -> AvroUtil.api().parse(qqify("{'type': ['null','string']}")));
+    assertThat(ex.getMessage(), containsString(qqify("No type: {'type':['null','string']}")));
   }
 }

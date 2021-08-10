@@ -4,6 +4,7 @@ import static com.skraba.avro.enchiridion.core.AvroUtil.qqify;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
@@ -21,8 +22,13 @@ public class UnionTest {
     Schema s = AvroUtil.api().parse(qqify("['null','string']"));
     assertThat(s.toString(), is(qqify("['null','string']")));
 
-    // You can't have duplicates
+    // You can't set properties
     AvroRuntimeException ex =
+        assertThrows(AvroRuntimeException.class, () -> s.addProp("author", "user"));
+    assertThat(ex.getMessage(), startsWith("Can't set properties on a union:"));
+
+    // You can't have duplicates
+    ex =
         assertThrows(
             AvroRuntimeException.class,
             () -> AvroUtil.api().parse(qqify("['null','string','string']")));
