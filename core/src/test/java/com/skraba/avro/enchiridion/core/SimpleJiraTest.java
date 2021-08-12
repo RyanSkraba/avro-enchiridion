@@ -13,6 +13,7 @@ import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
@@ -226,7 +227,10 @@ public class SimpleJiraTest {
     // But this doesn't.
     assertThat(
         AvroUtil.api().parse(qqify("['null', 'string']")),
-        is(Schema.createUnion(Schema.create(Schema.Type.NULL), Schema.create(Schema.Type.STRING))));
+        is(
+            Schema.createUnion(
+                Arrays.asList(
+                    Schema.create(Schema.Type.NULL), Schema.create(Schema.Type.STRING)))));
     AvroRuntimeException ex =
         assertThrows(
             AvroRuntimeException.class,
