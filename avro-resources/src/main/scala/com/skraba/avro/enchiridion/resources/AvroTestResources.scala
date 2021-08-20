@@ -1,6 +1,7 @@
 package com.skraba.avro.enchiridion.resources
 
 import com.skraba.avro.enchiridion.resources.AvroLogicalTypes._
+import play.api.libs.json.Json.{arr, obj}
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 import scala.reflect.io.{Directory, File, Path}
@@ -30,7 +31,7 @@ object AvroTestResources {
       doc: String,
       fieldType: JsValue = JsString("string")
   ): JsObject =
-    Json.obj("name" -> name, "doc" -> doc, "type" -> fieldType)
+    obj("name" -> name, "doc" -> doc, "type" -> fieldType)
 
   /** @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
     *         The type of the field is automatically unioned with "null".
@@ -40,10 +41,10 @@ object AvroTestResources {
       doc: String,
       fieldType: JsValue = JsString("string")
   ): JsObject =
-    Json.obj(
+    obj(
       "name" -> name,
       "doc" -> doc,
-      "type" -> Json.arr("null", fieldType),
+      "type" -> arr("null", fieldType),
       "default" -> null
     )
 
@@ -55,11 +56,11 @@ object AvroTestResources {
       doc: String,
       itemType: JsValue = JsString("string")
   ): JsObject =
-    Json.obj(
+    obj(
       "name" -> name,
       "doc" -> doc,
-      "type" -> Json.obj("type" -> "array", "items" -> itemType),
-      "default" -> Json.arr()
+      "type" -> obj("type" -> "array", "items" -> itemType),
+      "default" -> arr()
     )
 
   def RecordOneFieldWithDefault(
@@ -151,22 +152,22 @@ object AvroTestResources {
 
   /** A Schema of medium complexity. */
   val Recipe: String = Json.prettyPrint(
-    Json.obj(
+    obj(
       "type" -> "record",
       "name" -> "Recipe",
       "namespace" -> "com.skraba.avro.enchiridion.recipe",
       "doc" -> "A recipe containing ingredients and steps",
-      "fields" -> Json.arr(
+      "fields" -> arr(
         fieldOpt("title", "Name or title for this recipe"),
         fieldOpt("step_id", "A unique tag for this step"),
         fieldArray(
           "from_step_id",
           "The tag of the steps feeding into this step (if any)",
-          Json.obj(
+          obj(
             "type" -> "record",
             "name" -> "FromStep",
             "doc" -> "",
-            "fields" -> Json.arr(
+            "fields" -> arr(
               field(
                 "fraction",
                 "The fraction of the incoming step",
@@ -182,15 +183,15 @@ object AvroTestResources {
         ),
         fieldOpt("makes", "How much the recipe makes"),
         fieldArray("note", "Any free text (information, hints)"),
-        Json.obj(
+        obj(
           "name" -> "ingredients",
-          "type" -> Json.obj(
+          "type" -> obj(
             "type" -> "array",
             "items" ->
-              Json.obj(
+              obj(
                 "type" -> "record",
                 "name" -> "Ingredient",
-                "fields" -> Json.arr(
+                "fields" -> arr(
                   fieldOpt("q", "Quantity"),
                   fieldOpt("n", "Name"),
                   fieldArray(
@@ -202,7 +203,7 @@ object AvroTestResources {
                 )
               )
           ),
-          "default" -> Json.arr()
+          "default" -> arr()
         ),
         fieldArray("todo", "Steps"),
         fieldArray(
@@ -210,14 +211,14 @@ object AvroTestResources {
           "Subrecipes",
           JsString("com.skraba.avro.enchiridion.recipe.Recipe")
         ),
-        Json.obj(
+        obj(
           "name" -> "bake",
-          "type" -> Json.arr(
+          "type" -> arr(
             "null",
-            Json.obj(
+            obj(
               "type" -> "record",
               "name" -> "Bake",
-              "fields" -> Json.arr(
+              "fields" -> arr(
                 fieldOpt("temp", "Temperature"),
                 fieldOpt("time", "Time"),
                 fieldOpt("note", "Note")

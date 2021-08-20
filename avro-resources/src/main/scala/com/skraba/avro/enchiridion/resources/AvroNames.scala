@@ -1,5 +1,6 @@
 package com.skraba.avro.enchiridion.resources
 
+import play.api.libs.json.Json.{arr, obj}
 import play.api.libs.json.{JsObject, JsString, Json}
 
 import scala.collection.immutable.ListMap
@@ -43,7 +44,7 @@ object AvroNames {
       Seq(
         name.map("name" -> JsString(_)),
         namespace.map("namespace" -> JsString(_)),
-        aliases.map("aliases" -> Json.arr(_).head.get)
+        aliases.map("aliases" -> arr(_).head.get)
       ).flatten
     )
   }
@@ -198,8 +199,8 @@ object AvroNames {
       recordNameCfg: NameCfg = NameCfg("").name("Simple"),
       fieldNameCfg: NameCfg = NameCfg("").name("id")
   ): JsObject = {
-    val field = fieldNameCfg.toJson ++ Json.obj("type" -> "int")
-    recordNameCfg.toJson ++ Json.obj("type" -> "record", "fields" -> Seq(field))
+    val field = fieldNameCfg.toJson ++ obj("type" -> "int")
+    recordNameCfg.toJson ++ obj("type" -> "record", "fields" -> Seq(field))
   }
 
   /** Build an ENUM Schema as a JsObject.
@@ -212,7 +213,7 @@ object AvroNames {
       cfg: NameCfg = NameCfg("").name("Simple"),
       symbol: String = "id"
   ): JsObject = {
-    cfg.toJson ++ Json.obj("type" -> "enum", "symbols" -> Seq(symbol))
+    cfg.toJson ++ obj("type" -> "enum", "symbols" -> Seq(symbol))
   }
 
   /** Build an FIXED Schema as a JsObject.
@@ -221,7 +222,7 @@ object AvroNames {
     * @return a one-column FIXED schema JSON string using the given name configuration
     */
   def simpleFixed(cfg: NameCfg = NameCfg("").name("Simple")): JsObject = {
-    cfg.toJson ++ Json.obj("type" -> "fixed", "size" -> 1)
+    cfg.toJson ++ obj("type" -> "fixed", "size" -> 1)
   }
 
   val ValidRecord: Map[String, JsObject] = ListMap(NameCfg.Valid.collect {

@@ -1,5 +1,6 @@
 package com.skraba.avro.enchiridion.resources
 
+import play.api.libs.json.Json.{arr, obj}
 import play.api.libs.json._
 
 import scala.collection.immutable.ListMap
@@ -23,23 +24,23 @@ object AvroFieldDefaults {
     def unionNullFirst(tagSuffix: String = "UnionNullFirst"): FieldDefaultCfg =
       FieldDefaultCfg(
         tag + tagSuffix,
-        Json.arr("null", fieldType),
+        arr("null", fieldType),
         fieldDefault
       )
 
     def unionNullLast(tagSuffix: String = "UnionNullLast"): FieldDefaultCfg =
       FieldDefaultCfg(
         tag + tagSuffix,
-        Json.arr(fieldType, "null"),
+        arr(fieldType, "null"),
         fieldDefault
       )
 
     /** @return A JSON object containing the namespace, name and aliases.
       */
-    lazy val toJson: JsObject = Json.obj(
+    lazy val toJson: JsObject = obj(
       "name" -> tag,
       "type" -> "record",
-      "fields" -> Json.arr(
+      "fields" -> arr(
         "name" -> "a1",
         "type" -> fieldType,
         "default" -> fieldDefault
