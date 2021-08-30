@@ -113,7 +113,7 @@ object AvroFieldDefaults {
   }: _*)
 
   /** Create the two files in the /tmp directory. */
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     val dst = AvroTestResources.Base
       .resolve("avro-resources/src/test/resources/")
       .createDirectory()

@@ -297,7 +297,7 @@ object AvroTestResources {
   }
 
   /** Write all of these schemas to the plugin directory. */
-  def main(args: Array[String]) = {
+  def main(args: Array[String]): Unit = {
 
     // Rewrite some AVSC files with resources from this file.
     Base

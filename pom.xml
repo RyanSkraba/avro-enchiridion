@@ -28,8 +28,8 @@
     <joda.version>2.10.10</joda.version>
     <junit5.version>5.7.2</junit5.version>
     <play.json.version>2.9.2</play.json.version>
-    <scala.minor.version>2.12</scala.minor.version>
-    <scala.version>2.12.14</scala.version>
+    <scala.minor.version>2.13</scala.minor.version>
+    <scala.version>2.13.6</scala.version>
     <scalafmt.version>2.7.5</scalafmt.version>
     <scalatest.version>3.2.9</scalatest.version>
     <slf4j.version>1.7.32</slf4j.version>

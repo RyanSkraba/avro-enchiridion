@@ -2,7 +2,7 @@ package com.skraba.avro.enchiridion.resources
 
 import play.api.libs.json.{JsNumber, JsString, JsValue}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.collection.immutable.ListMap
 
 /** Lists of useful numeric values that can be applied to tests. */
@@ -92,7 +92,7 @@ object NumericValues {
     Doubles ++ Floats ++ Longs ++ Ints ++ Shorts ++ Bytes ++ Strings
 
   /** All of the numbers as JSON numbers, if possible.  JSON string for non-finite floating points. */
-  val AllJson: Map[String, JsValue] = All
+  val AllJson: Map[String, JsValue] = All.view
     .mapValues {
       case d: Double if java.lang.Double.isFinite(d) => JsNumber(d)
       case f: Float if java.lang.Float.isFinite(f)   => JsNumber(BigDecimal(f))
@@ -103,14 +103,16 @@ object NumericValues {
       case x                                         => JsString(x.toString)
     }
     .map(_.swap)
-    .map(_.swap) // Double swap removes duplicate keys.
+    .map(_.swap)
+    .toMap // Double swap removes duplicate keys.
 
-  val DoublesJava: Map[String, Number] = Doubles.mapValues(Double.box)
-  val FloatsJava: Map[String, Number] = Floats.mapValues(Float.box)
-  val LongsJava: Map[String, Number] = Longs.mapValues(Long.box)
-  val IntsJava: Map[String, Number] = Ints.mapValues(Int.box)
-  val ShortsJava: Map[String, Number] = Shorts.mapValues(Short.box)
-  val BytesJava: Map[String, Number] = Bytes.mapValues(Byte.box)
+  val DoublesJava: Map[String, Number] =
+    Doubles.view.mapValues(Double.box).toMap
+  val FloatsJava: Map[String, Number] = Floats.view.mapValues(Float.box).toMap
+  val LongsJava: Map[String, Number] = Longs.view.mapValues(Long.box).toMap
+  val IntsJava: Map[String, Number] = Ints.view.mapValues(Int.box).toMap
+  val ShortsJava: Map[String, Number] = Shorts.view.mapValues(Short.box).toMap
+  val BytesJava: Map[String, Number] = Bytes.view.mapValues(Byte.box).toMap
 
   val AllJava: java.util.Map[String, Number] =
     (DoublesJava ++ FloatsJava ++ LongsJava ++ IntsJava ++ ShortsJava ++ BytesJava).asJava

@@ -1,7 +1,7 @@
 package com.skraba.avro.enchiridion.resources
 
 import play.api.libs.json.Json.{arr, obj}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 
 /** Generate valid and invalid schemas for checking schema logical types.
   *
