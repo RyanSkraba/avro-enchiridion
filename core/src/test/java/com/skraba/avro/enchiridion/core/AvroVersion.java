@@ -21,6 +21,7 @@ public enum AvroVersion {
   avro_1_9,
   avro_1_10,
   avro_1_11,
+  avro_1_12,
   /** An avro version far, far off in the future. */
   avro_infinity;
 

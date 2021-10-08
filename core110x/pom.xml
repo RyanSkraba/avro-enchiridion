@@ -10,17 +10,17 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>avro-enchiridion-core-master-snapshot</artifactId>
+  <artifactId>avro-enchiridion-core110x</artifactId>
   <packaging>jar</packaging>
 
   <properties>
     <maven.deploy.skip>false</maven.deploy.skip>
-    <avro.major.version>1.11</avro.major.version>
-    <avro.version>1.12.0-SNAPSHOT</avro.version>
+    <avro.major.version>1.10</avro.major.version>
+    <avro.version>1.10.2</avro.version>
   </properties>
 
-  <name>Avro Enchiridion :: Core Master Snapshot</name>
-  <description>Avro core examples with the latest 1.12.x-SNAPSHOT version.</description>
+  <name>Avro Enchiridion :: Core 1.10.x</name>
+  <description>Avro core examples with the latest 1.10.x version.</description>
 
   <dependencies>
     <dependency>
