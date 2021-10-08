@@ -1,4 +1,4 @@
-Core 1.9.x Tests
+Core 1.10.x Tests
 ==============================================================================
 
-Runs some or all of the [Avro core](../core/readme.md) tests using Avro 1.9.x libraries.
+Runs some or all of the [Avro core](../core/readme.md) tests using Avro 1.10.x libraries.
