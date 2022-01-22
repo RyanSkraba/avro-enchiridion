@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.skraba.avro.enchiridion</groupId>
@@ -34,11 +34,15 @@
     <scalatest.version>3.2.9</scalatest.version>
     <slf4j.version>1.7.32</slf4j.version>
 
+    <!-- The main class that can be overridden in subprojects -->
+    <exec.mainClass>MainClassToOverride</exec.mainClass>
+
     <!-- Plugins -->
     <plugin.clean.maven.version>2.5</plugin.clean.maven.version>
     <plugin.compiler.maven.version>3.1</plugin.compiler.maven.version>
     <plugin.deploy.maven.version>2.7</plugin.deploy.maven.version>
     <plugin.enforcer.maven.version>3.0.0-M3</plugin.enforcer.maven.version>
+    <plugin.enforcer.required.maven.version>3.3.9</plugin.enforcer.required.maven.version>
     <plugin.failsafe.maven.version>3.0.0-M5</plugin.failsafe.maven.version>
     <plugin.install.maven.version>2.4</plugin.install.maven.version>
     <plugin.jar.maven.version>3.2.0</plugin.jar.maven.version>
@@ -55,7 +59,7 @@
 
   <profiles>
     <!--
-      Use this profile if using Avro SNAPSHOT artifacts that were built locally
+      Use this profile if using SNAPSHOT artifacts built locally
     -->
     <profile>
       <id>local-snapshots</id>
@@ -154,7 +158,7 @@
               <configuration>
                 <rules>
                   <requireMavenVersion>
-                    <version>3.5</version>
+                    <version>${plugin.enforcer.required.maven.version}</version>
                   </requireMavenVersion>
                   <requirePluginVersions>
                     <banLatest>true</banLatest>
@@ -269,8 +273,8 @@
           <version>${plugin.spotless.version}</version>
           <configuration>
             <java>
-              <removeUnusedImports />
-              <googleJavaFormat />
+              <removeUnusedImports/>
+              <googleJavaFormat/>
             </java>
             <scala>
               <includes>

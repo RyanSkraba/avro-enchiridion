@@ -1,0 +1,58 @@
+@namespace("com.skraba.avro.enchiridion.recipe")
+protocol _Recipe {
+	/**
+	 * A recipe describes how to make something!
+	 *
+	 * It's not simple to describe, but
+	 * Hi
+	 */
+	record Recipe {
+		/** Name or title for this recipe */
+		union{null, string} title = null;
+		/** A unique tag for this step */
+		union{null, string} step_id = null;
+		/** Tags of the steps feeding into this step (if any) */
+		array<FromStep> from_step_id = [];
+		/** Where the recipe came from (person, website, book) */
+		union{null, string} source = null;
+		/** How much the recipe makes */
+		union{null, string} makes = null;
+		/** Any additional free text (information, hints) */
+		array<string> note = [];
+		/** Ingredients as part of this recipe */
+		array<Ingredient> ingredients = [];
+		/** Things to do */
+		array<string> todo = [];
+		/** Subrecipes as part of this recipe */
+		array<Recipe> steps = [];
+		/** How much the recipe makes */
+		union{null, Bake} bake = null;
+	}
+
+	record FromStep {
+		/** The fraction of the incoming step. */
+		double fraction = 1;
+		/** The unique tag for the incoming step */
+		string step_id;
+	}
+
+	record Ingredient {
+		/** Quantity */
+		union{null, string} q = null;
+		/** Name */
+		union{null, string} n = null;
+		/** Replacement options for this ingredient */
+		array<Ingredient> option = [];
+		/** Any additional free text (information, hints) */
+		array<string> note = [];
+	}
+
+	record Bake {
+		/** Temperature */
+		union{null, string} temp = null;
+		/** Time */
+		union{null, string} time = null;
+		/** Any additional free text (information, hints) */
+		union{null, string} note = null;
+	}
+}

@@ -1,0 +1,11 @@
+@namespace("com.skraba.avro.enchiridion.idl")
+/**
+ * Describes a binary tree.
+ */
+protocol TreeProtocol {
+  record Node {
+    int value = 0;
+    union { null, Node } left = null;
+    union { null, Node } right = null;
+  }
+}
