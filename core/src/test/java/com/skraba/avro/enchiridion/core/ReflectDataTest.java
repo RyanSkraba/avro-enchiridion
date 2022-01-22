@@ -188,17 +188,23 @@ public class ReflectDataTest {
     assertThat(serialized.length, is(1));
     assertThat(serialized[0], is((byte) 0x04));
 
-    // This is currently a bug:t AvroVersion.avro_1_11.before("Bug in parsing enums in a union"))
-    AvroRuntimeException ex =
-        assertThrows(
-            AvroRuntimeException.class,
-            () -> toBytes(r, EnumRecord.class, ReflectData.AllowNull.get()));
-    assertThat(ex.getMessage(), containsString("Empty name"));
-    if (AvroVersion.avro_1_9.orAfter("Exception subclass changed"))
-      assertThat(ex, instanceOf(SchemaParseException.class));
+    // This is currently a bug AVRO-1851
+    if (AvroVersion.avro_infinity.orAfter("Bug in parsing enums in a union")) {
+      serialized = toBytes(r, EnumRecord.class, ReflectData.AllowNull.get());
+      assertThat(serialized.length, is(1));
+      assertThat(serialized[0], is((byte) 0x04));
+    } else {
+      AvroRuntimeException ex =
+          assertThrows(
+              AvroRuntimeException.class,
+              () -> toBytes(r, EnumRecord.class, ReflectData.AllowNull.get()));
+      assertThat(ex.getMessage(), containsString("Empty name"));
+      if (AvroVersion.avro_1_9.orAfter("Exception subclass changed"))
+        assertThat(ex, instanceOf(SchemaParseException.class));
 
-    ex = assertThrows(AvroRuntimeException.class, () -> toBytes(NumbersEnum.ONE));
-    assertThat(ex.getMessage(), containsString("Empty name"));
+      ex = assertThrows(AvroRuntimeException.class, () -> toBytes(NumbersEnum.ONE));
+      assertThat(ex.getMessage(), containsString("Empty name"));
+    }
   }
 
   @Test
