@@ -1,6 +1,7 @@
 package com.skraba.avro.enchiridion.core.schema;
 
 import static com.skraba.avro.enchiridion.core.AvroUtil.qqify;
+import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -11,10 +12,28 @@ import com.skraba.avro.enchiridion.core.AvroUtil;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
+import org.apache.avro.UnresolvedUnionException;
+import org.apache.avro.generic.GenericData;
 import org.junit.jupiter.api.Test;
 
 /** Unit tests for untion types in Avro. */
 public class UnionTest {
+
+  @Test
+  public void testZero() {
+    // A schema with no branches
+    Schema s = AvroUtil.api().parse(qqify("[]"));
+  }
+
+  @Test
+  public void testZeroRoundTripSerialize() {
+    Schema schema = AvroUtil.api().parse(qqify("[]"));
+
+    UnresolvedUnionException ex =
+        assertThrows(
+            UnresolvedUnionException.class, () -> toBytes(GenericData.get(), schema, null));
+    assertThat(ex.getMessage(), startsWith("Not in union []: null"));
+  }
 
   @Test
   public void testBasicParser() {
