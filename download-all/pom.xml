@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -13,12 +11,12 @@
   <artifactId>avro-enchiridion-download-all</artifactId>
   <packaging>jar</packaging>
 
+  <name>Avro Enchiridion :: Download all dependencies</name>
+  <description>Does nothing but rely on all artifacts produced by Avro.</description>
+
   <properties>
     <maven.deploy.skip>false</maven.deploy.skip>
   </properties>
-
-  <name>Avro Enchiridion :: Download all dependencies</name>
-  <description>Does nothing but rely on all artifacts produced by Avro.</description>
 
   <dependencies>
     <dependency>
