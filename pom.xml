@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
 
   <properties>
+
     <!-- specifies that the system uses Java 8 by default -->
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
