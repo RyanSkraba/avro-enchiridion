@@ -52,7 +52,7 @@
     <plugin.resources.maven.version>2.6</plugin.resources.maven.version>
     <plugin.shade.maven.version>3.2.4</plugin.shade.maven.version>
     <plugin.site.maven.version>3.3</plugin.site.maven.version>
-    <plugin.spotless.version>2.7.0</plugin.spotless.version>
+    <plugin.spotless.version>2.20.0</plugin.spotless.version>
     <plugin.surefire.maven.version>3.0.0-M5</plugin.surefire.maven.version>
     <plugin.war.maven.version>2.2</plugin.war.maven.version>
 
@@ -277,6 +277,11 @@
               <removeUnusedImports/>
               <googleJavaFormat/>
             </java>
+            <pom>
+              <sortPom>
+                <expandEmptyElements>false</expandEmptyElements>
+              </sortPom>
+            </pom>
             <scala>
               <includes>
                 <include>src/main/scala/**/*.scala</include>
