@@ -1,7 +1,7 @@
 package com.skraba.avro.enchiridion.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -93,6 +93,30 @@ public class SerializeToBytesTest {
     assertThat(roundTripBytes(GenericData.get(), schema, 1), is(1));
     assertThat(roundTripBytes(GenericData.get(), schema, 0), is(0));
     assertThat(roundTripBytes(GenericData.get(), schema, -1), is(-1));
+  }
+
+  @Test
+  public void testRoundTripSerializeFive() {
+    Schema schema = SchemaBuilder.builder().intType();
+
+    // From an int to a byte array.
+    byte[] serialized = toBytes(null, schema, 5);
+    assertThat(serialized.length, is(1));
+    assertThat(serialized[0], is((byte) 0x0A));
+    // The binary representation is 00000110, there is no high bit, so just convert
+    // to decimal and divide by two.
+
+    Integer datum = fromBytes(GenericData.get(), schema, serialized);
+    assertThat(fromBytes(GenericData.get(), schema, serialized), is(5));
+
+    // Thses 
+    assertThat(fromBytes(GenericData.get(), schema, new byte[] {(byte) 0x8A, 0x00}), is(5));
+    assertThat(
+        fromBytes(
+            GenericData.get(),
+            schema,
+            new byte[] {(byte) 0x8A, (byte) 0x80, (byte) 0x80, (byte) 0x80, 0x00}),
+        is(5));
   }
 
   @Test
