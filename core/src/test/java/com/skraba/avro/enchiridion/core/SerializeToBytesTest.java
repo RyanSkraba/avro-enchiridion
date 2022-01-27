@@ -109,7 +109,7 @@ public class SerializeToBytesTest {
     Integer datum = fromBytes(GenericData.get(), schema, serialized);
     assertThat(fromBytes(GenericData.get(), schema, serialized), is(5));
 
-    // Thses 
+    // These are alternative, inefficient varint encodings for 5
     assertThat(fromBytes(GenericData.get(), schema, new byte[] {(byte) 0x8A, 0x00}), is(5));
     assertThat(
         fromBytes(

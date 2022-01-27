@@ -23,7 +23,6 @@
   </modules>
 
   <properties>
-
     <!-- specifies that the system uses Java 8 by default -->
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
@@ -37,6 +36,7 @@
 
     <!-- Dependencies -->
     <avro.version>1.11.0</avro.version>
+    <docopt.version>0.6.0.20150202</docopt.version>
     <hamcrest.version>2.2</hamcrest.version>
     <joda.version>2.10.10</joda.version>
     <junit5.version>5.7.2</junit5.version>
@@ -48,7 +48,7 @@
     <slf4j.version>1.7.32</slf4j.version>
 
     <!-- The main class that can be overridden in subprojects -->
-    <exec.mainClass>MainClassToOverride</exec.mainClass>
+    <exec.mainClass>com.skraba.byexample.ToDoGo</exec.mainClass>
 
     <!-- Plugins -->
     <plugin.clean.maven.version>2.5</plugin.clean.maven.version>
@@ -67,7 +67,6 @@
     <plugin.spotless.version>2.20.0</plugin.spotless.version>
     <plugin.surefire.maven.version>3.0.0-M5</plugin.surefire.maven.version>
     <plugin.war.maven.version>2.2</plugin.war.maven.version>
-
   </properties>
 
   <dependencyManagement>
@@ -216,6 +215,12 @@
 
       <!-- Tests -->
       <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${junit5.version}</version>
@@ -231,12 +236,6 @@
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
         <version>${junit5.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-library</artifactId>
-        <version>${hamcrest.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

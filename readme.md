@@ -12,7 +12,21 @@ _[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): **A small manual 
 
 This project describes how to do many common Java tasks using the Avro serialization library.
 
-The main project uses the latest release of [Avro 1.10.2](https://mvnrepository.com/artifact/org.apache.avro/avro/1.10.2), but includes modules that run the same tests on previous versions of Avro.
+The main project uses the latest release of [Avro 1.11.0](https://mvnrepository.com/artifact/org.apache.avro/avro/1.11.0), but includes modules that run the same tests on previous versions of Avro.
+
+Modules
+------------------------------------------------------------------------------
+
+| module                                                 | description                                                                                   |
+|--------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| [avro-resources](avro-resources/readme.md)             | Reusable resources for testing Avro (Schema JSON strings, etc).                               |
+| [core](core/readme.md)                                 | Unit tests and examples for the Avro Java SDK.                                                |
+| [core17x](core17x/readme.md)                           | Helper project for running tests in Avro 1.7.x                                                |
+| [core18x](core18x/readme.md)                           | Helper project for running tests in Avro 1.8.x                                                |
+| [core19x](core19x/readme.md)                           | Helper project for running tests in Avro 1.9.x                                                |
+| [core-master-snapshot](core-master-snapshot/readme.md) | Helper project for running tests in the latest SNAPSHOT releases from the Avro master branch. |
+| [ipc](ipc/readme.md)                                   | Unit tests and examples for client/server communication with Avro protocols.                  |
+| [plugin](plugin/readme.md)                             | Using the maven plugin to generate Avro classes.                                              |
 
 Java Topics
 ------------------------------------------------------------------------------
@@ -61,20 +75,6 @@ Java Topics
 [EvolveReorderFieldsTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveReorderFieldsTest.java
 [EvolveWidenPrimitivesTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveWidenPrimitivesTest.java
 [EvolveUnionTest]: core/src/test/java/com/skraba/avro/enchiridion/core/evolution/EvolveUnionTest.java
-
-Modules
-------------------------------------------------------------------------------
-
-| module                                                 | description                                                                                   |
-|--------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| [avro-resources](avro-resources/readme.md)             | Reusable resources for testing Avro (Schema JSON strings, etc).                               |
-| [core](core/readme.md)                                 | Unit tests and examples for the Avro Java SDK.                                                |
-| [core17x](core17x/readme.md)                           | Helper project for running tests in Avro 1.7.x                                                |
-| [core18x](core18x/readme.md)                           | Helper project for running tests in Avro 1.8.x                                                |
-| [core19x](core19x/readme.md)                           | Helper project for running tests in Avro 1.9.x                                                |
-| [core-master-snapshot](core-master-snapshot/readme.md) | Helper project for running tests in the latest SNAPSHOT releases from the Avro master branch. |
-| [ipc](ipc/readme.md)                                   | Unit tests and examples for client/server communication with Avro protocols.                  |
-| [plugin](plugin/readme.md)                             | Using the maven plugin to generate Avro classes.                                              |
 
 Building an Apache Avro SNAPSHOT locally.
 ------------------------------------------------------------------------------
