@@ -9,11 +9,15 @@ import scala.collection.immutable.ListMap
   */
 object AvroFieldDefaults {
 
-  /** Holder for the attributes that can be used in testing default values for a field in a record.
+  /** Holder for the attributes that can be used in testing default values for a
+    * field in a record.
     *
-    * @param tag          a tag to identify the configuration, also used as the record name.
-    * @param fieldType    the avro type to assign to the only field in the record.
-    * @param fieldDefault the JSON representation of the field default for the record.
+    * @param tag
+    *   a tag to identify the configuration, also used as the record name.
+    * @param fieldType
+    *   the avro type to assign to the only field in the record.
+    * @param fieldDefault
+    *   the JSON representation of the field default for the record.
     */
   case class FieldDefaultCfg(
       tag: String,
@@ -35,7 +39,8 @@ object AvroFieldDefaults {
         fieldDefault
       )
 
-    /** @return A JSON object containing the namespace, name and aliases.
+    /** @return
+      *   A JSON object containing the namespace, name and aliases.
       */
     lazy val toJson: JsObject = obj(
       "name" -> tag,
@@ -80,7 +85,9 @@ object AvroFieldDefaults {
     case _ => false
   }
 
-  /** A record with a partially specified default.  The fields missing from the default also have defaults. */
+  /** A record with a partially specified default. The fields missing from the
+    * default also have defaults.
+    */
   val Avro2844: String =
     """{
       |  "name" : "Zoo",

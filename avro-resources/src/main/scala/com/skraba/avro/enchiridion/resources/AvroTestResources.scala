@@ -24,7 +24,9 @@ object AvroTestResources {
       )
       .toFile
 
-  /** @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
+  /** @return
+    *   a JSON object with name, doc and type attributes, useful in Avro field
+    *   arrays.
     */
   private[this] def field(
       name: String,
@@ -33,8 +35,9 @@ object AvroTestResources {
   ): JsObject =
     obj("name" -> name, "doc" -> doc, "type" -> fieldType)
 
-  /** @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
-    *         The type of the field is automatically unioned with "null".
+  /** @return
+    *   a JSON object with name, doc and type attributes, useful in Avro field
+    *   arrays. The type of the field is automatically unioned with "null".
     */
   private[this] def fieldOpt(
       name: String,
@@ -48,8 +51,9 @@ object AvroTestResources {
       "default" -> null
     )
 
-  /** @return a JSON object with name, doc and type attributes, useful in Avro field arrays.
-    *         The type of the field is an array of with the given itemType.
+  /** @return
+    *   a JSON object with name, doc and type attributes, useful in Avro field
+    *   arrays. The type of the field is an array of with the given itemType.
     */
   private[this] def fieldArray(
       name: String,
@@ -285,7 +289,8 @@ object AvroTestResources {
       |  } ]
       |}""".stripMargin
 
-  /** @return the given JSON string as pretty formatted scala code.
+  /** @return
+    *   the given JSON string as pretty formatted scala code.
     */
   def prettifyCode(variableName: String, json: String): String = {
     Json

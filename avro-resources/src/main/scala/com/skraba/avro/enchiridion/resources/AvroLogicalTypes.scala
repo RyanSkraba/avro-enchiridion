@@ -5,7 +5,8 @@ import play.api.libs.json.JsObject
 
 /** Generate valid and invalid schemas for checking schema logical types.
   *
-  * @see https://avro.apache.org/docs/current/spec.html#Logical+Types
+  * @see
+  *   https://avro.apache.org/docs/current/spec.html#Logical+Types
   */
 object AvroLogicalTypes {
 
@@ -27,7 +28,8 @@ object AvroLogicalTypes {
   lazy val LocalTimestampMicros: JsObject =
     obj("type" -> "long", "logicalType" -> "local-timestamp-micros")
 
-  /** In a field, the logicalType attribute needs to be nested. None of these fields have logical types.
+  /** In a field, the logicalType attribute needs to be nested. None of these
+    * fields have logical types.
     *
     * ==WRONG==
     *

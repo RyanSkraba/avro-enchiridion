@@ -11,13 +11,17 @@ import scala.collection.immutable.ListMap
   */
 object AvroNames {
 
-  /** Holder for the attributes that can be used in naming a schema type.  Missing optional attributes
-    * are not included in the JSON snippet.
+  /** Holder for the attributes that can be used in naming a schema type.
+    * Missing optional attributes are not included in the JSON snippet.
     *
-    * @param tag       a tag to identify the configuration (unused in the schema).
-    * @param namespace the namespace, if any.
-    * @param name      the name to use, if any.
-    * @param aliases   aliases for the name, if any.
+    * @param tag
+    *   a tag to identify the configuration (unused in the schema).
+    * @param namespace
+    *   the namespace, if any.
+    * @param name
+    *   the name to use, if any.
+    * @param aliases
+    *   aliases for the name, if any.
     */
   case class NameCfg(
       tag: String,
@@ -38,7 +42,8 @@ object AvroNames {
 
     def aliases(aliases: Seq[String]): NameCfg = copy(aliases = Some(aliases))
 
-    /** @return A JSON object containing the namespace, name and aliases.
+    /** @return
+      *   A JSON object containing the namespace, name and aliases.
       */
     lazy val toJson: JsObject = JsObject(
       Seq(
@@ -191,9 +196,12 @@ object AvroNames {
 
   /** Build a RECORD Schema as a JsObject.
     *
-    * @param recordNameCfg The name attributes to apply to the record name.
-    * @param fieldNameCfg  The name attributes to apply to the field name.
-    * @return a one-column RECORD schema JSON using the given name configurations
+    * @param recordNameCfg
+    *   The name attributes to apply to the record name.
+    * @param fieldNameCfg
+    *   The name attributes to apply to the field name.
+    * @return
+    *   a one-column RECORD schema JSON using the given name configurations
     */
   def simpleRecord(
       recordNameCfg: NameCfg = NameCfg("").name("Simple"),
@@ -205,9 +213,12 @@ object AvroNames {
 
   /** Build an ENUM Schema as a JsObject.
     *
-    * @param cfg    The name attributes to apply to the enum name.
-    * @param symbol The symbol permitted for the enum.
-    * @return a one-column ENUM schema JSON string using the given name configuration
+    * @param cfg
+    *   The name attributes to apply to the enum name.
+    * @param symbol
+    *   The symbol permitted for the enum.
+    * @return
+    *   a one-column ENUM schema JSON string using the given name configuration
     */
   def simpleEnum(
       cfg: NameCfg = NameCfg("").name("Simple"),
@@ -218,8 +229,10 @@ object AvroNames {
 
   /** Build an FIXED Schema as a JsObject.
     *
-    * @param cfg The name attributes to apply to the fixed name.
-    * @return a one-column FIXED schema JSON string using the given name configuration
+    * @param cfg
+    *   The name attributes to apply to the fixed name.
+    * @return
+    *   a one-column FIXED schema JSON string using the given name configuration
     */
   def simpleFixed(cfg: NameCfg = NameCfg("").name("Simple")): JsObject = {
     cfg.toJson ++ obj("type" -> "fixed", "size" -> 1)

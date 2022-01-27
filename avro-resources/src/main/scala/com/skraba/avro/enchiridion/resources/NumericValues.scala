@@ -72,8 +72,8 @@ object NumericValues {
     "ByteMaxValue" -> Byte.MaxValue
   )
 
-  /** Valid strings that should be used as text representations for non-finite floating point values according
-    * to IEEE 754 5.12
+  /** Valid strings that should be used as text representations for non-finite
+    * floating point values according to IEEE 754 5.12
     */
   val Strings: Map[String, String] = ListMap(
     "StringInfinity" -> "Infinity",
@@ -91,7 +91,9 @@ object NumericValues {
   val All: Map[String, Any] =
     Doubles ++ Floats ++ Longs ++ Ints ++ Shorts ++ Bytes ++ Strings
 
-  /** All of the numbers as JSON numbers, if possible.  JSON string for non-finite floating points. */
+  /** All of the numbers as JSON numbers, if possible. JSON string for
+    * non-finite floating points.
+    */
   val AllJson: Map[String, JsValue] = All.view
     .mapValues {
       case d: Double if java.lang.Double.isFinite(d) => JsNumber(d)
