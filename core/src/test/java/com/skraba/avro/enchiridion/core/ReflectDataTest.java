@@ -1,12 +1,7 @@
 package com.skraba.avro.enchiridion.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -16,12 +11,8 @@ import java.time.Instant;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
-import org.apache.avro.io.DatumReader;
-import org.apache.avro.io.DatumWriter;
-import org.apache.avro.io.Decoder;
-import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.io.Encoder;
-import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.io.*;
+import org.apache.avro.reflect.AvroSchema;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.avro.reflect.ReflectDatumReader;
 import org.apache.avro.reflect.ReflectDatumWriter;
@@ -114,6 +105,78 @@ public class ReflectDataTest {
 
   public static class EnumRecord {
     public NumbersEnum count;
+  }
+
+  @AvroSchema(
+      "{\"type\":\"record\",\"name\":\"IssueImpl\",\"namespace\":\"com.skraba.avro.enchiridion.core.ReflectDataTest\","
+          + "\"fields\":["
+          + "{\"name\":\"number\",\"type\":\"int\"},"
+          + "{\"name\":\"open\",\"type\":\"boolean\"},"
+          + "{\"name\":\"project\",\"type\":\"string\"}]}")
+  public interface Issue {
+    boolean isOpen();
+
+    int getNumber();
+
+    String getProject();
+  }
+
+  public static class IssueImpl implements Issue {
+    private final boolean open;
+    private final int number;
+    private final String project;
+
+    public IssueImpl() {
+      this.open = false;
+      this.number = 0;
+      this.project = "";
+    }
+
+    public IssueImpl(boolean open, int number, String project) {
+      this.open = open;
+      this.number = number;
+      this.project = project;
+    }
+
+    public boolean isOpen() {
+      return this.open;
+    }
+
+    public int getNumber() {
+      return this.number;
+    }
+
+    public String getProject() {
+      return this.project;
+    }
+  }
+
+  @Test
+  public void testInterface() {
+    Schema reflected = ReflectData.get().getSchema(Issue.class);
+
+    // This is how the AvroSchema annotation was constructed
+    assertThat(reflected, is(ReflectData.get().getSchema(IssueImpl.class)));
+
+    if (AvroVersion.avro_1_9.orAfter("Removed invalid $ from reflected names"))
+      assertThat(
+          reflected.getFullName(),
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest.IssueImpl"));
+    else
+      assertThat(
+          reflected.getFullName(),
+          is("com.skraba.avro.enchiridion.core.ReflectDataTest$.IssueImpl"));
+    assertThat(reflected.getFields(), hasSize(3));
+
+    Issue issue = new IssueImpl(true, 123, "AVRO");
+
+    byte[] serialized = toBytes(issue);
+    assertThat(serialized.length, is(8));
+
+    Issue roundTrip = fromBytes(reflected, serialized);
+    assertThat(roundTrip.isOpen(), is(true));
+    assertThat(roundTrip.getProject(), is("AVRO"));
+    assertThat(roundTrip.getNumber(), is(123));
   }
 
   @Test
