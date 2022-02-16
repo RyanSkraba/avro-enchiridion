@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -152,11 +153,15 @@ public class ReflectDataTest {
   }
 
   @Test
+  @EnabledForAvroVersion(
+      startingFrom = AvroVersion.avro_1_10,
+      reason = "Malformed data exception before 1.10")
   public void testInterface() {
     Schema reflected = ReflectData.get().getSchema(Issue.class);
 
-    // This is how the AvroSchema annotation was constructed
-    assertThat(reflected, is(ReflectData.get().getSchema(IssueImpl.class)));
+    // This is how the AvroSchema annotation was constructed, but this assert might not be literally
+    // true, depending on the order the fields were discovered during reflection.
+    // assertThat(reflected, is(ReflectData.get().getSchema(IssueImpl.class)));
 
     if (AvroVersion.avro_1_9.orAfter("Removed invalid $ from reflected names"))
       assertThat(
