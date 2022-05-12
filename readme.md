@@ -94,3 +94,5 @@ docker run --rm -t -i \
   -u $USER avro-build-$USER \
   ./build.sh test
 ```
+
+Apache Avro™, Avro™, Apache®, and the Apache feather logo are either registered trademarks or trademarks of The Apache Software Foundation.
