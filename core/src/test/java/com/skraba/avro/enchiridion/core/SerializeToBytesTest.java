@@ -1,7 +1,6 @@
 package com.skraba.avro.enchiridion.core;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,12 +12,7 @@ import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
-import org.apache.avro.io.DatumReader;
-import org.apache.avro.io.DatumWriter;
-import org.apache.avro.io.Decoder;
-import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.io.Encoder;
-import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.io.*;
 import org.apache.avro.util.ByteBufferInputStream;
 import org.apache.avro.util.ByteBufferOutputStream;
 import org.junit.jupiter.api.Test;
@@ -85,14 +79,67 @@ public class SerializeToBytesTest {
 
     // From an int to a byte array.
     byte[] serialized = toBytes(null, schema, 1_234_567);
-    assertThat(serialized.length, is(4));
+    assertThat(serialized).hasSize(4);
 
     Integer datum = fromBytes(GenericData.get(), schema, serialized);
-    assertThat(datum, is(1_234_567));
+    assertThat(datum).isEqualTo(1_234_567);
 
-    assertThat(roundTripBytes(GenericData.get(), schema, 1), is(1));
-    assertThat(roundTripBytes(GenericData.get(), schema, 0), is(0));
-    assertThat(roundTripBytes(GenericData.get(), schema, -1), is(-1));
+    assertThat(roundTripBytes(GenericData.get(), schema, 1)).isOne();
+    assertThat(roundTripBytes(GenericData.get(), schema, 0)).isZero();
+    assertThat(roundTripBytes(GenericData.get(), schema, -1)).isEqualTo(-1);
+  }
+
+  @Test
+  void testRoundTripSerializeFloat() {
+    Schema schema = SchemaBuilder.builder().floatType();
+
+    assertThat(toBytes(null, schema, 0f))
+        .containsExactly(0x00, 0x00, 0x00, 0x00)
+        .satisfies(
+            value -> assertThat((float) fromBytes(GenericData.get(), schema, value)).isZero());
+    assertThat(toBytes(null, schema, 1f))
+        .containsExactly(0x00, 0x00, 0x80, 0x3f)
+        .satisfies(
+            value -> assertThat((float) fromBytes(GenericData.get(), schema, value)).isOne());
+    assertThat(toBytes(null, schema, -1f))
+        .containsExactly(0x00, 0x00, 0x80, 0xbf)
+        .satisfies(
+            value ->
+                assertThat((float) fromBytes(GenericData.get(), schema, value)).isEqualTo(-1f));
+    assertThat(toBytes(null, schema, Float.POSITIVE_INFINITY))
+        .containsExactly(0x00, 0x00, 0x80, 0x7f)
+        .satisfies(
+            value ->
+                assertThat((float) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Float.POSITIVE_INFINITY));
+    assertThat(toBytes(null, schema, Float.NEGATIVE_INFINITY))
+        .containsExactly(0x00, 0x00, 0x80, 0xff)
+        .satisfies(
+            value ->
+                assertThat((float) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Float.NEGATIVE_INFINITY));
+    assertThat(toBytes(null, schema, Float.NaN))
+        .containsExactly(0x00, 0x00, 0xC0, 0x7f)
+        .satisfies(
+            value -> assertThat((float) fromBytes(GenericData.get(), schema, value)).isNaN());
+    assertThat(toBytes(null, schema, Float.MAX_VALUE))
+        .containsExactly(0xff, 0xff, 0x7f, 0x7f)
+        .satisfies(
+            value ->
+                assertThat((float) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Float.MAX_VALUE));
+    assertThat(toBytes(null, schema, Float.MIN_NORMAL))
+        .containsExactly(0x00, 0x00, 0x80, 0x00)
+        .satisfies(
+            value ->
+                assertThat((float) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Float.MIN_NORMAL));
+    assertThat(toBytes(null, schema, Float.MIN_VALUE))
+        .containsExactly(0x01, 0x00, 0x00, 0x00)
+        .satisfies(
+            value ->
+                assertThat((float) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Float.MIN_VALUE));
   }
 
   @Test
@@ -101,22 +148,24 @@ public class SerializeToBytesTest {
 
     // From an int to a byte array.
     byte[] serialized = toBytes(null, schema, 5);
-    assertThat(serialized.length, is(1));
-    assertThat(serialized[0], is((byte) 0x0A));
+    assertThat(serialized).hasSize(1);
+    assertThat(serialized[0]).isEqualTo((byte) 0x0A);
     // The binary representation is 00000110, there is no high bit, so just convert
     // to decimal and divide by two.
 
     Integer datum = fromBytes(GenericData.get(), schema, serialized);
-    assertThat(fromBytes(GenericData.get(), schema, serialized), is(5));
+    assertThat(datum).isEqualTo(5);
 
     // These are alternative, inefficient varint encodings for 5
-    assertThat(fromBytes(GenericData.get(), schema, new byte[] {(byte) 0x8A, 0x00}), is(5));
+    assertThat((Integer) fromBytes(GenericData.get(), schema, new byte[] {(byte) 0x8A, 0x00}))
+        .isEqualTo(5);
     assertThat(
-        fromBytes(
-            GenericData.get(),
-            schema,
-            new byte[] {(byte) 0x8A, (byte) 0x80, (byte) 0x80, (byte) 0x80, 0x00}),
-        is(5));
+            (Integer)
+                fromBytes(
+                    GenericData.get(),
+                    schema,
+                    new byte[] {(byte) 0x8A, (byte) 0x80, (byte) 0x80, (byte) 0x80, 0x00}))
+        .isEqualTo(5);
   }
 
   @Test
@@ -125,13 +174,13 @@ public class SerializeToBytesTest {
 
     // From an int to a byte array.
     List<ByteBuffer> serialized = toByteBuffers(null, schema, 1_234_567);
-    assertThat(serialized.size(), is(1));
+    assertThat(serialized).hasSize(1);
 
     Integer datum = fromByteBuffers(GenericData.get(), schema, serialized);
-    assertThat(datum, is(1_234_567));
+    assertThat(datum).isEqualTo(1_234_567);
 
-    assertThat(roundTripByteBuffers(GenericData.get(), schema, 1), is(1));
-    assertThat(roundTripByteBuffers(GenericData.get(), schema, 0), is(0));
-    assertThat(roundTripByteBuffers(GenericData.get(), schema, -1), is(-1));
+    assertThat(roundTripByteBuffers(GenericData.get(), schema, 1)).isOne();
+    assertThat(roundTripByteBuffers(GenericData.get(), schema, 0)).isZero();
+    assertThat(roundTripByteBuffers(GenericData.get(), schema, -1)).isEqualTo(-1);
   }
 }
