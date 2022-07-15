@@ -256,11 +256,11 @@ public class ReflectDataTest {
     assertThat(serialized.length, is(1));
     assertThat(serialized[0], is((byte) 0x04));
 
-    // This is currently a bug AVRO-1851
-    if (AvroVersion.avro_infinity.orAfter("Bug in parsing enums in a union")) {
+    if (AvroVersion.avro_1_12.orAfter("Bug in parsing enums in a union")) {
       serialized = toBytes(r, EnumRecord.class, ReflectData.AllowNull.get());
-      assertThat(serialized.length, is(1));
-      assertThat(serialized[0], is((byte) 0x04));
+      assertThat(serialized.length, is(2));
+      assertThat(serialized[0], is((byte) 0x02));
+      assertThat(serialized[1], is((byte) 0x04));
     } else {
       AvroRuntimeException ex =
           assertThrows(
