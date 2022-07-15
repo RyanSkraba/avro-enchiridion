@@ -42,6 +42,14 @@ public class SerializeToBytesTest {
     }
   }
 
+  public static <T> T fromBytes(GenericData model, Schema schema, int... serialized) {
+    byte[] asBytes = new byte[serialized.length];
+    for (int i = 0; i < asBytes.length; i++) {
+      asBytes[i] = (byte) serialized[i];
+    }
+    return fromBytes(model, schema, asBytes);
+  }
+
   public static <T> T roundTripBytes(GenericData model, Schema schema, T datum) {
     return fromBytes(model, schema, toBytes(model, schema, datum));
   }
@@ -97,6 +105,10 @@ public class SerializeToBytesTest {
         .containsExactly(0x00, 0x00, 0x00, 0x00)
         .satisfies(
             value -> assertThat((float) fromBytes(GenericData.get(), schema, value)).isZero());
+    assertThat(toBytes(null, schema, -0f))
+        .containsExactly(0x00, 0x00, 0x00, 0x80)
+        .satisfies(
+            value -> assertThat((float) fromBytes(GenericData.get(), schema, value)).isZero());
     assertThat(toBytes(null, schema, 1f))
         .containsExactly(0x00, 0x00, 0x80, 0x3f)
         .satisfies(
@@ -118,10 +130,6 @@ public class SerializeToBytesTest {
             value ->
                 assertThat((float) fromBytes(GenericData.get(), schema, value))
                     .isEqualTo(Float.NEGATIVE_INFINITY));
-    assertThat(toBytes(null, schema, Float.NaN))
-        .containsExactly(0x00, 0x00, 0xC0, 0x7f)
-        .satisfies(
-            value -> assertThat((float) fromBytes(GenericData.get(), schema, value)).isNaN());
     assertThat(toBytes(null, schema, Float.MAX_VALUE))
         .containsExactly(0xff, 0xff, 0x7f, 0x7f)
         .satisfies(
@@ -140,32 +148,130 @@ public class SerializeToBytesTest {
             value ->
                 assertThat((float) fromBytes(GenericData.get(), schema, value))
                     .isEqualTo(Float.MIN_VALUE));
+
+    assertThat(toBytes(null, schema, Float.NaN))
+        .containsExactly(0x00, 0x00, 0xC0, 0x7f)
+        .satisfies(
+            value -> assertThat((float) fromBytes(GenericData.get(), schema, value)).isNaN());
+    assertThat((float) fromBytes(GenericData.get(), schema, 0x12, 0x34, 0xcf, 0x7f)).isNaN();
   }
 
   @Test
-  public void testRoundTripSerializeFive() {
+  void testRoundTripSerializeDouble() {
+    Schema schema = SchemaBuilder.builder().doubleType();
+
+    assertThat(toBytes(null, schema, 0d))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+        .satisfies(
+            value -> assertThat((double) fromBytes(GenericData.get(), schema, value)).isZero());
+    assertThat(toBytes(null, schema, -0d))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80)
+        .satisfies(
+            value -> assertThat((double) fromBytes(GenericData.get(), schema, value)).isZero());
+    assertThat(toBytes(null, schema, 1d))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f)
+        .satisfies(
+            value -> assertThat((double) fromBytes(GenericData.get(), schema, value)).isOne());
+    assertThat(toBytes(null, schema, -1d))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0xbf)
+        .satisfies(
+            value ->
+                assertThat((double) fromBytes(GenericData.get(), schema, value)).isEqualTo(-1f));
+    assertThat(toBytes(null, schema, Double.POSITIVE_INFINITY))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x7f)
+        .satisfies(
+            value ->
+                assertThat((double) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Double.POSITIVE_INFINITY));
+    assertThat(toBytes(null, schema, Double.NEGATIVE_INFINITY))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0xff)
+        .satisfies(
+            value ->
+                assertThat((double) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Double.NEGATIVE_INFINITY));
+    assertThat(toBytes(null, schema, Double.MAX_VALUE))
+        .containsExactly(0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xef, 0x7f)
+        .satisfies(
+            value ->
+                assertThat((double) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Double.MAX_VALUE));
+    assertThat(toBytes(null, schema, Double.MIN_NORMAL))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00)
+        .satisfies(
+            value ->
+                assertThat((double) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Double.MIN_NORMAL));
+    assertThat(toBytes(null, schema, Double.MIN_VALUE))
+        .containsExactly(0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+        .satisfies(
+            value ->
+                assertThat((double) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Double.MIN_VALUE));
+
+    assertThat(toBytes(null, schema, Double.NaN))
+        .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0x7f)
+        .satisfies(
+            value -> assertThat((double) fromBytes(GenericData.get(), schema, value)).isNaN());
+    assertThat(
+            (double)
+                fromBytes(
+                    GenericData.get(), schema, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xf8, 0x7f))
+        .isNaN();
+  }
+
+  @Test
+  public void testRoundTripInt() {
     Schema schema = SchemaBuilder.builder().intType();
 
     // From an int to a byte array.
-    byte[] serialized = toBytes(null, schema, 5);
-    assertThat(serialized).hasSize(1);
-    assertThat(serialized[0]).isEqualTo((byte) 0x0A);
+    assertThat(toBytes(null, schema, 0))
+        .containsExactly(0x00)
+        .satisfies(value -> assertThat((int) fromBytes(GenericData.get(), schema, value)).isZero());
+    assertThat(toBytes(null, schema, 1))
+        .containsExactly(0x02)
+        .satisfies(value -> assertThat((int) fromBytes(GenericData.get(), schema, value)).isOne());
+    assertThat(toBytes(null, schema, -1))
+        .containsExactly(0x01)
+        .satisfies(
+            value -> assertThat((int) fromBytes(GenericData.get(), schema, value)).isEqualTo(-1));
+
     // The binary representation is 00000110, there is no high bit, so just convert
     // to decimal and divide by two.
-
-    Integer datum = fromBytes(GenericData.get(), schema, serialized);
-    assertThat(datum).isEqualTo(5);
-
-    // These are alternative, inefficient varint encodings for 5
-    assertThat((Integer) fromBytes(GenericData.get(), schema, new byte[] {(byte) 0x8A, 0x00}))
+    assertThat(toBytes(null, schema, 5))
+        .containsExactly(0x0a)
+        .satisfies(
+            value -> assertThat((int) fromBytes(GenericData.get(), schema, value)).isEqualTo(5));
+    assertThat((int) fromBytes(GenericData.get(), schema, 0x8a, 0x80, 0x80, 0x80, 0x00))
         .isEqualTo(5);
-    assertThat(
-            (Integer)
-                fromBytes(
-                    GenericData.get(),
-                    schema,
-                    new byte[] {(byte) 0x8A, (byte) 0x80, (byte) 0x80, (byte) 0x80, 0x00}))
-        .isEqualTo(5);
+
+    assertThat(toBytes(null, schema, 42))
+        .containsExactly(0x54)
+        .satisfies(
+            value -> assertThat((int) fromBytes(GenericData.get(), schema, value)).isEqualTo(42));
+    assertThat((int) fromBytes(GenericData.get(), schema, 0xd4, 0x80, 0x80, 0x80, 0x00))
+        .isEqualTo(42);
+
+    assertThat((int) fromBytes(GenericData.get(), schema, 0x7e)).isEqualTo(63);
+    assertThat((int) fromBytes(GenericData.get(), schema, 0x7f)).isEqualTo(-64);
+    assertThat(toBytes(null, schema, 64)).containsExactly(0x80, 0x01);
+    assertThat(toBytes(null, schema, -65)).containsExactly(0x81, 0x01);
+    assertThat(toBytes(null, schema, 8191)).containsExactly(0xfe, 0x7f);
+    assertThat(toBytes(null, schema, 8192)).containsExactly(0x80, 0x80, 0x01);
+    assertThat(toBytes(null, schema, 1048576)).containsExactly(0x80, 0x80, 0x80, 0x01);
+    assertThat(toBytes(null, schema, 134217728)).containsExactly(0x80, 0x80, 0x80, 0x80, 0x01);
+
+    assertThat(toBytes(null, schema, Integer.MIN_VALUE))
+        .containsExactly(0xff, 0xff, 0xff, 0xff, 0x0f)
+        .satisfies(
+            value ->
+                assertThat((int) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Integer.MIN_VALUE));
+    assertThat(toBytes(null, schema, Integer.MAX_VALUE))
+        .containsExactly(0xfe, 0xff, 0xff, 0xff, 0x0f)
+        .satisfies(
+            value ->
+                assertThat((int) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Integer.MAX_VALUE));
   }
 
   @Test
