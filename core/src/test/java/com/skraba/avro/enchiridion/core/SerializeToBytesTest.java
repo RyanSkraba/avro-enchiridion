@@ -275,6 +275,62 @@ public class SerializeToBytesTest {
   }
 
   @Test
+  public void testRoundTripLong() {
+    Schema schema = SchemaBuilder.builder().longType();
+
+    // From an long to a byte array.
+    assertThat(toBytes(null, schema, 0L))
+        .containsExactly(0x00)
+        .satisfies(
+            value -> assertThat((long) fromBytes(GenericData.get(), schema, value)).isZero());
+    assertThat(toBytes(null, schema, 1L))
+        .containsExactly(0x02)
+        .satisfies(value -> assertThat((long) fromBytes(GenericData.get(), schema, value)).isOne());
+    assertThat(toBytes(null, schema, -1L))
+        .containsExactly(0x01)
+        .satisfies(
+            value -> assertThat((long) fromBytes(GenericData.get(), schema, value)).isEqualTo(-1L));
+
+    // The binary representation is 00000110, there is no high bit, so just convert
+    // to decimal and divide by two.
+    assertThat(toBytes(null, schema, 5L))
+        .containsExactly(0x0a)
+        .satisfies(
+            value -> assertThat((long) fromBytes(GenericData.get(), schema, value)).isEqualTo(5));
+    assertThat((long) fromBytes(GenericData.get(), schema, 0x8a, 0x80, 0x80, 0x80, 0x00))
+        .isEqualTo(5L);
+
+    assertThat(toBytes(null, schema, 42L))
+        .containsExactly(0x54)
+        .satisfies(
+            value -> assertThat((long) fromBytes(GenericData.get(), schema, value)).isEqualTo(42L));
+    assertThat((long) fromBytes(GenericData.get(), schema, 0xd4, 0x80, 0x80, 0x80, 0x00))
+        .isEqualTo(42L);
+
+    assertThat((long) fromBytes(GenericData.get(), schema, 0x7e)).isEqualTo(63L);
+    assertThat((long) fromBytes(GenericData.get(), schema, 0x7f)).isEqualTo(-64L);
+    assertThat(toBytes(null, schema, 64L)).containsExactly(0x80, 0x01);
+    assertThat(toBytes(null, schema, -65L)).containsExactly(0x81, 0x01);
+    assertThat(toBytes(null, schema, 8191L)).containsExactly(0xfe, 0x7f);
+    assertThat(toBytes(null, schema, 8192L)).containsExactly(0x80, 0x80, 0x01);
+    assertThat(toBytes(null, schema, 1048576L)).containsExactly(0x80, 0x80, 0x80, 0x01);
+    assertThat(toBytes(null, schema, 134217728L)).containsExactly(0x80, 0x80, 0x80, 0x80, 0x01);
+
+    assertThat(toBytes(null, schema, Long.MIN_VALUE))
+        .containsExactly(0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01)
+        .satisfies(
+            value ->
+                assertThat((long) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Long.MIN_VALUE));
+    assertThat(toBytes(null, schema, Long.MAX_VALUE))
+        .containsExactly(0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01)
+        .satisfies(
+            value ->
+                assertThat((long) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(Long.MAX_VALUE));
+  }
+
+  @Test
   public void testRoundTripSerializeIntegerToByteBuffers() {
     Schema schema = SchemaBuilder.builder().intType();
 
