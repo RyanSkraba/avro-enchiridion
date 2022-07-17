@@ -331,6 +331,23 @@ public class SerializeToBytesTest {
   }
 
   @Test
+  public void testRoundTripNull() {
+    Schema schema = SchemaBuilder.builder().nullType();
+
+    // From a null to a byte array.
+    assertThat(toBytes(null, schema, null))
+        .hasSize(0)
+        .satisfies(
+            value -> assertThat((Object) fromBytes(GenericData.get(), schema, value)).isNull());
+
+    // This might be surprising, any datum can be passed and it will be ignored.
+    assertThat(toBytes(null, schema, new Object()))
+        .hasSize(0)
+        .satisfies(
+            value -> assertThat((Object) fromBytes(GenericData.get(), schema, value)).isNull());
+  }
+
+  @Test
   public void testRoundTripSerializeIntegerToByteBuffers() {
     Schema schema = SchemaBuilder.builder().intType();
 
