@@ -39,7 +39,8 @@ public class DateAndTimeTests {
   private final IndexedRecord BTTF =
       createRecordDateTimeTypes(
           "BackToTheFuture",
-          ZonedDateTime.of(1985, 2, 14, 12, 34, 56, 123456789, ZoneOffset.ofHours(1)).toInstant());
+          ZonedDateTime.of(2015, 10, 21, 16, 29, 56, 123456789, ZoneOffset.ofHours(-7))
+              .toInstant());
 
   private final IndexedRecord EPOCH =
       createRecordDateTimeTypes(
@@ -82,13 +83,13 @@ public class DateAndTimeTests {
     assertThat(epochRoundTrip.get(7), is(0L));
 
     assertThat(bttfRoundTrip.get(0), is(new Utf8("BackToTheFuture")));
-    assertThat(bttfRoundTrip.get(1), is(477228896123L));
-    assertThat(bttfRoundTrip.get(2), is(477228896123456L));
-    assertThat(bttfRoundTrip.get(3), is(477228896123L));
-    assertThat(bttfRoundTrip.get(4), is(477228896123456L));
-    assertThat(bttfRoundTrip.get(5), is(5523));
-    assertThat(bttfRoundTrip.get(6), is(41696123));
-    assertThat(bttfRoundTrip.get(7), is(41696123456L));
+    assertThat(bttfRoundTrip.get(1), is(1445470196123L));
+    assertThat(bttfRoundTrip.get(2), is(1445470196123456L));
+    assertThat(bttfRoundTrip.get(3), is(1445470196123L));
+    assertThat(bttfRoundTrip.get(4), is(1445470196123456L));
+    assertThat(bttfRoundTrip.get(5), is(16729));
+    assertThat(bttfRoundTrip.get(6), is(84596123));
+    assertThat(bttfRoundTrip.get(7), is(84596123456L));
   }
 
   @Test
@@ -123,18 +124,18 @@ public class DateAndTimeTests {
     assertThat(epochRoundTrip.get(7), is(LocalTime.of(0, 0, 0)));
 
     assertThat(bttfRoundTrip.get(0), is(new Utf8("BackToTheFuture")));
-    assertThat(bttfRoundTrip.get(1), is(Instant.ofEpochMilli(477228896123L)));
-    assertThat(bttfRoundTrip.get(2), is(Instant.ofEpochSecond(477228896L, 123456000L)));
+    assertThat(bttfRoundTrip.get(1), is(Instant.ofEpochMilli(1445470196123L)));
+    assertThat(bttfRoundTrip.get(2), is(Instant.ofEpochSecond(1445470196, 123456000L)));
     if (AvroVersion.avro_1_10.orAfter()) {
-      assertThat(bttfRoundTrip.get(3), is(LocalDateTime.of(1985, 2, 14, 11, 34, 56, 123000000)));
-      assertThat(bttfRoundTrip.get(4), is(LocalDateTime.of(1985, 2, 14, 11, 34, 56, 123456000)));
+      assertThat(bttfRoundTrip.get(3), is(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123000000)));
+      assertThat(bttfRoundTrip.get(4), is(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123456000)));
     } else {
-      assertThat(bttfRoundTrip.get(3), is(477228896123L));
-      assertThat(bttfRoundTrip.get(4), is(477228896123456L));
+      assertThat(bttfRoundTrip.get(3), is(1445470196123L));
+      assertThat(bttfRoundTrip.get(4), is(1445470196123456L));
     }
-    assertThat(bttfRoundTrip.get(5), is(LocalDate.of(1985, 2, 14)));
-    assertThat(bttfRoundTrip.get(6), is(LocalTime.of(11, 34, 56, 123000000)));
-    assertThat(bttfRoundTrip.get(7), is(LocalTime.of(11, 34, 56, 123456000)));
+    assertThat(bttfRoundTrip.get(5), is(LocalDate.of(2015, 10, 21)));
+    assertThat(bttfRoundTrip.get(6), is(LocalTime.of(23, 29, 56, 123000000)));
+    assertThat(bttfRoundTrip.get(7), is(LocalTime.of(23, 29, 56, 123456000)));
   }
 
   @Test
