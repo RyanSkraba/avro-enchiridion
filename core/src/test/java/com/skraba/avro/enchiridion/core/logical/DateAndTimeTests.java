@@ -2,11 +2,7 @@ package com.skraba.avro.enchiridion.core.logical;
 
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.roundTripBytes;
 import static com.skraba.avro.enchiridion.resources.AvroLogicalTypes$.MODULE$;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
@@ -47,7 +43,7 @@ public class DateAndTimeTests {
           "epoch", ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant());
 
   /**
-   * @return A record with the {@link AvroLogicalTypes$#MODULE$#dateLogicalTypeRecord()} schema with
+   * @return A record with the {@link AvroLogicalTypes$#MODULE$#DateLogicalTypeRecord()} schema with
    *     the specified instant.
    */
   static GenericRecord createRecordDateTimeTypes(String name, Instant i) {
@@ -69,27 +65,27 @@ public class DateAndTimeTests {
   public void testRecordsAsPrimitives() {
     // Deserializing and reading with the GenericData and date/time logical types return primitives.
     IndexedRecord epochRoundTrip = roundTripBytes(GenericData.get(), DATE_TIME_SCHEMA, EPOCH);
-    assertThat(EPOCH, is(epochRoundTrip));
+    assertThat(EPOCH).isEqualTo(epochRoundTrip);
     IndexedRecord bttfRoundTrip = roundTripBytes(GenericData.get(), DATE_TIME_SCHEMA, BTTF);
-    assertThat(BTTF, is(bttfRoundTrip));
+    assertThat(BTTF).isEqualTo(bttfRoundTrip);
 
-    assertThat(epochRoundTrip.get(0), is(new Utf8("epoch")));
-    assertThat(epochRoundTrip.get(1), is(0L));
-    assertThat(epochRoundTrip.get(2), is(0L));
-    assertThat(epochRoundTrip.get(3), is(0L));
-    assertThat(epochRoundTrip.get(4), is(0L));
-    assertThat(epochRoundTrip.get(5), is(0));
-    assertThat(epochRoundTrip.get(6), is(0));
-    assertThat(epochRoundTrip.get(7), is(0L));
+    assertThat(epochRoundTrip.get(0)).isEqualTo(new Utf8("epoch"));
+    assertThat(epochRoundTrip.get(1)).isEqualTo(0L);
+    assertThat(epochRoundTrip.get(2)).isEqualTo(0L);
+    assertThat(epochRoundTrip.get(3)).isEqualTo(0L);
+    assertThat(epochRoundTrip.get(4)).isEqualTo(0L);
+    assertThat(epochRoundTrip.get(5)).isEqualTo(0);
+    assertThat(epochRoundTrip.get(6)).isEqualTo(0);
+    assertThat(epochRoundTrip.get(7)).isEqualTo(0L);
 
-    assertThat(bttfRoundTrip.get(0), is(new Utf8("BackToTheFuture")));
-    assertThat(bttfRoundTrip.get(1), is(1445470196123L));
-    assertThat(bttfRoundTrip.get(2), is(1445470196123456L));
-    assertThat(bttfRoundTrip.get(3), is(1445470196123L));
-    assertThat(bttfRoundTrip.get(4), is(1445470196123456L));
-    assertThat(bttfRoundTrip.get(5), is(16729));
-    assertThat(bttfRoundTrip.get(6), is(84596123));
-    assertThat(bttfRoundTrip.get(7), is(84596123456L));
+    assertThat(bttfRoundTrip.get(0)).isEqualTo(new Utf8("BackToTheFuture"));
+    assertThat(bttfRoundTrip.get(1)).isEqualTo(1445470196123L);
+    assertThat(bttfRoundTrip.get(2)).isEqualTo(1445470196123456L);
+    assertThat(bttfRoundTrip.get(3)).isEqualTo(1445470196123L);
+    assertThat(bttfRoundTrip.get(4)).isEqualTo(1445470196123456L);
+    assertThat(bttfRoundTrip.get(5)).isEqualTo(16729);
+    assertThat(bttfRoundTrip.get(6)).isEqualTo(84596123);
+    assertThat(bttfRoundTrip.get(7)).isEqualTo(84596123456L);
   }
 
   @Test
@@ -101,41 +97,40 @@ public class DateAndTimeTests {
 
     // Deserializing and reading with the GenericData and date/time logical types return primitives.
     IndexedRecord epochRoundTrip = roundTripBytes(withConversions, DATE_TIME_SCHEMA, EPOCH);
-    assertThat(epochRoundTrip.toString(), not(EPOCH.toString()));
+    assertThat(epochRoundTrip.toString()).isNotEqualTo(EPOCH.toString());
     IndexedRecord bttfRoundTrip = roundTripBytes(withConversions, DATE_TIME_SCHEMA, BTTF);
-    assertThat(bttfRoundTrip.toString(), not(BTTF.toString()));
+    assertThat(bttfRoundTrip.toString()).isNotEqualTo(BTTF.toString());
 
     // TODO: java.lang.ClassCastException: java.time.Instant cannot be cast to java.lang.Long
     // Remove the .toString above!
 
-    assertThat(epochRoundTrip.get(0), is(new Utf8("epoch")));
-    assertThat(epochRoundTrip.get(1), is(Instant.ofEpochMilli(0)));
-    assertThat(epochRoundTrip.get(2), is(Instant.ofEpochMilli(0)));
-    if (AvroVersion.avro_1_10.orAfter()) {
-      // The local-timestamp-millis and local-timestamp-micros appeared in 1.10.x
-      assertThat(epochRoundTrip.get(3), is(LocalDateTime.of(1970, 1, 1, 0, 0, 0)));
-      assertThat(epochRoundTrip.get(4), is(LocalDateTime.of(1970, 1, 1, 0, 0, 0)));
+    assertThat(epochRoundTrip.get(0)).isEqualTo(new Utf8("epoch"));
+    assertThat(epochRoundTrip.get(1)).isEqualTo(Instant.ofEpochMilli(0));
+    assertThat(epochRoundTrip.get(2)).isEqualTo(Instant.ofEpochMilli(0));
+    if (AvroVersion.avro_1_10.orAfter("local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
+      assertThat(epochRoundTrip.get(3)).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
+      assertThat(epochRoundTrip.get(4)).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
     } else {
-      assertThat(epochRoundTrip.get(3), is(0L));
-      assertThat(epochRoundTrip.get(4), is(0L));
+      assertThat(epochRoundTrip.get(3)).isEqualTo(0L);
+      assertThat(epochRoundTrip.get(4)).isEqualTo(0L);
     }
-    assertThat(epochRoundTrip.get(5), is(LocalDate.of(1970, 1, 1)));
-    assertThat(epochRoundTrip.get(6), is(LocalTime.of(0, 0, 0)));
-    assertThat(epochRoundTrip.get(7), is(LocalTime.of(0, 0, 0)));
+    assertThat(epochRoundTrip.get(5)).isEqualTo(LocalDate.of(1970, 1, 1));
+    assertThat(epochRoundTrip.get(6)).isEqualTo(LocalTime.of(0, 0, 0));
+    assertThat(epochRoundTrip.get(7)).isEqualTo(LocalTime.of(0, 0, 0));
 
-    assertThat(bttfRoundTrip.get(0), is(new Utf8("BackToTheFuture")));
-    assertThat(bttfRoundTrip.get(1), is(Instant.ofEpochMilli(1445470196123L)));
-    assertThat(bttfRoundTrip.get(2), is(Instant.ofEpochSecond(1445470196, 123456000L)));
-    if (AvroVersion.avro_1_10.orAfter()) {
-      assertThat(bttfRoundTrip.get(3), is(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123000000)));
-      assertThat(bttfRoundTrip.get(4), is(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123456000)));
+    assertThat(bttfRoundTrip.get(0)).isEqualTo(new Utf8("BackToTheFuture"));
+    assertThat(bttfRoundTrip.get(1)).isEqualTo(Instant.ofEpochMilli(1445470196123L));
+    assertThat(bttfRoundTrip.get(2)).isEqualTo(Instant.ofEpochSecond(1445470196, 123456000L));
+    if (AvroVersion.avro_1_10.orAfter("local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
+      assertThat(bttfRoundTrip.get(3)).isEqualTo(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123000000));
+      assertThat(bttfRoundTrip.get(4)).isEqualTo(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123456000));
     } else {
-      assertThat(bttfRoundTrip.get(3), is(1445470196123L));
-      assertThat(bttfRoundTrip.get(4), is(1445470196123456L));
+      assertThat(bttfRoundTrip.get(3)).isEqualTo(1445470196123L);
+      assertThat(bttfRoundTrip.get(4)).isEqualTo(1445470196123456L);
     }
-    assertThat(bttfRoundTrip.get(5), is(LocalDate.of(2015, 10, 21)));
-    assertThat(bttfRoundTrip.get(6), is(LocalTime.of(23, 29, 56, 123000000)));
-    assertThat(bttfRoundTrip.get(7), is(LocalTime.of(23, 29, 56, 123456000)));
+    assertThat(bttfRoundTrip.get(5)).isEqualTo(LocalDate.of(2015, 10, 21));
+    assertThat(bttfRoundTrip.get(6)).isEqualTo(LocalTime.of(23, 29, 56, 123000000));
+    assertThat(bttfRoundTrip.get(7)).isEqualTo(LocalTime.of(23, 29, 56, 123456000));
   }
 
   @Test
@@ -147,21 +142,21 @@ public class DateAndTimeTests {
 
     // Deserializing and reading with the GenericData and date/time logical types return primitives.
     IndexedRecord epochRoundTrip = roundTripBytes(withConversions, DATE_TIME_SCHEMA, EPOCH);
-    assertThat(epochRoundTrip.toString(), not(EPOCH.toString()));
+    assertThat(epochRoundTrip.toString()).isNotEqualTo(EPOCH.toString());
     IndexedRecord bttfRoundTrip = roundTripBytes(withConversions, DATE_TIME_SCHEMA, BTTF);
-    assertThat(bttfRoundTrip.toString(), not(BTTF.toString()));
+    assertThat(bttfRoundTrip.toString()).isNotEqualTo(BTTF.toString());
 
     // In 1.8.x, these classes are automatically brought in as transitive dependencies
     // In 1.9.x, they need to be manually added to the classpath
     // In 1.10.x, joda-time is no longer used
-    assertThat(epochRoundTrip.get(0).getClass().getName(), is("org.apache.avro.util.Utf8"));
-    assertThat(epochRoundTrip.get(1).getClass().getName(), is("org.joda.time.DateTime"));
-    assertThat(epochRoundTrip.get(2).getClass().getName(), is("org.joda.time.DateTime"));
-    assertThat(epochRoundTrip.get(3).getClass().getName(), is("java.lang.Long"));
-    assertThat(epochRoundTrip.get(4).getClass().getName(), is("java.lang.Long"));
-    assertThat(epochRoundTrip.get(5).getClass().getName(), is("org.joda.time.LocalDate"));
-    assertThat(epochRoundTrip.get(6).getClass().getName(), is("org.joda.time.LocalTime"));
-    assertThat(epochRoundTrip.get(7).getClass().getName(), is("org.joda.time.LocalTime"));
+    assertThat(epochRoundTrip.get(0).getClass().getName()).isEqualTo("org.apache.avro.util.Utf8");
+    assertThat(epochRoundTrip.get(1).getClass().getName()).isEqualTo("org.joda.time.DateTime");
+    assertThat(epochRoundTrip.get(2).getClass().getName()).isEqualTo("org.joda.time.DateTime");
+    assertThat(epochRoundTrip.get(3).getClass().getName()).isEqualTo("java.lang.Long");
+    assertThat(epochRoundTrip.get(4).getClass().getName()).isEqualTo("java.lang.Long");
+    assertThat(epochRoundTrip.get(5).getClass().getName()).isEqualTo("org.joda.time.LocalDate");
+    assertThat(epochRoundTrip.get(6).getClass().getName()).isEqualTo("org.joda.time.LocalTime");
+    assertThat(epochRoundTrip.get(7).getClass().getName()).isEqualTo("org.joda.time.LocalTime");
   }
 
   @Test
@@ -169,16 +164,16 @@ public class DateAndTimeTests {
     Schema s = AvroUtil.api().parse(AvroLogicalTypes$.MODULE$.Date());
     LogicalType lt = LogicalTypes.fromSchema(s);
 
-    assertThat(lt.getName(), is("date"));
-    assertThat(lt, instanceOf(LogicalTypes.Date.class));
+    assertThat(lt.getName()).isEqualTo("date");
+    assertThat(lt).isInstanceOf(LogicalTypes.Date.class);
 
     Schema s2 = AvroUtil.api().parse(AvroLogicalTypes$.MODULE$.DateLogicalTypeRecord());
     LogicalType lt2 = LogicalTypes.fromSchema(s2.getFields().get(1).schema());
-    assertThat(lt2.getName(), is("timestamp-millis"));
-    assertThat(lt2, instanceOf(LogicalTypes.TimestampMillis.class));
+    assertThat(lt2.getName()).isEqualTo("timestamp-millis");
+    assertThat(lt2).isInstanceOf(LogicalTypes.TimestampMillis.class);
 
     Schema s3 = AvroUtil.api().parse(AvroLogicalTypes$.MODULE$.DateLogicalTypeRecordInvalid());
     LogicalType lt3 = LogicalTypes.fromSchema(s3.getFields().get(1).schema());
-    assertThat(lt3, nullValue());
+    assertThat(lt3).isNull();
   }
 }
