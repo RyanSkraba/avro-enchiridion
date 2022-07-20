@@ -22,6 +22,7 @@ import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
 import org.junit.jupiter.api.Test;
@@ -107,7 +108,8 @@ public class DateAndTimeTests {
     assertThat(epochRoundTrip.get(0)).isEqualTo(new Utf8("epoch"));
     assertThat(epochRoundTrip.get(1)).isEqualTo(Instant.ofEpochMilli(0));
     assertThat(epochRoundTrip.get(2)).isEqualTo(Instant.ofEpochMilli(0));
-    if (AvroVersion.avro_1_10.orAfter("local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
+    if (AvroVersion.avro_1_10.orAfter(
+        "local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
       assertThat(epochRoundTrip.get(3)).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
       assertThat(epochRoundTrip.get(4)).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
     } else {
@@ -121,9 +123,12 @@ public class DateAndTimeTests {
     assertThat(bttfRoundTrip.get(0)).isEqualTo(new Utf8("BackToTheFuture"));
     assertThat(bttfRoundTrip.get(1)).isEqualTo(Instant.ofEpochMilli(1445470196123L));
     assertThat(bttfRoundTrip.get(2)).isEqualTo(Instant.ofEpochSecond(1445470196, 123456000L));
-    if (AvroVersion.avro_1_10.orAfter("local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
-      assertThat(bttfRoundTrip.get(3)).isEqualTo(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123000000));
-      assertThat(bttfRoundTrip.get(4)).isEqualTo(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123456000));
+    if (AvroVersion.avro_1_10.orAfter(
+        "local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
+      assertThat(bttfRoundTrip.get(3))
+          .isEqualTo(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123000000));
+      assertThat(bttfRoundTrip.get(4))
+          .isEqualTo(LocalDateTime.of(2015, 10, 21, 23, 29, 56, 123456000));
     } else {
       assertThat(bttfRoundTrip.get(3)).isEqualTo(1445470196123L);
       assertThat(bttfRoundTrip.get(4)).isEqualTo(1445470196123456L);
@@ -175,5 +180,42 @@ public class DateAndTimeTests {
     Schema s3 = AvroUtil.api().parse(AvroLogicalTypes$.MODULE$.DateLogicalTypeRecordInvalid());
     LogicalType lt3 = LogicalTypes.fromSchema(s3.getFields().get(1).schema());
     assertThat(lt3).isNull();
+  }
+
+  @Test
+  @EnabledForAvroVersion(
+      startingFrom = AvroVersion.avro_1_9,
+      reason = "java.time classes aren't supported until Avro 1.9.x")
+  public void testGetMaxDateRanges() {
+    GenericData withConversions = AvroUtil.api().withJavaTimeConversions();
+    GenericRecord maxO =
+        new GenericRecordBuilder(DATE_TIME_SCHEMA)
+            .set("name", "max")
+            .set("datetime_ms", Long.MAX_VALUE)
+            .set("datetime_us", Long.MAX_VALUE)
+            .set("local_datetime_ms", Long.MAX_VALUE)
+            .set("local_datetime_us", Long.MAX_VALUE)
+            .set("date", Integer.MAX_VALUE)
+            .set("time_ms", 24 * 60 * 60 * 1000 - 1)
+            .set("time_us", 24 * 60 * 60 * 1000 * 1000L - 1)
+            .build();
+    IndexedRecord max = roundTripBytes(withConversions, DATE_TIME_SCHEMA, maxO);
+    assertThat(max.toString()).isNotEqualTo(maxO.toString());
+
+    assertThat(max.get(0)).isEqualTo(new Utf8("max"));
+    assertThat(max.get(1)).isEqualTo(Instant.ofEpochMilli(Long.MAX_VALUE));
+    // MAX_VALUE mod 1000000 and remainder * 1000
+    assertThat(max.get(2)).isEqualTo(Instant.ofEpochSecond(9223372036854L, 775807000L));
+    if (AvroVersion.avro_1_10.orAfter(
+        "local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
+      assertThat(max.get(3)).isEqualTo(LocalDateTime.of(292278994, 8, 17, 7, 12, 55, 807000000));
+      assertThat(max.get(4)).isEqualTo(LocalDateTime.of(294247, 1, 10, 4, 0, 54, 775807000));
+    } else {
+      assertThat(max.get(3)).isEqualTo(Long.MAX_VALUE);
+      assertThat(max.get(4)).isEqualTo(Long.MAX_VALUE);
+    }
+    assertThat(max.get(5)).isEqualTo(LocalDate.of(5881580, 7, 11));
+    assertThat(max.get(6)).isEqualTo(LocalTime.of(23, 59, 59, 999000000));
+    assertThat(max.get(7)).isEqualTo(LocalTime.of(23, 59, 59, 999999000));
   }
 }
