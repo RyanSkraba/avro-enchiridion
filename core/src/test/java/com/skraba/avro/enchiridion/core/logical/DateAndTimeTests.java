@@ -205,7 +205,7 @@ public class DateAndTimeTests {
     assertThat(max.get(0)).isEqualTo(new Utf8("max"));
     assertThat(max.get(1)).isEqualTo(Instant.ofEpochMilli(Long.MAX_VALUE));
     // MAX_VALUE mod 1000000 and remainder * 1000
-    assertThat(max.get(2)).isEqualTo(Instant.ofEpochSecond(9223372036854L, 775807000L));
+    assertThat(max.get(2)).isEqualTo(Instant.ofEpochSecond(9223372036854L, 775807000));
     if (AvroVersion.avro_1_10.orAfter(
         "local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
       assertThat(max.get(3)).isEqualTo(LocalDateTime.of(292278994, 8, 17, 7, 12, 55, 807000000));
@@ -217,5 +217,41 @@ public class DateAndTimeTests {
     assertThat(max.get(5)).isEqualTo(LocalDate.of(5881580, 7, 11));
     assertThat(max.get(6)).isEqualTo(LocalTime.of(23, 59, 59, 999000000));
     assertThat(max.get(7)).isEqualTo(LocalTime.of(23, 59, 59, 999999000));
+  }
+
+  @Test
+  @EnabledForAvroVersion(
+      startingFrom = AvroVersion.avro_1_9,
+      reason = "java.time classes aren't supported until Avro 1.9.x")
+  public void testGetMinDateRanges() {
+    GenericData withConversions = AvroUtil.api().withJavaTimeConversions();
+    GenericRecord maxO =
+        new GenericRecordBuilder(DATE_TIME_SCHEMA)
+            .set("name", "max")
+            .set("datetime_ms", Long.MIN_VALUE)
+            .set("datetime_us", Long.MIN_VALUE)
+            .set("local_datetime_ms", Long.MIN_VALUE)
+            .set("local_datetime_us", Long.MIN_VALUE)
+            .set("date", Integer.MIN_VALUE)
+            .set("time_ms", 0)
+            .set("time_us", 0L)
+            .build();
+    IndexedRecord max = roundTripBytes(withConversions, DATE_TIME_SCHEMA, maxO);
+    assertThat(max.toString()).isNotEqualTo(maxO.toString());
+
+    assertThat(max.get(0)).isEqualTo(new Utf8("max"));
+    assertThat(max.get(1)).isEqualTo(Instant.ofEpochMilli(Long.MIN_VALUE));
+    assertThat(max.get(2)).isEqualTo(Instant.ofEpochSecond(-9223372036855L, 224192000));
+    if (AvroVersion.avro_1_10.orAfter(
+        "local-timestamp-millis and local-timestamp-micros appeared in 1.10.x")) {
+      assertThat(max.get(3)).isEqualTo(LocalDateTime.of(-292275055, 5, 16, 16, 47, 4, 192000000));
+      assertThat(max.get(4)).isEqualTo(LocalDateTime.of(-290308, 12, 21, 19, 59, 5, 224192000));
+    } else {
+      assertThat(max.get(3)).isEqualTo(Long.MIN_VALUE);
+      assertThat(max.get(4)).isEqualTo(Long.MIN_VALUE);
+    }
+    assertThat(max.get(5)).isEqualTo(LocalDate.of(-5877641, 6, 23));
+    assertThat(max.get(6)).isEqualTo(LocalTime.of(0, 0, 0, 0));
+    assertThat(max.get(7)).isEqualTo(LocalTime.of(0, 0, 0, 0));
   }
 }
