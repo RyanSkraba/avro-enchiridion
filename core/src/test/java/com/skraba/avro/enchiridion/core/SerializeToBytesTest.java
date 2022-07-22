@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -15,11 +16,13 @@ import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.*;
 import org.apache.avro.util.ByteBufferInputStream;
 import org.apache.avro.util.ByteBufferOutputStream;
+import org.apache.avro.util.Utf8;
 import org.junit.jupiter.api.Test;
 
 /** Unit tests and helper methods to serialize Avro datum to binary. */
 public class SerializeToBytesTest {
 
+  /** Use the given {@link GenericData} to serialize the datum according to the schema. */
   public static <T> byte[] toBytes(GenericData model, Schema schema, T datum) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
       Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
@@ -32,6 +35,10 @@ public class SerializeToBytesTest {
     }
   }
 
+  /**
+   * Use the given {@link GenericData} to deserialize a datum from the bytes according to the
+   * schema.
+   */
   public static <T> T fromBytes(GenericData model, Schema schema, byte[] serialized) {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(serialized)) {
       Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
@@ -48,6 +55,19 @@ public class SerializeToBytesTest {
       asBytes[i] = (byte) serialized[i];
     }
     return fromBytes(model, schema, asBytes);
+  }
+
+  /** Use the given {@link GenericData} to serialize the byte[] according to the schema. */
+  public static <T> byte[] toBytesB(GenericData model, Schema schema, byte[] datum) {
+    return toBytes(model, schema, ByteBuffer.wrap(datum));
+  }
+
+  /**
+   * Use the given {@link GenericData} to deserialize a datum from the bytes according to the
+   * schema.
+   */
+  public static byte[] fromBytesB(GenericData model, Schema schema, byte[] serialized) {
+    return SerializeToBytesTest.<ByteBuffer>fromBytes(model, schema, serialized).array();
   }
 
   public static <T> T roundTripBytes(GenericData model, Schema schema, T datum) {
@@ -82,25 +102,10 @@ public class SerializeToBytesTest {
   }
 
   @Test
-  public void testRoundTripSerializeIntegerToByteArray() {
-    Schema schema = SchemaBuilder.builder().intType();
-
-    // From an int to a byte array.
-    byte[] serialized = toBytes(null, schema, 1_234_567);
-    assertThat(serialized).hasSize(4);
-
-    Integer datum = fromBytes(GenericData.get(), schema, serialized);
-    assertThat(datum).isEqualTo(1_234_567);
-
-    assertThat(roundTripBytes(GenericData.get(), schema, 1)).isOne();
-    assertThat(roundTripBytes(GenericData.get(), schema, 0)).isZero();
-    assertThat(roundTripBytes(GenericData.get(), schema, -1)).isEqualTo(-1);
-  }
-
-  @Test
-  void testRoundTripSerializeFloat() {
+  void testRoundTripFloat() {
     Schema schema = SchemaBuilder.builder().floatType();
 
+    // Around zero
     assertThat(toBytes(null, schema, 0f))
         .containsExactly(0x00, 0x00, 0x00, 0x00)
         .satisfies(
@@ -118,6 +123,8 @@ public class SerializeToBytesTest {
         .satisfies(
             value ->
                 assertThat((float) fromBytes(GenericData.get(), schema, value)).isEqualTo(-1f));
+
+    // Special numbers
     assertThat(toBytes(null, schema, Float.POSITIVE_INFINITY))
         .containsExactly(0x00, 0x00, 0x80, 0x7f)
         .satisfies(
@@ -149,6 +156,7 @@ public class SerializeToBytesTest {
                 assertThat((float) fromBytes(GenericData.get(), schema, value))
                     .isEqualTo(Float.MIN_VALUE));
 
+    // Two different NaN
     assertThat(toBytes(null, schema, Float.NaN))
         .containsExactly(0x00, 0x00, 0xC0, 0x7f)
         .satisfies(
@@ -157,9 +165,10 @@ public class SerializeToBytesTest {
   }
 
   @Test
-  void testRoundTripSerializeDouble() {
+  void testRoundTripDouble() {
     Schema schema = SchemaBuilder.builder().doubleType();
 
+    // Around zero
     assertThat(toBytes(null, schema, 0d))
         .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
         .satisfies(
@@ -177,6 +186,8 @@ public class SerializeToBytesTest {
         .satisfies(
             value ->
                 assertThat((double) fromBytes(GenericData.get(), schema, value)).isEqualTo(-1f));
+
+    // Special numbers
     assertThat(toBytes(null, schema, Double.POSITIVE_INFINITY))
         .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x7f)
         .satisfies(
@@ -208,6 +219,7 @@ public class SerializeToBytesTest {
                 assertThat((double) fromBytes(GenericData.get(), schema, value))
                     .isEqualTo(Double.MIN_VALUE));
 
+    // Two different NaN
     assertThat(toBytes(null, schema, Double.NaN))
         .containsExactly(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0x7f)
         .satisfies(
@@ -223,7 +235,7 @@ public class SerializeToBytesTest {
   public void testRoundTripInt() {
     Schema schema = SchemaBuilder.builder().intType();
 
-    // From an int to a byte array.
+    // Around zero
     assertThat(toBytes(null, schema, 0))
         .containsExactly(0x00)
         .satisfies(value -> assertThat((int) fromBytes(GenericData.get(), schema, value)).isZero());
@@ -251,6 +263,20 @@ public class SerializeToBytesTest {
     assertThat((int) fromBytes(GenericData.get(), schema, 0xd4, 0x80, 0x80, 0x80, 0x00))
         .isEqualTo(42);
 
+    assertThat(toBytes(null, schema, 1_234_567_890))
+        .containsExactly(0xa4, 0x8b, 0xb0, 0x99, 0x09)
+        .satisfies(
+            value ->
+                assertThat((int) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(1_234_567_890));
+    assertThat(toBytes(null, schema, -1_234_567_890))
+        .containsExactly(0xa3, 0x8b, 0xb0, 0x99, 0x09)
+        .satisfies(
+            value ->
+                assertThat((int) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(-1_234_567_890));
+
+    // Ranges
     assertThat((int) fromBytes(GenericData.get(), schema, 0x7e)).isEqualTo(63);
     assertThat((int) fromBytes(GenericData.get(), schema, 0x7f)).isEqualTo(-64);
     assertThat(toBytes(null, schema, 64)).containsExactly(0x80, 0x01);
@@ -278,7 +304,7 @@ public class SerializeToBytesTest {
   public void testRoundTripLong() {
     Schema schema = SchemaBuilder.builder().longType();
 
-    // From an long to a byte array.
+    // Around zero
     assertThat(toBytes(null, schema, 0L))
         .containsExactly(0x00)
         .satisfies(
@@ -307,6 +333,7 @@ public class SerializeToBytesTest {
     assertThat((long) fromBytes(GenericData.get(), schema, 0xd4, 0x80, 0x80, 0x80, 0x00))
         .isEqualTo(42L);
 
+    // Ranges
     assertThat((long) fromBytes(GenericData.get(), schema, 0x7e)).isEqualTo(63L);
     assertThat((long) fromBytes(GenericData.get(), schema, 0x7f)).isEqualTo(-64L);
     assertThat(toBytes(null, schema, 64L)).containsExactly(0x80, 0x01);
@@ -347,6 +374,63 @@ public class SerializeToBytesTest {
             value -> assertThat((Object) fromBytes(GenericData.get(), schema, value)).isNull());
   }
 
+  @Test
+  public void testRoundTripBytes() {
+    Schema schema = SchemaBuilder.builder().bytesType();
+
+    // Use extra helper methods to test with byte arrays.  The actual return value will be a
+    // ByteBuffer!
+    assertThat(toBytesB(null, schema, new byte[] {}))
+        .containsExactly(0x00)
+        .satisfies(value -> assertThat(fromBytesB(GenericData.get(), schema, value)).hasSize(0));
+    assertThat(toBytesB(null, schema, new byte[] {0x12, 0x34}))
+        .containsExactly(0x04, 0x12, 0x34)
+        .satisfies(
+            value -> {
+              assertThat((ByteBuffer) fromBytes(GenericData.get(), schema, value))
+                  .satisfies(bb -> assertThat(bb.remaining()).isEqualTo(2));
+              assertThat(fromBytesB(GenericData.get(), schema, value)).containsExactly(0x12, 0x34);
+            });
+  }
+
+  @Test
+  public void testRoundTripString() {
+    Schema schema = SchemaBuilder.builder().stringType();
+
+    // Note that this is a CharSequence, but the result is Utf8 not Java String.
+    assertThat(toBytes(null, schema, ""))
+        .containsExactly(0x00)
+        .satisfies(
+            value ->
+                assertThat((CharSequence) fromBytes(GenericData.get(), schema, value))
+                    .isInstanceOf(Utf8.class)
+                    .isEmpty());
+    assertThat(toBytes(null, schema, new Utf8("Hello")))
+        .containsExactly(0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f)
+        .satisfies(
+            value ->
+                assertThat((CharSequence) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo(new Utf8("Hello")));
+  }
+
+  @Test
+  public void testRoundTripJavaString() {
+    Schema schema =
+        SchemaBuilder.builder().stringBuilder().prop("avro.java.string", "String").endString();
+
+    // Note that this is a CharSequence, but the result is Utf8 not Java String.
+    assertThat(toBytes(null, schema, ""))
+        .containsExactly(0x00)
+        .satisfies(
+            value -> assertThat((String) fromBytes(GenericData.get(), schema, value)).isEmpty());
+    assertThat(toBytes(null, schema, new Utf8("Hello")))
+        .containsExactly(0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f)
+        .satisfies(
+            value ->
+                assertThat((String) fromBytes(GenericData.get(), schema, value))
+                    .isEqualTo("Hello"));
+  }
+  
   @Test
   public void testRoundTripSerializeIntegerToByteBuffers() {
     Schema schema = SchemaBuilder.builder().intType();
