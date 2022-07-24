@@ -430,7 +430,38 @@ public class SerializeToBytesTest {
                 assertThat((String) fromBytes(GenericData.get(), schema, value))
                     .isEqualTo("Hello"));
   }
-  
+
+  @Test
+  public void testRoundTripArray() {
+    Schema schema = SchemaBuilder.builder().array().items().longType();
+
+    // Note that this is a CharSequence, but the result is Utf8 not Java String.
+    assertThat(toBytes(null, schema, Arrays.asList(4L, 5L, 6L)))
+        .containsExactly(0x06, 0x08, 0x0a, 0x0c, 0x00)
+        .satisfies(
+            value ->
+                assertThat(
+                        SerializeToBytesTest.<List<Long>>fromBytes(
+                            GenericData.get(), schema, value))
+                    .containsExactly(4L, 5L, 6L));
+
+    // These are all equivalent expressions, starting with a three element list:
+    assertThat(
+            SerializeToBytesTest.<List<Long>>fromBytes(
+                GenericData.get(), schema, 0x06, 0x08, 0x0a, 0x0c, 0x00))
+        .containsExactly(4L, 5L, 6L);
+    // three one element lists:
+    assertThat(
+            SerializeToBytesTest.<List<Long>>fromBytes(
+                GenericData.get(), schema, 0x02, 0x08, 0x02, 0x0a, 0x02, 0x0c, 0x00))
+        .containsExactly(4L, 5L, 6L);
+    // and three one element lists with the skip size!
+    assertThat(
+            SerializeToBytesTest.<List<Long>>fromBytes(
+                GenericData.get(), schema, 0x01, 0x02, 0x08, 0x01, 0x02, 0x0a, 0x01, 0x02, 0x0c, 0x00))
+        .containsExactly(4L, 5L, 6L);
+  }
+
   @Test
   public void testRoundTripSerializeIntegerToByteBuffers() {
     Schema schema = SchemaBuilder.builder().intType();
