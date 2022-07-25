@@ -7,7 +7,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
@@ -458,8 +461,84 @@ public class SerializeToBytesTest {
     // and three one element lists with the skip size!
     assertThat(
             SerializeToBytesTest.<List<Long>>fromBytes(
-                GenericData.get(), schema, 0x01, 0x02, 0x08, 0x01, 0x02, 0x0a, 0x01, 0x02, 0x0c, 0x00))
+                GenericData.get(),
+                schema,
+                0x01,
+                0x02,
+                0x08,
+                0x01,
+                0x02,
+                0x0a,
+                0x01,
+                0x02,
+                0x0c,
+                0x00))
         .containsExactly(4L, 5L, 6L);
+  }
+
+  @Test
+  public void testRoundTripMap() {
+    Schema schema = SchemaBuilder.builder().map().values().longType();
+
+    Map<String, Long> datum = new HashMap<>();
+    datum.put("Hello", 4L);
+    datum.put("Bye", 5L);
+
+    Function<byte[], Map<CharSequence, Long>> de =
+        value -> fromBytes(GenericData.get(), schema, value);
+
+    Function<int[], Map<CharSequence, Long>> de2 =
+        value -> fromBytes(GenericData.get(), schema, value);
+
+    // Note that this is a CharSequence, but the result is Utf8 not Java String.
+    assertThat(toBytes(null, schema, datum))
+        .containsExactly(
+            0x04, 0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x08, 0x06, 0x42, 0x79, 0x65, 0x0a, 0x00)
+        .satisfies(
+            value ->
+                assertThat(de.apply(value))
+                    .hasSize(2)
+                    .containsEntry(new Utf8("Hello"), 4L)
+                    .containsEntry(new Utf8("Bye"), 5L));
+
+    // These are all equivalent expressions, starting with a 2 element list:
+    assertThat(
+            de2.apply(
+                new int[] {
+                  0x04, 0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x08, 0x06, 0x42, 0x79, 0x65, 0x0a, 0x00
+                }))
+        .hasSize(2)
+        .containsEntry(new Utf8("Hello"), 4L)
+        .containsEntry(new Utf8("Bye"), 5L);
+    // Keys in the other order!
+    assertThat(
+            de2.apply(
+                new int[] {
+                  0x04, 0x06, 0x42, 0x79, 0x65, 0x0a, 0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x08, 0x00
+                }))
+        .hasSize(2)
+        .containsEntry(new Utf8("Hello"), 4L)
+        .containsEntry(new Utf8("Bye"), 5L);
+    // and two one element lists
+    assertThat(
+            de2.apply(
+                new int[] {
+                  0x02, 0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x08, 0x02, 0x06, 0x42, 0x79, 0x65,
+                  0x0a, 0x00
+                }))
+        .hasSize(2)
+        .containsEntry(new Utf8("Hello"), 4L)
+        .containsEntry(new Utf8("Bye"), 5L);
+    // and two one element lists with the skip size!
+    assertThat(
+            de2.apply(
+                new int[] {
+                  0x01, 0x10, 0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x08, 0x01, 0x1a, 0x06, 0x42,
+                  0x79, 0x65, 0x0a, 0x00
+                }))
+        .hasSize(2)
+        .containsEntry(new Utf8("Hello"), 4L)
+        .containsEntry(new Utf8("Bye"), 5L);
   }
 
   @Test
