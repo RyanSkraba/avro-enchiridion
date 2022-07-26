@@ -16,6 +16,7 @@ import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.io.*;
 import org.apache.avro.util.ByteBufferInputStream;
 import org.apache.avro.util.ByteBufferOutputStream;
@@ -71,6 +72,19 @@ public class SerializeToBytesTest {
    */
   public static byte[] fromBytesB(GenericData model, Schema schema, byte[] serialized) {
     return SerializeToBytesTest.<ByteBuffer>fromBytes(model, schema, serialized).array();
+  }
+
+  /** Use the given {@link GenericData} to serialize the fixed byte[] according to the schema. */
+  public static <T> byte[] toBytesF(GenericData model, Schema schema, byte[] datum) {
+    return toBytes(model, schema, new GenericData.Fixed(schema, datum));
+  }
+
+  /**
+   * Use the given {@link GenericData} to deserialize a fixed datum from the bytes according to the
+   * schema.
+   */
+  public static byte[] fromBytesF(GenericData model, Schema schema, byte[] serialized) {
+    return SerializeToBytesTest.<GenericData.Fixed>fromBytes(model, schema, serialized).bytes();
   }
 
   public static <T> T roundTripBytes(GenericData model, Schema schema, T datum) {
@@ -484,9 +498,9 @@ public class SerializeToBytesTest {
     datum.put("Hello", 4L);
     datum.put("Bye", 5L);
 
+    // These are written as functions here to help with the autoformatting and the long byte arrays.
     Function<byte[], Map<CharSequence, Long>> de =
         value -> fromBytes(GenericData.get(), schema, value);
-
     Function<int[], Map<CharSequence, Long>> de2 =
         value -> fromBytes(GenericData.get(), schema, value);
 
@@ -539,6 +553,27 @@ public class SerializeToBytesTest {
         .hasSize(2)
         .containsEntry(new Utf8("Hello"), 4L)
         .containsEntry(new Utf8("Bye"), 5L);
+  }
+
+  @Test
+  public void testRoundTripFixed() {
+    Schema schemaF0 = SchemaBuilder.builder().fixed("F0").size(0);
+    Schema schemaF2 = SchemaBuilder.builder().fixed("F2").size(2);
+
+    // Use extra helper methods to test with byte arrays.  The actual return value will be a
+    // GenericFixed!
+    assertThat(toBytesF(null, schemaF0, new byte[] {}))
+        .hasSize(0)
+        .satisfies(value -> assertThat(fromBytesF(GenericData.get(), schemaF0, value)).hasSize(0));
+    assertThat(toBytesF(null, schemaF2, new byte[] {0x12, 0x34}))
+        .containsExactly(0x12, 0x34)
+        .satisfies(
+            value -> {
+              assertThat((GenericFixed) fromBytes(GenericData.get(), schemaF2, value))
+                  .satisfies(gf -> assertThat(gf.bytes()).containsExactly(0x12, 0x34));
+              assertThat(fromBytesF(GenericData.get(), schemaF2, value))
+                  .containsExactly(0x12, 0x34);
+            });
   }
 
   @Test
