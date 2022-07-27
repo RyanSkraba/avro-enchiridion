@@ -1,6 +1,7 @@
 package com.skraba.avro.enchiridion.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,10 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericDatumWriter;
-import org.apache.avro.generic.GenericFixed;
+import org.apache.avro.generic.*;
 import org.apache.avro.io.*;
 import org.apache.avro.util.ByteBufferInputStream;
 import org.apache.avro.util.ByteBufferOutputStream;
@@ -574,6 +572,33 @@ public class SerializeToBytesTest {
               assertThat(fromBytesF(GenericData.get(), schemaF2, value))
                   .containsExactly(0x12, 0x34);
             });
+  }
+
+  @Test
+  public void testRoundTripEnum() {
+    Schema schema = SchemaBuilder.builder().enumeration("E1").symbols("Z", "Y", "X", "W");
+
+    assertThat(toBytes(GenericData.get(), schema, new GenericData.EnumSymbol(schema, "Z")))
+        .containsExactly(0x00)
+        .satisfies(
+            value ->
+                assertThat((GenericEnumSymbol<?>) fromBytes(GenericData.get(), schema, value))
+                    .hasToString("Z"));
+    assertThat(toBytes(GenericData.get(), schema, new GenericData.EnumSymbol(schema, "W")))
+        .containsExactly(0x06)
+        .satisfies(
+            value ->
+                assertThat((GenericEnumSymbol<?>) fromBytes(GenericData.get(), schema, value))
+                    .hasToString("W"));
+
+    // TODO: The error message here doesn't seem quite right!  Raise an AVRO JIRA?
+    assertThatThrownBy(
+            () -> toBytes(GenericData.get(), schema, new GenericData.EnumSymbol(schema, "A")))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessageContaining(
+            AvroVersion.avro_1_12.before("Changed exception message")
+                ? "null of E1"
+                : "null value for (non-nullable) E1");
   }
 
   @Test
