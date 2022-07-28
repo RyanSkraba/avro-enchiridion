@@ -1,5 +1,6 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
+import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
 import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
 import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,7 +8,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
-import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.avro.Schema;
@@ -123,8 +123,7 @@ public class EvolveUnionTest {
   public void testV2ToV3ConvertAFieldFromUnionToPrimitive() {
     // Check that schema resolution is OK by reading with the new schema.
     byte[] binaryV2 =
-        SerializeToBytesTest.toBytes(
-            GenericData.get(),
+        toBytes(
             SIMPLE_V2,
             new GenericRecordBuilder(SIMPLE_V2).set("id", 2L).set("name", "two").build());
     GenericRecord recordV3 = new GenericData.Record(SIMPLE_V2);
@@ -160,8 +159,7 @@ public class EvolveUnionTest {
   public void testV3ToV4ConvertAFieldFromUnionToNarrowerUnion() {
     // Check that schema resolution is OK by reading with the new schema.
     byte[] binaryV3 =
-        SerializeToBytesTest.toBytes(
-            GenericData.get(),
+        toBytes(
             SIMPLE_V3,
             new GenericRecordBuilder(SIMPLE_V3).set("id", 3L).set("name", "three").build());
     GenericRecord recordV3 = new GenericData.Record(SIMPLE_V2);

@@ -1,11 +1,11 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
+import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,8 +41,7 @@ public class BasicTest {
       new GenericRecordBuilder(SIMPLE_V1).set("id", 1L).set("name", "one").build();
 
   /** {@link #RECORD_V1} represented as binary. */
-  public static final byte[] BINARY_V1 =
-      SerializeToBytesTest.toBytes(GenericData.get(), SIMPLE_V1, RECORD_V1);
+  public static final byte[] BINARY_V1 = toBytes(SIMPLE_V1, RECORD_V1);
 
   /** The same as the original schema but with a new field. */
   private static final Schema SIMPLE_V2 =

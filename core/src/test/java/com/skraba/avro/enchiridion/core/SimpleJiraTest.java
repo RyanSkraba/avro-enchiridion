@@ -156,14 +156,14 @@ public class SimpleJiraTest {
     GenericRecord r1 = new GenericData.Record(artificiallyNameAField);
     r1.put("data", data);
 
-    byte[] serialized1 = toBytes(GenericData.get(), artificiallyNameAField, r1);
+    byte[] serialized1 = toBytes(artificiallyNameAField, r1);
 
     // Overwrite one of the longs with a timestamp record.
     GenericRecord ts = new GenericData.Record(tsMicros);
     ts.put("ts", 1L);
     data.put("one", ts);
 
-    byte[] serialized2 = toBytes(GenericData.get(), artificiallyNameAField, r1);
+    byte[] serialized2 = toBytes(artificiallyNameAField, r1);
 
     // The two byte arrays should be exactly the same length and only have one difference (the
     // union type.

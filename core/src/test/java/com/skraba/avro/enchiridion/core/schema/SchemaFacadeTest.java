@@ -1,12 +1,12 @@
 package com.skraba.avro.enchiridion.core.schema;
 
+import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.roundTripBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
-import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import java.util.AbstractList;
 import java.util.AbstractMap;
@@ -129,8 +129,7 @@ public class SchemaFacadeTest {
       assertTrue(GenericData.get().validate(annotated, facade));
 
       // Ensure that the facade is considered identical to a datum provided by a round trip.
-      GenericRecord roundTrip =
-          SerializeToBytesTest.roundTripBytes(GenericData.get(), annotated, facade);
+      GenericRecord roundTrip = roundTripBytes(annotated, facade);
       assertThat(GenericData.get().compare(roundTrip, facade, annotated), is(0));
     }
   }

@@ -65,23 +65,19 @@ public class GenericDataTest {
     assertThrows(ClassCastException.class, () -> rFloat.equals(rLong));
     assertThrows(ClassCastException.class, () -> rDouble.equals(rLong));
 
-    assertThat(roundTripBytes(GenericData.get(), simple, rLong), is(rLong));
+    assertThat(roundTripBytes(simple, rLong), is(rLong));
     if (AvroVersion.avro_1_10.orAfter("Change serialization behaviour AVRO-2070")) {
-      assertThat(roundTripBytes(GenericData.get(), simple, rByte), is(rLong));
-      assertThat(roundTripBytes(GenericData.get(), simple, rShort), is(rLong));
-      assertThat(roundTripBytes(GenericData.get(), simple, rInt), is(rLong));
-      assertThat(roundTripBytes(GenericData.get(), simple, rFloat), is(rLong));
-      assertThat(roundTripBytes(GenericData.get(), simple, rDouble), is(rLong));
+      assertThat(roundTripBytes(simple, rByte), is(rLong));
+      assertThat(roundTripBytes(simple, rShort), is(rLong));
+      assertThat(roundTripBytes(simple, rInt), is(rLong));
+      assertThat(roundTripBytes(simple, rFloat), is(rLong));
+      assertThat(roundTripBytes(simple, rDouble), is(rLong));
     } else {
-      assertThrows(
-          ClassCastException.class, () -> roundTripBytes(GenericData.get(), simple, rByte));
-      assertThrows(
-          ClassCastException.class, () -> roundTripBytes(GenericData.get(), simple, rShort));
-      assertThrows(ClassCastException.class, () -> roundTripBytes(GenericData.get(), simple, rInt));
-      assertThrows(
-          ClassCastException.class, () -> roundTripBytes(GenericData.get(), simple, rFloat));
-      assertThrows(
-          ClassCastException.class, () -> roundTripBytes(GenericData.get(), simple, rDouble));
+      assertThrows(ClassCastException.class, () -> roundTripBytes(simple, rByte));
+      assertThrows(ClassCastException.class, () -> roundTripBytes(simple, rShort));
+      assertThrows(ClassCastException.class, () -> roundTripBytes(simple, rInt));
+      assertThrows(ClassCastException.class, () -> roundTripBytes(simple, rFloat));
+      assertThrows(ClassCastException.class, () -> roundTripBytes(simple, rDouble));
     }
   }
 }
