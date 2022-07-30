@@ -5,12 +5,11 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.SchemaCompatibility;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,25 +27,27 @@ import org.junit.jupiter.params.provider.MethodSource;
  *   <li><b>bytes</b> is promotable to string
  * </ol>
  */
-public class EvolveWidenPrimitivesTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class EvolveWidenPrimitivesTest {
 
   /** All of the schemas to check against each other. */
-  private static final List<Schema> ALL =
-      Arrays.asList(
-          Schema.create(Schema.Type.INT),
-          Schema.create(Schema.Type.LONG),
-          Schema.create(Schema.Type.FLOAT),
-          Schema.create(Schema.Type.DOUBLE),
-          Schema.create(Schema.Type.STRING),
-          Schema.create(Schema.Type.BYTES),
-          Schema.createFixed("fixed", null, null, 6));
+  protected Stream<Schema> getAllSchemasToCrossCheck() {
+    return Stream.of(
+        Schema.create(Schema.Type.INT),
+        Schema.create(Schema.Type.LONG),
+        Schema.create(Schema.Type.FLOAT),
+        Schema.create(Schema.Type.DOUBLE),
+        Schema.create(Schema.Type.STRING),
+        Schema.create(Schema.Type.BYTES),
+        Schema.createFixed("fixed", null, null, 6));
+  }
 
   /**
    * A Stream of all evolutions possible between the schemas in ALL, as well as whether or not the
    * evolution should be permitted.
    */
-  private static Stream<Arguments> getAllEvolutions() {
-    return ALL.stream()
+  private Stream<Arguments> getAllEvolutions() {
+    return getAllSchemasToCrossCheck()
         .flatMap(
             fieldType1 -> {
               Schema v1 =
@@ -56,7 +57,7 @@ public class EvolveWidenPrimitivesTest {
                       .type(fieldType1)
                       .noDefault()
                       .endRecord();
-              return ALL.stream()
+              return getAllSchemasToCrossCheck()
                   .flatMap(
                       fieldType2 -> {
                         Schema v2 =
@@ -96,9 +97,7 @@ public class EvolveWidenPrimitivesTest {
       if (v1.getType() == Schema.Type.STRING && v2.getType() == Schema.Type.BYTES) {
         return true;
       }
-      if (v1.getType() == Schema.Type.BYTES && v2.getType() == Schema.Type.STRING) {
-        return true;
-      }
+      return v1.getType() == Schema.Type.BYTES && v2.getType() == Schema.Type.STRING;
     }
 
     return false;
@@ -106,7 +105,7 @@ public class EvolveWidenPrimitivesTest {
 
   @ParameterizedTest
   @MethodSource("getAllEvolutions")
-  public void testSchemaCompatibility(boolean permitted, Schema v1, Schema v2) {
+  void testSchemaCompatibility(boolean permitted, Schema v1, Schema v2) {
     SchemaCompatibility.SchemaPairCompatibility compatibility =
         SchemaCompatibility.checkReaderWriterCompatibility(v2, v1);
     if (permitted) {

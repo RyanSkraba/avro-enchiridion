@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Nested;
 public class Aggregated {
 
   @Nested
+  public class BasicTest extends com.skraba.avro.enchiridion.core.evolution.BasicTest {}
+
+  @Nested
   public class DefaultsTest extends com.skraba.avro.enchiridion.core.evolution.DefaultsTest {}
 
   @Nested
@@ -31,4 +34,9 @@ public class Aggregated {
   @Nested
   public class EvolveWidenPrimitivesTest
       extends com.skraba.avro.enchiridion.core.evolution.EvolveWidenPrimitivesTest {}
+
+  @Nested
+  public class EvolveWidenPrimitivesWithLogicalTypesTest
+      extends com.skraba.avro.enchiridion.core.evolution
+          .EvolveWidenPrimitivesWithLogicalTypesTest {}
 }

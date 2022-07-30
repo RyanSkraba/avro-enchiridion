@@ -80,7 +80,7 @@ public class EvolveUnionTest {
     SchemaCompatibility.SchemaPairCompatibility compatibility =
         SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V2, SIMPLE_V1);
     assertThat(compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.COMPATIBLE));
-    if (AvroVersion.avro_1_9.orAfter()) {
+    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
       assertThat(
           compatibility.getResult(),
           is(SchemaCompatibility.SchemaCompatibilityResult.compatible()));

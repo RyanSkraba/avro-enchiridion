@@ -88,5 +88,8 @@ public class Aggregated17Test extends Aggregated {
 
     @Nested
     public class EvolveReorderFieldsTest {}
+
+    @Nested
+    public class EvolveWidenPrimitivesWithLogicalTypesTest {}
   }
 }

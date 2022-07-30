@@ -79,6 +79,10 @@ public class AvroUtil {
       return new Schema.Field(name, schema, doc, defaultValue, order);
     }
 
+    public Schema createUnion(Schema... types) {
+      return Schema.createUnion(types);
+    }
+
     public Schema parse(String jsonString) {
       return new Schema.Parser().parse(jsonString);
     }
@@ -122,6 +126,12 @@ public class AvroUtil {
     public GenericData withDecimalConversions(GenericData... models) {
       return withConversions(
           new String[] {"org.apache.avro.Conversions$DecimalConversion"}, models);
+    }
+
+    public GenericData withTimeConversions(GenericData... models) {
+      if (AvroVersion.avro_1_9.orAfter("Use joda-time unless java time is available"))
+        return withJavaTimeConversions(models);
+      else return withJodaTimeConversions();
     }
 
     /**
