@@ -113,10 +113,12 @@ public class EvolveUnionTest {
         SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V3, SIMPLE_V2);
     assertThat(
         compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
-    assertThat(compatibility.getResult().getIncompatibilities(), hasSize(1));
-    assertThat(
-        compatibility.getResult().getIncompatibilities().get(0).getType(),
-        is(SchemaCompatibility.SchemaIncompatibilityType.TYPE_MISMATCH));
+    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
+      assertThat(compatibility.getResult().getIncompatibilities(), hasSize(1));
+      assertThat(
+          compatibility.getResult().getIncompatibilities().get(0).getType(),
+          is(SchemaCompatibility.SchemaIncompatibilityType.TYPE_MISMATCH));
+    }
   }
 
   @Test
@@ -149,10 +151,12 @@ public class EvolveUnionTest {
         SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V4, SIMPLE_V3);
     assertThat(
         compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
-    assertThat(compatibility.getResult().getIncompatibilities(), hasSize(1));
-    assertThat(
-        compatibility.getResult().getIncompatibilities().get(0).getType(),
-        is(SchemaCompatibility.SchemaIncompatibilityType.MISSING_UNION_BRANCH));
+    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
+      assertThat(compatibility.getResult().getIncompatibilities(), hasSize(1));
+      assertThat(
+          compatibility.getResult().getIncompatibilities().get(0).getType(),
+          is(SchemaCompatibility.SchemaIncompatibilityType.MISSING_UNION_BRANCH));
+    }
   }
 
   @Test

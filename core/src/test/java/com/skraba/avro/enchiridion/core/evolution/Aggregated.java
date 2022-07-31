@@ -27,9 +27,8 @@ public class Aggregated {
   public class EvolveReorderFieldsTest
       extends com.skraba.avro.enchiridion.core.evolution.EvolveReorderFieldsTest {}
 
-  //  @Nested
-  //  public class EvolveUnionTest extends
-  // com.skraba.avro.enchiridion.core.evolution.EvolveUnionTest {}
+  @Nested
+  public class EvolveUnionTest extends com.skraba.avro.enchiridion.core.evolution.EvolveUnionTest {}
 
   @Nested
   public class EvolveWidenPrimitivesTest
