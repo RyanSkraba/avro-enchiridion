@@ -1,24 +1,17 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
+import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.fromBytes;
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
-import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
-import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.*;
+import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaCompatible;
+import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaIncompatible;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
-import org.apache.avro.SchemaCompatibility;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
-import org.apache.avro.io.Decoder;
-import org.apache.avro.io.DecoderFactory;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -76,49 +69,30 @@ public class EvolveUnionTest {
           .endRecord();
 
   @Test
-  public void testV1ToV2SchemaCompatibility() {
-    SchemaCompatibility.SchemaPairCompatibility compatibility =
-        SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V2, SIMPLE_V1);
-    assertThat(compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.COMPATIBLE));
-    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
-      assertThat(
-          compatibility.getResult(),
-          is(SchemaCompatibility.SchemaCompatibilityResult.compatible()));
+  public void testCompatibility() {
+    assertSchemaCompatible(SIMPLE_V1, SIMPLE_V2);
+    assertSchemaIncompatible(SIMPLE_V2, SIMPLE_V3, "TYPE_MISMATCH");
+    assertSchemaIncompatible(SIMPLE_V3, SIMPLE_V4, "MISSING_UNION_BRANCH");
+
+    assertSchemaCompatible(SIMPLE_V4, SIMPLE_V3);
+    if (AvroVersion.avro_1_8.orAfter("Bug with 1.7.x")) {
+      assertSchemaCompatible(SIMPLE_V3, SIMPLE_V2);
+    } else {
+      assertSchemaIncompatible(SIMPLE_V3, SIMPLE_V2, "???");
     }
+    // assertSchemaIncompatible(SIMPLE_V2, SIMPLE_V1, "TYPE_MISMATCH"); but two type mismatches
   }
 
   @Test
   public void testV1ToV2ConvertAFieldFromPrimitiveToUnion() {
     // Check that schema resolution is OK by reading with the new schema.
-    GenericRecord recordV2;
-    try (ByteArrayInputStream bais = new ByteArrayInputStream(BINARY_V1)) {
-      Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
-      GenericDatumReader<GenericRecord> r =
-          new GenericDatumReader<>(SIMPLE_V1, SIMPLE_V2, GenericData.get());
-      recordV2 = r.read(null, decoder);
-    } catch (IOException ioe) {
-      throw new RuntimeException((ioe));
-    }
+    GenericRecord recordV2 = fromBytes(SIMPLE_V1, SIMPLE_V2, BINARY_V1);
 
     // Ensure that the new field is read with the defaults.
-    assertThat(recordV2.getSchema(), is(SIMPLE_V2));
-    assertThat(recordV2.getSchema().getFields(), hasSize(2));
-    assertThat(recordV2.get("id"), is(1L));
-    assertThat(recordV2.get("name").toString(), is("one"));
-  }
-
-  @Test
-  public void testV2ToV3SchemaCompatibility() {
-    SchemaCompatibility.SchemaPairCompatibility compatibility =
-        SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V3, SIMPLE_V2);
-    assertThat(
-        compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
-    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
-      assertThat(compatibility.getResult().getIncompatibilities(), hasSize(1));
-      assertThat(
-          compatibility.getResult().getIncompatibilities().get(0).getType(),
-          is(SchemaCompatibility.SchemaIncompatibilityType.TYPE_MISMATCH));
-    }
+    assertThat(recordV2.getSchema()).isEqualTo(SIMPLE_V2);
+    assertThat(recordV2.getSchema().getFields()).hasSize(2);
+    assertThat(recordV2.get("id")).isEqualTo(1L);
+    assertThat(recordV2.get("name")).hasToString("one");
   }
 
   @Test
@@ -128,35 +102,13 @@ public class EvolveUnionTest {
         toBytes(
             SIMPLE_V2,
             new GenericRecordBuilder(SIMPLE_V2).set("id", 2L).set("name", "two").build());
-    GenericRecord recordV3 = new GenericData.Record(SIMPLE_V2);
-    try (ByteArrayInputStream bais = new ByteArrayInputStream(binaryV2)) {
-      Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
-      GenericDatumReader<GenericRecord> r =
-          new GenericDatumReader<>(SIMPLE_V2, SIMPLE_V3, GenericData.get());
-      recordV3 = r.read(null, decoder);
-    } catch (IOException ioe) {
-      throw new RuntimeException((ioe));
-    }
+    GenericRecord recordV3 = fromBytes(SIMPLE_V2, SIMPLE_V3, binaryV2);
 
     // Ensure that the new field is read with the defaults.
-    assertThat(recordV3.getSchema(), is(SIMPLE_V3));
-    assertThat(recordV3.getSchema().getFields(), hasSize(2));
-    assertThat(recordV3.get("id"), is(2L));
-    assertThat(recordV3.get("name").toString(), is("two"));
-  }
-
-  @Test
-  public void testV3ToV4SchemaCompatibility() {
-    SchemaCompatibility.SchemaPairCompatibility compatibility =
-        SchemaCompatibility.checkReaderWriterCompatibility(SIMPLE_V4, SIMPLE_V3);
-    assertThat(
-        compatibility.getType(), is(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE));
-    if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
-      assertThat(compatibility.getResult().getIncompatibilities(), hasSize(1));
-      assertThat(
-          compatibility.getResult().getIncompatibilities().get(0).getType(),
-          is(SchemaCompatibility.SchemaIncompatibilityType.MISSING_UNION_BRANCH));
-    }
+    assertThat(recordV3.getSchema()).isEqualTo(SIMPLE_V3);
+    assertThat(recordV3.getSchema().getFields()).hasSize(2);
+    assertThat(recordV3.get("id")).isEqualTo(2L);
+    assertThat(recordV3.get("name")).hasToString("two");
   }
 
   @Test
@@ -166,20 +118,13 @@ public class EvolveUnionTest {
         toBytes(
             SIMPLE_V3,
             new GenericRecordBuilder(SIMPLE_V3).set("id", 3L).set("name", "three").build());
-    GenericRecord recordV3 = new GenericData.Record(SIMPLE_V2);
-    try (ByteArrayInputStream bais = new ByteArrayInputStream(binaryV3)) {
-      Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
-      GenericDatumReader<GenericRecord> r =
-          new GenericDatumReader<>(SIMPLE_V3, SIMPLE_V4, GenericData.get());
-      recordV3 = r.read(null, decoder);
-    } catch (IOException ioe) {
-      throw new RuntimeException((ioe));
-    }
+
+    GenericRecord recordV4 = fromBytes(SIMPLE_V3, SIMPLE_V4, binaryV3);
 
     // Ensure that the new field is read with the defaults.
-    assertThat(recordV3.getSchema(), is(SIMPLE_V4));
-    assertThat(recordV3.getSchema().getFields(), hasSize(2));
-    assertThat(recordV3.get("id"), is(3L));
-    assertThat(recordV3.get("name").toString(), is("three"));
+    assertThat(recordV4.getSchema()).isEqualTo(SIMPLE_V4);
+    assertThat(recordV4.getSchema().getFields()).hasSize(2);
+    assertThat(recordV4.get("id")).isEqualTo(3L);
+    assertThat(recordV4.get("name")).hasToString("three");
   }
 }

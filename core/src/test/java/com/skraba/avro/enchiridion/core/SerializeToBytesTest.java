@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 /** Unit tests and helper methods to serialize Avro datum to binary. */
 public class SerializeToBytesTest {
 
-  /** Use the given {@link GenericData} modell to serialize the datum according to the schema. */
+  /** Use the given {@link GenericData} model to serialize the datum according to the schema. */
   public static <T> byte[] toBytes(GenericData model, Schema schema, T datum) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
       Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
@@ -65,15 +65,24 @@ public class SerializeToBytesTest {
    * Use the given {@link GenericData} to deserialize a datum from the bytes according to the
    * schema.
    */
-  public static <T> T fromBytes(GenericData model, Schema schema, byte[] serialized) {
+  public static <T> T fromBytes(
+      GenericData model, Schema writer, Schema reader, byte[] serialized) {
     Objects.requireNonNull(model);
     try (ByteArrayInputStream bais = new ByteArrayInputStream(serialized)) {
       Decoder decoder = DecoderFactory.get().binaryDecoder(bais, null);
-      DatumReader<T> r = new GenericDatumReader<>(schema, schema, model);
+      DatumReader<T> r = new GenericDatumReader<>(writer, reader, model);
       return r.read(null, decoder);
     } catch (IOException ioe) {
       throw new RuntimeException((ioe));
     }
+  }
+
+  /**
+   * Use the given {@link GenericData} to deserialize a datum from the bytes according to the
+   * schema.
+   */
+  public static <T> T fromBytes(GenericData model, Schema schema, byte[] serialized) {
+    return fromBytes(model, schema, schema, serialized);
   }
 
   /**
@@ -86,6 +95,10 @@ public class SerializeToBytesTest {
       asBytes[i] = (byte) serialized[i];
     }
     return fromBytes(model, schema, asBytes);
+  }
+
+  public static <T> T fromBytes(Schema writer, Schema reader, byte[] serialized) {
+    return fromBytes(GenericData.get(), writer, reader, serialized);
   }
 
   public static <T> T fromBytes(Schema schema, byte[] serialized) {
