@@ -6,8 +6,10 @@ import static com.skraba.avro.enchiridion.core.evolution.BasicTest.*;
 import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaCompatible;
 import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaIncompatible;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericRecord;
@@ -80,7 +82,7 @@ public class EvolveUnionTest {
     } else {
       assertSchemaIncompatible(SIMPLE_V3, SIMPLE_V2, "???");
     }
-    // assertSchemaIncompatible(SIMPLE_V2, SIMPLE_V1, "TYPE_MISMATCH"); but two type mismatches
+    assertSchemaIncompatible(SIMPLE_V2, SIMPLE_V1, "TYPE_MISMATCH", "TYPE_MISMATCH");
   }
 
   @Test
@@ -98,11 +100,9 @@ public class EvolveUnionTest {
   @Test
   public void testV2ToV3ConvertAFieldFromUnionToPrimitive() {
     // Check that schema resolution is OK by reading with the new schema.
-    byte[] binaryV2 =
-        toBytes(
-            SIMPLE_V2,
-            new GenericRecordBuilder(SIMPLE_V2).set("id", 2L).set("name", "two").build());
-    GenericRecord recordV3 = fromBytes(SIMPLE_V2, SIMPLE_V3, binaryV2);
+    GenericRecord recordV2 =
+        new GenericRecordBuilder(SIMPLE_V2).set("id", 2L).set("name", "two").build();
+    GenericRecord recordV3 = fromBytes(SIMPLE_V2, SIMPLE_V3, toBytes(SIMPLE_V2, recordV2));
 
     // Ensure that the new field is read with the defaults.
     assertThat(recordV3.getSchema()).isEqualTo(SIMPLE_V3);
@@ -112,14 +112,22 @@ public class EvolveUnionTest {
   }
 
   @Test
+  public void testV2ToV3ConvertAFieldFromUnionToPrimitive_Failure() {
+    // Check that schema resolution is OK by reading with the new schema.
+    GenericRecord recordV2 =
+        new GenericRecordBuilder(SIMPLE_V2).set("id", null).set("name", "two").build();
+    byte[] binaryV2 = toBytes(SIMPLE_V2, recordV2);
+    assertThatThrownBy(() -> fromBytes(SIMPLE_V2, SIMPLE_V3, binaryV2))
+        .isInstanceOf(AvroTypeException.class)
+        .hasMessage("Found null, expecting long");
+  }
+
+  @Test
   public void testV3ToV4ConvertAFieldFromUnionToNarrowerUnion() {
     // Check that schema resolution is OK by reading with the new schema.
-    byte[] binaryV3 =
-        toBytes(
-            SIMPLE_V3,
-            new GenericRecordBuilder(SIMPLE_V3).set("id", 3L).set("name", "three").build());
-
-    GenericRecord recordV4 = fromBytes(SIMPLE_V3, SIMPLE_V4, binaryV3);
+    GenericRecord recordV3 =
+        new GenericRecordBuilder(SIMPLE_V2).set("id", 3L).set("name", "three").build();
+    GenericRecord recordV4 = fromBytes(SIMPLE_V3, SIMPLE_V4, toBytes(SIMPLE_V3, recordV3));
 
     // Ensure that the new field is read with the defaults.
     assertThat(recordV4.getSchema()).isEqualTo(SIMPLE_V4);
