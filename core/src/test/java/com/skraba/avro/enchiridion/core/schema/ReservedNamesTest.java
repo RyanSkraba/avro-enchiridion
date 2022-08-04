@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.apache.avro.generic.GenericData;
@@ -34,7 +33,7 @@ public class ReservedNamesTest {
 
     GenericRecord datum = new GenericRecordBuilder(s).set("a1", 0L).build();
 
-    byte[] binary = SerializeToBytesTest.toBytes(s, datum);
+    byte[] binary = toBytes(s, datum);
     GenericRecord roundTrip = fromBytes(s, binary);
 
     String json = toJson(GenericData.get(), s, datum);
@@ -50,7 +49,7 @@ public class ReservedNamesTest {
 
     GenericRecord datum = new GenericRecordBuilder(s).set("a1", 0L).build();
 
-    byte[] binary = SerializeToBytesTest.toBytes(s, datum);
+    byte[] binary = toBytes(s, datum);
     GenericRecord roundTrip = fromBytes(s, binary);
 
     String json = toJson(GenericData.get(), s, datum);
@@ -71,7 +70,7 @@ public class ReservedNamesTest {
             .set("next", new GenericRecordBuilder(s).set("value", 1).set("next", null).build())
             .build();
 
-    byte[] binary = SerializeToBytesTest.toBytes(s, datum);
+    byte[] binary = toBytes(s, datum);
     GenericRecord roundTrip = fromBytes(GenericData.get(), s, binary);
 
     String json = toJson(GenericData.get(), s, datum);
@@ -96,7 +95,7 @@ public class ReservedNamesTest {
             .set("next", new GenericRecordBuilder(s).set("value", 1).set("next", null).build())
             .build();
 
-    byte[] binary = SerializeToBytesTest.toBytes(s, datum);
+    byte[] binary = toBytes(s, datum);
     GenericRecord roundTrip = fromBytes(GenericData.get(), s, binary);
 
     String json = toJson(GenericData.get(), s, datum);
@@ -117,7 +116,7 @@ public class ReservedNamesTest {
             .set("next", new GenericRecordBuilder(s).set("value", 1).set("next", null).build())
             .build();
 
-    byte[] binary = SerializeToBytesTest.toBytes(s, datum);
+    byte[] binary = toBytes(s, datum);
     GenericRecord roundTrip = fromBytes(GenericData.get(), s, binary);
 
     String json = toJson(GenericData.get(), s, datum);
@@ -133,7 +132,7 @@ public class ReservedNamesTest {
 
     GenericRecord datum = new GenericRecordBuilder(s).set("a1", 0L).build();
 
-    byte[] binary = SerializeToBytesTest.toBytes(s, datum);
+    byte[] binary = toBytes(s, datum);
     GenericRecord roundTrip = fromBytes(GenericData.get(), s, binary);
 
     String json = toJson(GenericData.get(), s, datum);
@@ -159,7 +158,7 @@ public class ReservedNamesTest {
             .set("next", new GenericRecordBuilder(s).set("value", 1).set("next", null).build())
             .build();
 
-    byte[] binary = SerializeToBytesTest.toBytes(s, datum);
+    byte[] binary = toBytes(s, datum);
     GenericRecord roundTrip = fromBytes(GenericData.get(), s, binary);
 
     String json = toJson(GenericData.get(), s, datum);

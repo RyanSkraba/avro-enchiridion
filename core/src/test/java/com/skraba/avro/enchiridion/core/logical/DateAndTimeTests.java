@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.core.AvroVersion;
-import com.skraba.avro.enchiridion.core.SerializeToBytesTest;
 import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroLogicalTypes$;
 import java.time.Instant;
@@ -66,9 +65,9 @@ public class DateAndTimeTests {
   @Test
   public void testRecordsAsPrimitives() {
     // Deserializing and reading with the GenericData and date/time logical types return primitives.
-    IndexedRecord epochRoundTrip = SerializeToBytesTest.roundTripBytes(DATE_TIME_SCHEMA, EPOCH);
+    IndexedRecord epochRoundTrip = roundTripBytes(DATE_TIME_SCHEMA, EPOCH);
     assertThat(EPOCH).isEqualTo(epochRoundTrip);
-    IndexedRecord bttfRoundTrip = SerializeToBytesTest.roundTripBytes(DATE_TIME_SCHEMA, BTTF);
+    IndexedRecord bttfRoundTrip = roundTripBytes(DATE_TIME_SCHEMA, BTTF);
     assertThat(BTTF).isEqualTo(bttfRoundTrip);
 
     assertThat(epochRoundTrip.get(0)).isEqualTo(new Utf8("epoch"));
