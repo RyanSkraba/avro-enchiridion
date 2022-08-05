@@ -2,10 +2,11 @@ package com.skraba.avro.enchiridion.core.evolution;
 
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.fromBytes;
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
-import static com.skraba.avro.enchiridion.core.evolution.BasicTest.*;
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
+import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
 import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaCompatible;
 import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaIncompatible;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.skraba.avro.enchiridion.junit.AvroAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.skraba.avro.enchiridion.core.AvroVersion;
@@ -28,7 +29,7 @@ import org.junit.jupiter.api.Test;
  *   <li><b>V4 (narrow union for name)</b> { id: LONG, name: STRING|BYTES }
  * </ol>
  */
-public class EvolveUnionTest {
+class EvolveUnionTest {
 
   /** The same as the original schema but with both fields changed to nullable. */
   private static final Schema SIMPLE_V2 =
@@ -71,7 +72,7 @@ public class EvolveUnionTest {
           .endRecord();
 
   @Test
-  public void testCompatibility() {
+  void testCompatibility() {
     assertSchemaCompatible(SIMPLE_V1, SIMPLE_V2);
     assertSchemaIncompatible(SIMPLE_V2, SIMPLE_V3, "TYPE_MISMATCH");
     assertSchemaIncompatible(SIMPLE_V3, SIMPLE_V4, "MISSING_UNION_BRANCH");
@@ -86,33 +87,32 @@ public class EvolveUnionTest {
   }
 
   @Test
-  public void testV1ToV2ConvertAFieldFromPrimitiveToUnion() {
+  void testV1ToV2ConvertAFieldFromPrimitiveToUnion() {
     // Check that schema resolution is OK by reading with the new schema.
     GenericRecord recordV2 = fromBytes(SIMPLE_V1, SIMPLE_V2, BINARY_V1);
 
     // Ensure that the new field is read with the defaults.
-    assertThat(recordV2.getSchema()).isEqualTo(SIMPLE_V2);
-    assertThat(recordV2.getSchema().getFields()).hasSize(2);
-    assertThat(recordV2.get("id")).isEqualTo(1L);
-    assertThat(recordV2.get("name")).hasToString("one");
+    assertThat(recordV2)
+        .hasSchema(SIMPLE_V2)
+        .hasFieldEqualTo("id", 1L)
+        .hasFieldEqualTo("name", "one");
   }
 
   @Test
-  public void testV2ToV3ConvertAFieldFromUnionToPrimitive() {
+  void testV2ToV3ConvertAFieldFromUnionToPrimitive() {
     // Check that schema resolution is OK by reading with the new schema.
     GenericRecord recordV2 =
         new GenericRecordBuilder(SIMPLE_V2).set("id", 2L).set("name", "two").build();
     GenericRecord recordV3 = fromBytes(SIMPLE_V2, SIMPLE_V3, toBytes(SIMPLE_V2, recordV2));
 
-    // Ensure that the new field is read with the defaults.
-    assertThat(recordV3.getSchema()).isEqualTo(SIMPLE_V3);
-    assertThat(recordV3.getSchema().getFields()).hasSize(2);
-    assertThat(recordV3.get("id")).isEqualTo(2L);
-    assertThat(recordV3.get("name")).hasToString("two");
+    assertThat(recordV3)
+        .hasSchema(SIMPLE_V3)
+        .hasFieldEqualTo("id", 2L)
+        .hasFieldEqualTo("name", "two");
   }
 
   @Test
-  public void testV2ToV3ConvertAFieldFromUnionToPrimitive_Failure() {
+  void testV2ToV3ConvertAFieldFromUnionToPrimitive_Failure() {
     // Check that schema resolution is OK by reading with the new schema.
     GenericRecord recordV2 =
         new GenericRecordBuilder(SIMPLE_V2).set("id", null).set("name", "two").build();
@@ -123,16 +123,16 @@ public class EvolveUnionTest {
   }
 
   @Test
-  public void testV3ToV4ConvertAFieldFromUnionToNarrowerUnion() {
+  void testV3ToV4ConvertAFieldFromUnionToNarrowerUnion() {
     // Check that schema resolution is OK by reading with the new schema.
     GenericRecord recordV3 =
         new GenericRecordBuilder(SIMPLE_V2).set("id", 3L).set("name", "three").build();
     GenericRecord recordV4 = fromBytes(SIMPLE_V3, SIMPLE_V4, toBytes(SIMPLE_V3, recordV3));
 
     // Ensure that the new field is read with the defaults.
-    assertThat(recordV4.getSchema()).isEqualTo(SIMPLE_V4);
-    assertThat(recordV4.getSchema().getFields()).hasSize(2);
-    assertThat(recordV4.get("id")).isEqualTo(3L);
-    assertThat(recordV4.get("name")).hasToString("three");
+    assertThat(recordV4)
+        .hasSchema(SIMPLE_V4)
+        .hasFieldEqualTo("id", 3L)
+        .hasFieldEqualTo("name", "three");
   }
 }
