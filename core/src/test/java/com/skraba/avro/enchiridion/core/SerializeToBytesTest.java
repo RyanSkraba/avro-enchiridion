@@ -3,6 +3,7 @@ package com.skraba.avro.enchiridion.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

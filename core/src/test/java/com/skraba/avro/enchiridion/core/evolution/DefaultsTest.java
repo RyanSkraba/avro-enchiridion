@@ -7,9 +7,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import com.skraba.avro.enchiridion.resources.NumericValues;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.util.Collections;
 import java.util.function.Supplier;
 import java.util.stream.Stream;

@@ -1,10 +1,9 @@
-package com.skraba.avro.enchiridion.junit;
+package com.skraba.avro.enchiridion.testkit;
 
 import static org.junit.jupiter.api.extension.ConditionEvaluationResult.disabled;
 import static org.junit.jupiter.api.extension.ConditionEvaluationResult.enabled;
 import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -27,7 +26,8 @@ public class EnabledForAvroVersionCondition implements ExecutionCondition {
     return findAnnotation(context.getElement(), EnabledForAvroVersion.class)
         .map(
             annotation -> {
-              if (annotation.startingFrom().orAfter() && annotation.until().before()) {
+              if (annotation.startingFrom().orAfter(annotation.reason())
+                  && annotation.until().before(annotation.reason())) {
                 return ENABLED_ON_CURRENT_VERSION;
               } else {
                 return disabled(

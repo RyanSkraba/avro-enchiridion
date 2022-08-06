@@ -3,7 +3,8 @@ package com.skraba.avro.enchiridion.core;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.EnabledForAvroVersion;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.avro.Schema;

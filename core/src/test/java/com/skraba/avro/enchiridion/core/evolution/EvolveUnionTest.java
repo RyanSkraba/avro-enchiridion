@@ -6,10 +6,10 @@ import static com.skraba.avro.enchiridion.core.evolution.BasicTest.BINARY_V1;
 import static com.skraba.avro.enchiridion.core.evolution.BasicTest.SIMPLE_V1;
 import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaCompatible;
 import static com.skraba.avro.enchiridion.core.evolution.EvolutionAsserts.assertSchemaIncompatible;
-import static com.skraba.avro.enchiridion.junit.AvroAssertions.assertThat;
+import static com.skraba.avro.enchiridion.testkit.AvroAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;

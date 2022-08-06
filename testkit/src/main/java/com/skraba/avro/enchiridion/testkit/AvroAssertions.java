@@ -1,4 +1,4 @@
-package com.skraba.avro.enchiridion.junit;
+package com.skraba.avro.enchiridion.testkit;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;

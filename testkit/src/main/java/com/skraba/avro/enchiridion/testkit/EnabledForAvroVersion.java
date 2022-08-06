@@ -1,6 +1,5 @@
-package com.skraba.avro.enchiridion.junit;
+package com.skraba.avro.enchiridion.testkit;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

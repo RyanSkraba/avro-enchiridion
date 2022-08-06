@@ -1,4 +1,4 @@
-package com.skraba.avro.enchiridion.core;
+package com.skraba.avro.enchiridion.testkit;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;

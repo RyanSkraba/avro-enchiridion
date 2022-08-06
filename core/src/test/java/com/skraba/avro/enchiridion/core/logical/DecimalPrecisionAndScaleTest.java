@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;

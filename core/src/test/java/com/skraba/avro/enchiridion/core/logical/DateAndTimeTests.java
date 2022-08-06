@@ -5,9 +5,9 @@ import static com.skraba.avro.enchiridion.resources.AvroLogicalTypes$.MODULE$;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
-import com.skraba.avro.enchiridion.core.AvroVersion;
-import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroLogicalTypes$;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.EnabledForAvroVersion;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

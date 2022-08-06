@@ -3,6 +3,7 @@ package com.skraba.avro.enchiridion.core;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

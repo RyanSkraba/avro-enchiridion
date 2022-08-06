@@ -9,7 +9,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.EnabledForAvroVersion;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;

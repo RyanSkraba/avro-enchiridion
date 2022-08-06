@@ -28,6 +28,12 @@
       <artifactId>avro-enchiridion-resources</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.skraba.avro.enchiridion</groupId>
+      <artifactId>avro-enchiridion-testkit</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

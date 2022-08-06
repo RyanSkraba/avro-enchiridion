@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import com.skraba.avro.enchiridion.core.Aggregated;
-import com.skraba.avro.enchiridion.core.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import org.junit.jupiter.api.Test;
 
 public class Aggregated110Test extends Aggregated {

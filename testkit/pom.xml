@@ -8,16 +8,14 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>avro-enchiridion-core19x</artifactId>
+  <artifactId>avro-enchiridion-testkit</artifactId>
   <packaging>jar</packaging>
 
-  <name>Avro Enchiridion :: Core 1.9.x</name>
-  <description>Avro core examples with the latest 1.9.x version.</description>
+  <name>Avro Enchiridion :: TestKit</name>
+  <description>Utilities for testing Avro structures</description>
 
   <properties>
     <maven.deploy.skip>false</maven.deploy.skip>
-    <avro.major.version>1.9</avro.major.version>
-    <avro.version>1.9.2</avro.version>
   </properties>
 
   <dependencies>
@@ -25,24 +23,16 @@
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
     </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>
 
-    <!-- Tests -->
     <dependency>
-      <groupId>com.skraba.avro.enchiridion</groupId>
-      <artifactId>avro-enchiridion-core</artifactId>
-      <version>${project.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.skraba.avro.enchiridion</groupId>
-      <artifactId>avro-enchiridion-testkit</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 

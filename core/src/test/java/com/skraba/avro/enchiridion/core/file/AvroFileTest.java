@@ -9,9 +9,9 @@ import static org.hamcrest.io.FileMatchers.anExistingFile;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
-import com.skraba.avro.enchiridion.core.AvroVersion;
-import com.skraba.avro.enchiridion.junit.EnabledForAvroVersion;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.EnabledForAvroVersion;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;

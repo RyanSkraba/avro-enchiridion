@@ -1,6 +1,6 @@
-package com.skraba.avro.enchiridion.junit;
+package com.skraba.avro.enchiridion.testkit;
 
-import static com.skraba.avro.enchiridion.junit.AvroAssertions.assertThat;
+import static com.skraba.avro.enchiridion.testkit.AvroAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.apache.avro.Schema;

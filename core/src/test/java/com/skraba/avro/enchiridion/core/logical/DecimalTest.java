@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.skraba.avro.enchiridion.core.AvroUtil;
-import com.skraba.avro.enchiridion.core.AvroVersion;
 import com.skraba.avro.enchiridion.core.file.AvroFileTest;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

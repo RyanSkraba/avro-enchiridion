@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import com.skraba.avro.enchiridion.core.Aggregated;
 import com.skraba.avro.enchiridion.core.AvroUtil;
-import com.skraba.avro.enchiridion.core.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;

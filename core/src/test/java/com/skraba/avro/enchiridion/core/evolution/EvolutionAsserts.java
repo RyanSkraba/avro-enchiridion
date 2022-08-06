@@ -2,7 +2,7 @@ package com.skraba.avro.enchiridion.core.evolution;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.skraba.avro.enchiridion.core.AvroVersion;
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaCompatibility;
 

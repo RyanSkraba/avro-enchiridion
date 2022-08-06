@@ -1,5 +1,6 @@
 package com.skraba.avro.enchiridion.core;
 
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import org.junit.jupiter.api.Nested;
 
 /** This class exists just to aggregate other unit tests into other maven modules. */

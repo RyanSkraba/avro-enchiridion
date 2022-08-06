@@ -1,5 +1,6 @@
 package com.skraba.avro.enchiridion.core;
 
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
