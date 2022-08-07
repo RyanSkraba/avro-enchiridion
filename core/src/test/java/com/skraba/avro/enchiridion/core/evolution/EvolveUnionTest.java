@@ -81,7 +81,7 @@ class EvolveUnionTest {
     if (AvroVersion.avro_1_8.orAfter("Bug with 1.7.x")) {
       assertSchemaCompatible(SIMPLE_V3, SIMPLE_V2);
     } else {
-      assertSchemaIncompatible(SIMPLE_V3, SIMPLE_V2, "???");
+      assertSchemaIncompatible(SIMPLE_V3, SIMPLE_V2, "TODO: Why is this the case?");
     }
     assertSchemaIncompatible(SIMPLE_V2, SIMPLE_V1, "TYPE_MISMATCH", "TYPE_MISMATCH");
   }

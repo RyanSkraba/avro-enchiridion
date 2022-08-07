@@ -641,7 +641,7 @@ public class SerializeToBytesTest {
     assertThatThrownBy(() -> toBytes(schema, new GenericData.EnumSymbol(schema, "A")))
         .isInstanceOf(NullPointerException.class)
         .hasMessageContaining(
-            AvroVersion.avro_1_12.before("Changed exception message")
+            AvroVersion.avro_1_11.before("Changed exception message in 1.11.1")
                 ? "null of E1"
                 : "null value for (non-nullable) E1");
   }

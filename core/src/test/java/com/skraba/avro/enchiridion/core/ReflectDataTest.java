@@ -257,7 +257,7 @@ public class ReflectDataTest {
     assertThat(serialized.length, is(1));
     assertThat(serialized[0], is((byte) 0x04));
 
-    if (AvroVersion.avro_1_12.orAfter("Bug in parsing enums in a union")) {
+    if (AvroVersion.avro_1_11.orAfter("Bug in parsing enums in a union fixed in 1.11.1")) {
       serialized = toBytes(r, EnumRecord.class, ReflectData.AllowNull.get());
       assertThat(serialized.length, is(2));
       assertThat(serialized[0], is((byte) 0x02));

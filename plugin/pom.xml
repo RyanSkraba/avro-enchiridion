@@ -15,10 +15,9 @@
   <description>Avro examples using the Maven plugin.</description>
 
   <properties>
-    <!-- <maven.compiler.source>16</maven.compiler.source>-->
-    <!-- <maven.compiler.target>16</maven.compiler.target>-->
+    <!-- <maven.compiler.source>17</maven.compiler.source>-->
+    <!-- <maven.compiler.target>17</maven.compiler.target>-->
     <maven.deploy.skip>false</maven.deploy.skip>
-    <!-- <avro.version>1.11.0-SNAPSHOT</avro.version> -->
   </properties>
 
   <dependencies>
