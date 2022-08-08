@@ -97,6 +97,34 @@ object AvroTestResources {
        |  } ]
        |}""".stripMargin
 
+  val SimpleArray: String =
+    """{
+      |  "type" : "array",
+      |  "items" : "long"
+      |}""".stripMargin
+
+  val SimpleEnum: String =
+    """{
+      |  "type" : "enum",
+      |  "name" : "SimpleEnum",
+      |  "namespace" : "com.skraba.avro.enchiridion.simple",
+      |  "symbols" : [ "e1", "e2", "e3" ]
+      |}""".stripMargin
+
+  val SimpleFixed: String =
+    """{
+      |  "type" : "fixed",
+      |  "name" : "SimpleFixed",
+      |  "namespace" : "com.skraba.avro.enchiridion.simple",
+      |  "size" : 5
+      |}""".stripMargin
+
+  val SimpleMap: String =
+    """{
+      |  "type" : "map",
+      |  "values" : "long"
+      |}""".stripMargin
+
   val SimpleRecord: String =
     """{
       |  "type" : "record",
@@ -308,7 +336,19 @@ object AvroTestResources {
     Base
       .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
       .createDirectory()
-      .resolve("SimpleRecord.avsc")
+      .resolve("SimpleEnum.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(Json.parse(SimpleEnum)))
+    Base
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
+      .createDirectory()
+      .resolve("SimpleFixed.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(Json.parse(SimpleFixed)))
+    Base
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
+      .createDirectory()
+      .resolve("SimpleEnum.avsc")
       .toFile
       .writeAll(Json.prettyPrint(Json.parse(SimpleRecord)))
 
@@ -342,6 +382,10 @@ object AvroTestResources {
 
     // Rewrite this source itself with prettified JSON.
     val schemasToPrettify: Map[String, String] = Map(
+      "SimpleArray" -> SimpleArray,
+      "SimpleEnum" -> SimpleEnum,
+      "SimpleFixed" -> SimpleFixed,
+      "SimpleMap" -> SimpleMap,
       "SimpleRecord" -> SimpleRecord,
       "Recursive" -> Recursive,
       "RecursiveIndirect" -> RecursiveIndirect,
@@ -352,7 +396,7 @@ object AvroTestResources {
       {
         for (
           scala <- ThisFile.safeSlurp().toArray;
-          block <- scala.split("val")
+          block <- scala.split("val\\b")
         )
           yield {
             schemasToPrettify
