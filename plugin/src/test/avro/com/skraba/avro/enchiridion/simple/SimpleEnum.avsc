@@ -1,0 +1,13 @@
+{
+  "type" : "record",
+  "name" : "SimpleRecord",
+  "namespace" : "com.skraba.avro.enchiridion.simple",
+  "doc" : "Simple two column record",
+  "fields" : [ {
+    "name" : "id",
+    "type" : "long"
+  }, {
+    "name" : "name",
+    "type" : "string"
+  } ]
+}

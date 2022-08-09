@@ -1,0 +1,132 @@
+{
+  "type" : "record",
+  "name" : "Recipe",
+  "namespace" : "com.skraba.avro.enchiridion.recipe",
+  "doc" : "A recipe containing ingredients and steps",
+  "fields" : [ {
+    "name" : "title",
+    "doc" : "Name or title for this recipe",
+    "type" : [ "null", "string" ],
+    "default" : null
+  }, {
+    "name" : "step_id",
+    "doc" : "A unique tag for this step",
+    "type" : [ "null", "string" ],
+    "default" : null
+  }, {
+    "name" : "from_step_id",
+    "doc" : "The tag of the steps feeding into this step (if any)",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "FromStep",
+        "doc" : "",
+        "fields" : [ {
+          "name" : "fraction",
+          "doc" : "The fraction of the incoming step",
+          "type" : "double"
+        }, {
+          "name" : "step_id",
+          "doc" : "The unique tag for the incoming step",
+          "type" : "string"
+        } ]
+      }
+    },
+    "default" : [ ]
+  }, {
+    "name" : "source",
+    "doc" : "Where the recipe came from (person, website, book)",
+    "type" : [ "null", "string" ],
+    "default" : null
+  }, {
+    "name" : "makes",
+    "doc" : "How much the recipe makes",
+    "type" : [ "null", "string" ],
+    "default" : null
+  }, {
+    "name" : "note",
+    "doc" : "Any free text (information, hints)",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    },
+    "default" : [ ]
+  }, {
+    "name" : "ingredients",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Ingredient",
+        "fields" : [ {
+          "name" : "q",
+          "doc" : "Quantity",
+          "type" : [ "null", "string" ],
+          "default" : null
+        }, {
+          "name" : "n",
+          "doc" : "Name",
+          "type" : [ "null", "string" ],
+          "default" : null
+        }, {
+          "name" : "option",
+          "doc" : "Replacement options for this ingredient",
+          "type" : {
+            "type" : "array",
+            "items" : "Ingredient"
+          },
+          "default" : [ ]
+        }, {
+          "name" : "note",
+          "doc" : "Any free text (information, hints)",
+          "type" : {
+            "type" : "array",
+            "items" : "string"
+          },
+          "default" : [ ]
+        } ]
+      }
+    },
+    "default" : [ ]
+  }, {
+    "name" : "todo",
+    "doc" : "Steps",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    },
+    "default" : [ ]
+  }, {
+    "name" : "steps",
+    "doc" : "Subrecipes",
+    "type" : {
+      "type" : "array",
+      "items" : "com.skraba.avro.enchiridion.recipe.Recipe"
+    },
+    "default" : [ ]
+  }, {
+    "name" : "bake",
+    "type" : [ "null", {
+      "type" : "record",
+      "name" : "Bake",
+      "fields" : [ {
+        "name" : "temp",
+        "doc" : "Temperature",
+        "type" : [ "null", "string" ],
+        "default" : null
+      }, {
+        "name" : "time",
+        "doc" : "Time",
+        "type" : [ "null", "string" ],
+        "default" : null
+      }, {
+        "name" : "note",
+        "doc" : "Note",
+        "type" : [ "null", "string" ],
+        "default" : null
+      } ]
+    } ],
+    "default" : null
+  } ]
+}
