@@ -1,7 +1,9 @@
 package com.skraba.avro.enchiridion.core;
 
+import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.Conversion;
@@ -82,6 +84,79 @@ public class AvroUtil {
 
     public Schema createUnion(Schema... types) {
       return Schema.createUnion(types);
+    }
+
+    /**
+     * Creates a simple schema from a single character.
+     *
+     * <ul>
+     *   <li><b>a</b>: A simple array of longs
+     *   <li><b>b</b>: BOOLEAN
+     *   <li><b>B</b>: BYTES
+     *   <li><b>d</b>: DOUBLE
+     *   <li><b>e</b>: A simple enum with three values
+     *   <li><b>f</b>: FLOAT
+     *   <li><b>F</b>: A simple fixed of length 5
+     *   <li><b>i</b>: INT
+     *   <li><b>l</b>: LONG
+     *   <li><b>m</b>: A simple map of long
+     *   <li><b>r</b>: A simple two column record
+     *   <li><b>s</b>: STRING
+     *   <li><b>u</b>: A union of null and long
+     *   <li><b>Anything else</b>: NULL
+     * </ul>
+     *
+     * @param spec The character to map to a schema.
+     * @return
+     */
+    public Schema createSimple(char spec) {
+      switch (spec) {
+        case 'a':
+          return Schema.createArray(createSimple('l'));
+        case 'b':
+          return Schema.create(Schema.Type.BOOLEAN);
+        case 'B':
+          return Schema.create(Schema.Type.BYTES);
+        case 'd':
+          return Schema.create(Schema.Type.DOUBLE);
+        case 'e':
+          return api().parse(AvroTestResources.SimpleEnum());
+        case 'f':
+          return Schema.create(Schema.Type.FLOAT);
+        case 'F':
+          return api().parse(AvroTestResources.SimpleFixed());
+        case 'i':
+          return Schema.create(Schema.Type.INT);
+        case 'l':
+          return Schema.create(Schema.Type.LONG);
+        case 'm':
+          return Schema.createMap(createSimple('l'));
+        case 'r':
+          return createRecord("A", "l");
+        case 's':
+          return Schema.create(Schema.Type.STRING);
+        case 'u':
+          return createUnion(" s");
+        default:
+          return Schema.create(Schema.Type.NULL);
+      }
+    }
+
+    public Schema createRecord(String recordName, String recordSpec) {
+      ArrayList<Schema.Field> fields = new ArrayList<Schema.Field>();
+      int i = 0;
+      for (char spec : recordSpec.toCharArray()) {
+        fields.add(new Schema.Field(recordName.toLowerCase() + i++, createSimple(spec)));
+      }
+      return Schema.createRecord(recordName, null, null, false, fields);
+    }
+
+    public Schema createUnion(String unionSpec) {
+      ArrayList<Schema> unionTypes = new ArrayList<>();
+      for (char spec : unionSpec.toCharArray()) {
+        unionTypes.add(createSimple(spec));
+      }
+      return Schema.createUnion(unionTypes);
     }
 
     public Schema parse(String jsonString) {
