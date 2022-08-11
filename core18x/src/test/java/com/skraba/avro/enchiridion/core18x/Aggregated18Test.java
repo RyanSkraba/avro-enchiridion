@@ -26,6 +26,11 @@ public class Aggregated18Test extends Aggregated {
   private static class ApiCompatibility18x extends AvroUtil.ApiCompatibility {
 
     @Override
+    public Schema.Field createField(String name, Schema schema) {
+      return createField(name, schema, null, null, Schema.Field.Order.ASCENDING);
+    }
+
+    @Override
     public Schema.Field createField(Schema.Field field, Schema schema) {
       return createFieldOld(field, schema);
     }

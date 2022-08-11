@@ -59,6 +59,10 @@ public class AvroUtil {
       return Schema.createRecord(name, namespace, doc, isError, fields);
     }
 
+    public Schema.Field createField(String name, Schema schema) {
+      return new Schema.Field(name, schema);
+    }
+
     public Schema.Field createField(Schema.Field field, Schema schema) {
       return new Schema.Field(field, schema);
     }
@@ -142,21 +146,44 @@ public class AvroUtil {
       }
     }
 
-    public Schema createRecord(String recordName, String recordSpec) {
-      ArrayList<Schema.Field> fields = new ArrayList<Schema.Field>();
-      int i = 0;
-      for (char spec : recordSpec.toCharArray()) {
-        fields.add(new Schema.Field(recordName.toLowerCase() + i++, createSimple(spec)));
-      }
-      return Schema.createRecord(recordName, null, null, false, fields);
-    }
-
+    /**
+     * @param unionSpec A string of characters to be mapped to a schema using {@link
+     *     #createSimple(char)}.
+     * @return A union of all the schemas mapped from the input spec.
+     */
     public Schema createUnion(String unionSpec) {
       ArrayList<Schema> unionTypes = new ArrayList<>();
       for (char spec : unionSpec.toCharArray()) {
         unionTypes.add(createSimple(spec));
       }
       return Schema.createUnion(unionTypes);
+    }
+
+    /**
+     * Create a record with one field per schema in the record spec.
+     *
+     * @param recordName The name of the record to create
+     * @param recordSpec A string of characters, each to be mapped to a schema using {@link
+     *     #createSimple(char)}.
+     * @return A record with one field per schema found in the spec.
+     */
+    public Schema createRecord(String recordName, String recordSpec) {
+      String[] parts = recordName.split("\\.");
+      String fieldNamePrefix = parts[parts.length - 1].toLowerCase();
+      ArrayList<Schema.Field> fields = new ArrayList<Schema.Field>();
+      int i = 0;
+      if (recordSpec.contains("|")) {
+        for (String fieldSpec : recordSpec.split("\\|")) {
+          if (fieldSpec.length() != 0) {
+            fields.add(createField(fieldNamePrefix + i++, createUnion(fieldSpec)));
+          }
+        }
+      } else {
+        for (char spec : recordSpec.toCharArray()) {
+          fields.add(createField(fieldNamePrefix + i++, createSimple(spec)));
+        }
+      }
+      return createRecord(recordName, null, null, false, fields);
     }
 
     public Schema parse(String jsonString) {

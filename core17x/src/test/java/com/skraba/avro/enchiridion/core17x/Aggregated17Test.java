@@ -43,6 +43,11 @@ public class Aggregated17Test extends Aggregated {
     }
 
     @Override
+    public Schema.Field createField(String name, Schema schema) {
+      return createField(name, schema, null, null, Schema.Field.Order.ASCENDING);
+    }
+
+    @Override
     public Schema.Field createField(
         String name, Schema schema, String doc, Object defaultValue, Schema.Field.Order order) {
       JsonNode defaultJsonNode = new ObjectMapper().valueToTree(defaultValue);
