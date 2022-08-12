@@ -1,6 +1,7 @@
 package com.skraba.avro.enchiridion.testkit;
 
 import org.apache.avro.Schema;
+import org.apache.avro.SchemaCompatibility;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
@@ -31,6 +32,16 @@ public class AvroAssertions extends Assertions {
     return new GenericRecordAssert(actual);
   }
 
+  public static CompatibilityPairAssert assertThat(
+      SchemaCompatibility.SchemaPairCompatibility actual) {
+    return new CompatibilityPairAssert(actual);
+  }
+
+  public static SchemaCompatibilityResultAssert assertThat(
+      SchemaCompatibility.SchemaCompatibilityResult actual) {
+    return new SchemaCompatibilityResultAssert(actual);
+  }
+
   public abstract static class AbstractSchemaAssert<
           SELF extends AbstractSchemaAssert<SELF, ACTUAL>, ACTUAL extends Schema>
       extends AbstractObjectAssert<SELF, ACTUAL> {
@@ -39,7 +50,11 @@ public class AvroAssertions extends Assertions {
       super(actual, selfType);
     }
 
-    protected NamedSchemaAssert isNamed() {
+    public CompatibilityPairAssert compatibilityWith(Schema reader) {
+      return assertThat(SchemaCompatibility.checkReaderWriterCompatibility(reader, actual));
+    }
+
+    public NamedSchemaAssert isNamed() {
       isNotNull();
       if (actual.getType() != Schema.Type.RECORD
           && actual.getType() != Schema.Type.ENUM
@@ -49,7 +64,7 @@ public class AvroAssertions extends Assertions {
       return new NamedSchemaAssert(actual);
     }
 
-    protected RecordSchemaAssert isRecord() {
+    public RecordSchemaAssert isRecord() {
       isNotNull();
       if (actual.getType() != Schema.Type.RECORD) {
         failWithMessage("Expected to have RECORD but was %s", actual.getType());
@@ -73,13 +88,13 @@ public class AvroAssertions extends Assertions {
       super(actual, selfType);
     }
 
-    protected SELF hasName(String name) {
+    public SELF hasName(String name) {
       isNotNull();
       assertThat(actual.getName()).as("Checking the name", actual.getType()).isEqualTo(name);
       return myself;
     }
 
-    protected SELF hasNamespace(String namespace) {
+    public SELF hasNamespace(String namespace) {
       isNotNull();
       assertThat(actual.getNamespace())
           .as("Checking the namespace", actual.getType())
@@ -87,7 +102,7 @@ public class AvroAssertions extends Assertions {
       return myself;
     }
 
-    protected SELF hasFullName(String fullName) {
+    public SELF hasFullName(String fullName) {
       isNotNull();
       assertThat(actual.getFullName())
           .as("Checking the full name", actual.getType())
@@ -123,7 +138,7 @@ public class AvroAssertions extends Assertions {
       return myself;
     }
 
-    protected SELF hasFieldNamed(String fieldName) {
+    public SELF hasFieldNamed(String fieldName) {
       isNotNull();
       assertThat(actual.getField(fieldName))
           .withFailMessage("The %s field doesn't exist in %s", fieldName, actual.getFullName())
@@ -233,6 +248,62 @@ public class AvroAssertions extends Assertions {
 
     public GenericRecordAssert(GenericRecord actual) {
       super(actual, GenericRecordAssert.class);
+    }
+  }
+
+  public static class CompatibilityPairAssert
+      extends AbstractObjectAssert<
+          CompatibilityPairAssert, SchemaCompatibility.SchemaPairCompatibility> {
+
+    protected CompatibilityPairAssert(SchemaCompatibility.SchemaPairCompatibility actual) {
+      super(actual, CompatibilityPairAssert.class);
+    }
+
+    public void isOK() {
+      assertThat(actual.getType())
+          .isEqualTo(SchemaCompatibility.SchemaCompatibilityType.COMPATIBLE);
+      if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
+        assertThat(actual.getResult()).isCompatible();
+      }
+    }
+
+    public void isNotOK(String... reasons) {
+      assertThat(actual.getType())
+          .isEqualTo(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE);
+      if (AvroVersion.avro_1_9.orAfter("getResult appears in 1.9.x")) {
+        assertThat(actual.getResult()).isIncompatible();
+        assertThat(actual.getResult().getIncompatibilities()).hasSameSizeAs(reasons);
+        for (int i = 0; i < reasons.length; i++) {
+          assertThat(actual.getResult()).hasIncompatibilityType(i, reasons[i]);
+        }
+      }
+    }
+  }
+
+  public static class SchemaCompatibilityResultAssert
+      extends AbstractObjectAssert<
+          SchemaCompatibilityResultAssert, SchemaCompatibility.SchemaCompatibilityResult> {
+
+    protected SchemaCompatibilityResultAssert(
+        SchemaCompatibility.SchemaCompatibilityResult actual) {
+      super(actual, SchemaCompatibilityResultAssert.class);
+    }
+
+    public void isCompatible() {
+      assertThat(actual.getCompatibility())
+          .isEqualTo(SchemaCompatibility.SchemaCompatibilityType.COMPATIBLE);
+      assertThat(actual).isEqualTo(SchemaCompatibility.SchemaCompatibilityResult.compatible());
+    }
+
+    public void isIncompatible() {
+      assertThat(actual.getCompatibility())
+          .isEqualTo(SchemaCompatibility.SchemaCompatibilityType.INCOMPATIBLE);
+    }
+
+    public void hasIncompatibilityType(int i, String reason) {
+      assertThat(actual.getIncompatibilities().get(i).getType())
+          .as("Reason %s")
+          .hasToString(reason);
     }
   }
 }
