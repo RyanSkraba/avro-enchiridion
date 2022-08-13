@@ -64,12 +64,20 @@ public class AvroAssertions extends Assertions {
       return new NamedSchemaAssert(actual);
     }
 
+    public NamedSchemaAssert isNamed(String fullName) {
+      return isNamed().hasFullName(fullName);
+    }
+
     public RecordSchemaAssert isRecord() {
       isNotNull();
       if (actual.getType() != Schema.Type.RECORD) {
         failWithMessage("Expected to have RECORD but was %s", actual.getType());
       }
       return new RecordSchemaAssert(actual);
+    }
+
+    public RecordSchemaAssert isRecord(String fullName) {
+      return isRecord().hasFullName(fullName);
     }
   }
 
@@ -135,6 +143,17 @@ public class AvroAssertions extends Assertions {
               "The record %s has %s field(s): %s is out of range",
               actual.getFullName(), actual.getFields().size(), index)
           .hasSizeGreaterThan(index);
+      return myself;
+    }
+
+    public SELF hasFieldsNamed(String... fieldNames) {
+      assertThat(actual.getFields().size())
+          .as("Checking the number of fields")
+          .isEqualTo(fieldNames.length);
+      for (int i = 0; i < fieldNames.length; i++)
+        assertThat(actual.getFields().get(i).name())
+            .as("Checking field %s", i)
+            .isEqualTo(fieldNames[i]);
       return myself;
     }
 

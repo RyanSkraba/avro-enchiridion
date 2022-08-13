@@ -44,6 +44,7 @@ class AvroAssertionsTest {
   @Test
   public void testNamedSchema() {
     assertThat(RECORD_SCHEMA)
+        .isNamed("ns.Record")
         .isNamed()
         .hasName("Record")
         .hasNamespace("ns")
@@ -58,6 +59,8 @@ class AvroAssertionsTest {
     // Other assertion errors
     assertThatThrownBy(() -> assertThat(ENUM_SCHEMA).isNamed().hasName("Nope"))
         .hasMessage(msgqq("Checking the name", "Nope", "Enum"));
+    assertThatThrownBy(() -> assertThat(ENUM_SCHEMA).isNamed("Nope"))
+        .hasMessage(msgqq("Checking the full name", "Nope", "ns.Enum"));
     assertThatThrownBy(() -> assertThat(ENUM_SCHEMA).isNamed().hasNamespace("Nope"))
         .hasMessage(msgqq("Checking the namespace", "Nope", "ns"));
     assertThatThrownBy(() -> assertThat(ENUM_SCHEMA).isNamed().hasFullName("Nope"))
@@ -67,6 +70,8 @@ class AvroAssertionsTest {
   @Test
   public void testRecordSchema() {
     assertThat(RECORD_SCHEMA)
+        .isNamed("ns.Record")
+        .isRecord("ns.Record")
         .isRecord()
         .hasName("Record")
         .hasNamespace("ns")
@@ -74,15 +79,20 @@ class AvroAssertionsTest {
         .hasFieldAt(0)
         .hasFieldAt(1)
         .hasFieldNamed("id")
-        .hasFieldNamed("name");
+        .hasFieldNamed("name")
+        .hasFieldsNamed("id", "name");
 
     // Error when trying to call on a non-record
     assertThatThrownBy(() -> assertThat(ENUM_SCHEMA).isRecord())
+        .hasMessage("Expected to have RECORD but was ENUM");
+    assertThatThrownBy(() -> assertThat(ENUM_SCHEMA).isRecord("ns.Record"))
         .hasMessage("Expected to have RECORD but was ENUM");
 
     // Other assertion errors
     assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord().hasName("Nope"))
         .hasMessage(msgqq("Checking the name", "Nope", "Record"));
+    assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord("Nope"))
+        .hasMessage(msgqq("Checking the full name", "Nope", "ns.Record"));
     assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord().hasNamespace("Nope"))
         .hasMessage(msgqq("Checking the namespace", "Nope", "ns"));
     assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord().hasFullName("Nope"))
@@ -93,6 +103,12 @@ class AvroAssertionsTest {
         .hasMessage("The record ns.Record has 2 field(s): 2 is out of range");
     assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord().hasFieldNamed("nope"))
         .hasMessage("The nope field doesn't exist in ns.Record");
+    assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord().hasFieldsNamed("nope"))
+        .hasMessage(msg("Checking the number of fields", "1", "2"));
+    assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord().hasFieldsNamed("name", "id"))
+        .hasMessage(msgqq("Checking field 0", "name", "id"));
+    assertThatThrownBy(() -> assertThat(RECORD_SCHEMA).isRecord().hasFieldsNamed("id", "id"))
+        .hasMessage(msgqq("Checking field 1", "id", "name"));
   }
 
   @Test
