@@ -3,9 +3,8 @@ package com.skraba.avro.enchiridion.core;
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -22,9 +21,17 @@ public class AvroUtil {
 
   public static ThreadLocal<ApiCompatibility> api = ThreadLocal.withInitial(ApiCompatibility::new);
 
+  public static ThreadLocal<SampleSchemaUtils> sample =
+      ThreadLocal.withInitial(() -> new SampleSchemaUtils(api()));
+
   /** Get an instance that wraps some Avro SDK methods that have evolved between versions. */
   public static ApiCompatibility api() {
     return api.get();
+  }
+
+  /** Get an instance to help create sample schemas. */
+  public static SampleSchemaUtils sample() {
+    return sample.get();
   }
 
   /** Print information about a Java BigDecimal. */
@@ -88,102 +95,6 @@ public class AvroUtil {
 
     public Schema createUnion(Schema... types) {
       return Schema.createUnion(types);
-    }
-
-    /**
-     * Creates a simple schema from a single character.
-     *
-     * <ul>
-     *   <li><b>a</b>: A simple array of longs
-     *   <li><b>b</b>: BOOLEAN
-     *   <li><b>B</b>: BYTES
-     *   <li><b>d</b>: DOUBLE
-     *   <li><b>e</b>: A simple enum with three values
-     *   <li><b>f</b>: FLOAT
-     *   <li><b>F</b>: A simple fixed of length 5
-     *   <li><b>i</b>: INT
-     *   <li><b>l</b>: LONG
-     *   <li><b>m</b>: A simple map of long
-     *   <li><b>r</b>: A simple two column record
-     *   <li><b>s</b>: STRING
-     *   <li><b>u</b>: A union of null and long
-     *   <li><b>Anything else</b>: NULL
-     * </ul>
-     *
-     * @param spec The character to map to a schema.
-     * @return
-     */
-    public Schema createSimple(char spec) {
-      switch (spec) {
-        case 'a':
-          return Schema.createArray(createSimple('l'));
-        case 'b':
-          return Schema.create(Schema.Type.BOOLEAN);
-        case 'B':
-          return Schema.create(Schema.Type.BYTES);
-        case 'd':
-          return Schema.create(Schema.Type.DOUBLE);
-        case 'e':
-          return api().parse(AvroTestResources.SimpleEnum());
-        case 'f':
-          return Schema.create(Schema.Type.FLOAT);
-        case 'F':
-          return api().parse(AvroTestResources.SimpleFixed());
-        case 'i':
-          return Schema.create(Schema.Type.INT);
-        case 'l':
-          return Schema.create(Schema.Type.LONG);
-        case 'm':
-          return Schema.createMap(createSimple('l'));
-        case 'r':
-          return createRecord("A", "l");
-        case 's':
-          return Schema.create(Schema.Type.STRING);
-        case 'u':
-          return createUnion(" s");
-        default:
-          return Schema.create(Schema.Type.NULL);
-      }
-    }
-
-    /**
-     * @param unionSpec A string of characters to be mapped to a schema using {@link
-     *     #createSimple(char)}.
-     * @return A union of all the schemas mapped from the input spec.
-     */
-    public Schema createUnion(String unionSpec) {
-      ArrayList<Schema> unionTypes = new ArrayList<>();
-      for (char spec : unionSpec.toCharArray()) {
-        unionTypes.add(createSimple(spec));
-      }
-      return Schema.createUnion(unionTypes);
-    }
-
-    /**
-     * Create a record with one field per schema in the record spec.
-     *
-     * @param recordName The name of the record to create
-     * @param recordSpec A string of characters, each to be mapped to a schema using {@link
-     *     #createSimple(char)}.
-     * @return A record with one field per schema found in the spec.
-     */
-    public Schema createRecord(String recordName, String recordSpec) {
-      String[] parts = recordName.split("\\.");
-      String fieldNamePrefix = parts[parts.length - 1].toLowerCase();
-      ArrayList<Schema.Field> fields = new ArrayList<Schema.Field>();
-      int i = 0;
-      if (recordSpec.contains("|")) {
-        for (String fieldSpec : recordSpec.split("\\|")) {
-          if (fieldSpec.length() != 0) {
-            fields.add(createField(fieldNamePrefix + i++, createUnion(fieldSpec)));
-          }
-        }
-      } else {
-        for (char spec : recordSpec.toCharArray()) {
-          fields.add(createField(fieldNamePrefix + i++, createSimple(spec)));
-        }
-      }
-      return createRecord(recordName, null, null, false, fields);
     }
 
     public Schema parse(String jsonString) {
@@ -268,6 +179,132 @@ public class AvroUtil {
             "org.apache.avro.data.TimeConversions$TimestampMillisConversion"
           },
           models);
+    }
+  }
+
+  /** Useful classes for generating sample schemas. */
+  public static class SampleSchemaUtils {
+
+    private final ApiCompatibility api;
+
+    SampleSchemaUtils(ApiCompatibility api) {
+      this.api = api;
+    }
+
+    /**
+     * Creates a simple schema from a single character.
+     *
+     * <ul>
+     *   <li><b>a</b>: A simple array of longs
+     *   <li><b>b</b>: BOOLEAN
+     *   <li><b>B</b>: BYTES
+     *   <li><b>d</b>: DOUBLE
+     *   <li><b>e</b>: A simple enum with three values
+     *   <li><b>f</b>: FLOAT
+     *   <li><b>F</b>: A simple fixed of length 5
+     *   <li><b>i</b>: INT
+     *   <li><b>l</b>: LONG
+     *   <li><b>m</b>: A simple map of long
+     *   <li><b>r</b>: A simple two column record
+     *   <li><b>s</b>: STRING
+     *   <li><b>u</b>: A union of null and long
+     *   <li><b>Anything else</b>: NULL
+     * </ul>
+     *
+     * @param spec The character to map to a schema.
+     * @return
+     */
+    public Schema createSimple(char spec) {
+      switch (spec) {
+        case 'a':
+          return Schema.createArray(createSimple('l'));
+        case 'b':
+          return Schema.create(Schema.Type.BOOLEAN);
+        case 'B':
+          return Schema.create(Schema.Type.BYTES);
+        case 'd':
+          return Schema.create(Schema.Type.DOUBLE);
+        case 'e':
+          return api().parse(AvroTestResources.SimpleEnum());
+        case 'f':
+          return Schema.create(Schema.Type.FLOAT);
+        case 'F':
+          return api().parse(AvroTestResources.SimpleFixed());
+        case 'i':
+          return Schema.create(Schema.Type.INT);
+        case 'l':
+          return Schema.create(Schema.Type.LONG);
+        case 'm':
+          return Schema.createMap(createSimple('l'));
+        case 'r':
+          return createRecord("A", "l");
+        case 's':
+          return Schema.create(Schema.Type.STRING);
+        case 'u':
+          return createUnion(" s");
+        default:
+          return Schema.create(Schema.Type.NULL);
+      }
+    }
+
+    /**
+     * @param unionSpec A string of characters to be mapped to a schema using {@link
+     *     #createSimple(char)}.
+     * @return A union of all the schemas mapped from the input spec. If only one character, returns
+     *     the simple schema directly (not in a union).
+     */
+    public Schema createUnion(String unionSpec) {
+      if (unionSpec.length() == 1) return createSimple(unionSpec.charAt(0));
+      ArrayList<Schema> unionTypes = new ArrayList<>();
+      for (char spec : unionSpec.toCharArray()) {
+        unionTypes.add(createSimple(spec));
+      }
+      return Schema.createUnion(unionTypes);
+    }
+
+    /**
+     * Create a record using the schemas discovered from the string.
+     *
+     * <p>The simplest case is that there are no
+     *
+     * @param recordName The name of the record to create
+     * @param recordSpec A string of characters, each to be mapped to a schema using {@link
+     *     #createSimple(char)}.
+     * @param defaults When present (non-null and not none), create a default values for the field.
+     * @return A record with one field per schema found in the spec.
+     */
+    public Schema createRecord(String recordName, String recordSpec, Optional<?>... defaults) {
+      // The field prefix is the lower case version of the name
+      String[] parts = recordName.split("\\.");
+      String fieldNamePrefix = parts[parts.length - 1].toLowerCase();
+
+      // Get the field specs from the record spec
+      List<Schema> fieldSchemas =
+          (recordSpec.contains("|")
+                  ? Arrays.stream(
+                      (recordSpec.startsWith("|") ? recordSpec.substring(1) : recordSpec)
+                          .split("\\|"))
+                  : recordSpec.codePoints().mapToObj(c -> String.valueOf((char) c)))
+              .map(this::createUnion)
+              .collect(Collectors.toList());
+
+      ArrayList<Schema.Field> fields = new ArrayList<>();
+      for (int i = 0; i < fieldSchemas.size(); i++) {
+        Object fieldDefault = null;
+        if (i < defaults.length && defaults[i] != null && defaults[i].isPresent())
+          //noinspection OptionalGetWithoutIsPresent
+          fieldDefault = defaults[i].get();
+        fields.add(
+            api()
+                .createField(
+                    fieldNamePrefix + i,
+                    fieldSchemas.get(i),
+                    null,
+                    fieldDefault,
+                    Schema.Field.Order.ASCENDING));
+      }
+
+      return api().createRecord(recordName, null, null, false, fields);
     }
   }
 }

@@ -1,6 +1,6 @@
 package com.skraba.avro.enchiridion.core.evolution;
 
-import static com.skraba.avro.enchiridion.core.AvroUtil.api;
+import static com.skraba.avro.enchiridion.core.AvroUtil.sample;
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.fromBytes;
 import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
 import static com.skraba.avro.enchiridion.testkit.AvroAssertions.assertThat;
@@ -17,9 +17,9 @@ class EvolveUnionTest {
 
   @Test
   void testConvertAFieldFromPrimitiveToUnion() {
-    Schema v1 = api().createRecord("ns.A", "l");
+    Schema v1 = sample().createRecord("ns.A", "l");
     GenericRecord r1 = new GenericRecordBuilder(v1).set("a0", 123_456L).build();
-    Schema v2 = api().createRecord("ns.A", "|l ");
+    Schema v2 = sample().createRecord("ns.A", "|l ");
 
     assertThat(v1).isRecord("ns.A").hasFieldsNamed("a0").compatibilityWith(v2).isOK();
     byte[] bin1 = toBytes(r1.getSchema(), r1);
@@ -46,8 +46,8 @@ class EvolveUnionTest {
 
   @Test
   void testConvertAFieldFromUnionToWiderUnion() {
-    Schema v1 = api().createRecord("ns.A", "| l");
-    Schema v2 = api().createRecord("ns.A", "|l s");
+    Schema v1 = sample().createRecord("ns.A", "| l");
+    Schema v2 = sample().createRecord("ns.A", "|l s");
 
     for (Object value : new Object[] {null, 123_456L}) {
       GenericRecord r1 = new GenericRecordBuilder(v1).set("a0", value).build();
@@ -84,8 +84,8 @@ class EvolveUnionTest {
 
   @Test
   void testConvertAFieldFromPrimitiveToUnionWithPromotion() {
-    Schema v1 = api().createRecord("ns.A", "| l");
-    Schema v2 = api().createRecord("ns.A", "| df");
+    Schema v1 = sample().createRecord("ns.A", "| l");
+    Schema v2 = sample().createRecord("ns.A", "| df");
 
     for (Object value : new Object[] {null, 123_456L}) {
       GenericRecord r1 = new GenericRecordBuilder(v1).set("a0", value).build();
@@ -126,8 +126,8 @@ class EvolveUnionTest {
 
   @Test
   void testConvertAFieldFromPrimitiveToUnionWithPromotionAndExactMatch() {
-    Schema v1 = api().createRecord("ns.A", "| l");
-    Schema v2 = api().createRecord("ns.A", "| dfl");
+    Schema v1 = sample().createRecord("ns.A", "| l");
+    Schema v2 = sample().createRecord("ns.A", "| dfl");
 
     for (Object value : new Object[] {null, 123_456L}) {
       GenericRecord r1 = new GenericRecordBuilder(v1).set("a0", value).build();
