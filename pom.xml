@@ -42,7 +42,7 @@
     <junit5.version>5.7.2</junit5.version>
     <play.json.version>2.9.2</play.json.version>
     <scala.minor.version>2.13</scala.minor.version>
-    <scala.version>2.13.6</scala.version>
+    <scala.version>2.13.9</scala.version>
     <scalafmt.version>3.3.3</scalafmt.version>
     <scalatest.version>3.2.9</scalatest.version>
     <slf4j.version>1.7.32</slf4j.version>
