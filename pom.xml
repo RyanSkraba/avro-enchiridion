@@ -36,18 +36,18 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Dependencies -->
-    <assertj.version>3.22.0</assertj.version>
+    <assertj.version>3.23.1</assertj.version>
     <avro.version>1.11.1</avro.version>
     <docopt.version>0.6.0.20150202</docopt.version>
     <hamcrest.version>2.2</hamcrest.version>
-    <joda.version>2.10.10</joda.version>
-    <junit5.version>5.7.2</junit5.version>
-    <play.json.version>2.9.2</play.json.version>
+    <joda.version>2.11.1</joda.version>
+    <junit5.version>5.9.1</junit5.version>
+    <play.json.version>2.9.3</play.json.version>
     <scala.minor.version>2.13</scala.minor.version>
-    <scala.version>2.13.6</scala.version>
+    <scala.version>2.13.9</scala.version>
     <scalafmt.version>3.3.3</scalafmt.version>
-    <scalatest.version>3.2.9</scalatest.version>
-    <slf4j.version>1.7.32</slf4j.version>
+    <scalatest.version>3.2.14</scalatest.version>
+    <slf4j.version>2.0.3</slf4j.version>
 
     <!-- The main class that can be overridden in subprojects -->
     <exec.mainClass>com.skraba.byexample.ToDoGo</exec.mainClass>
