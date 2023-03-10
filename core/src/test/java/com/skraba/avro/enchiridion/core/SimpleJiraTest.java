@@ -200,8 +200,13 @@ public class SimpleJiraTest {
             AvroRuntimeException.class,
             () -> assertThat(GenericData.get().compare(record1, record2, schema), is(0)));
     assertThat(ex.getMessage(), is("Can't compare maps!"));
-    assertThat(record1, not(record2));
-    assertThat(record2, not(record1));
+    if (AvroVersion.avro_1_12.orAfter("Fixed character equality")) {
+      assertThat(record1, is(record2));
+      assertThat(record2, is(record1));
+    } else {
+      assertThat(record1, not(record2));
+      assertThat(record2, not(record1));
+    }
   }
 
   @Test
