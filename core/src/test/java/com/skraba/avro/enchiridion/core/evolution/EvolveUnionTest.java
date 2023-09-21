@@ -6,6 +6,7 @@ import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
 import static com.skraba.avro.enchiridion.testkit.AvroAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
@@ -79,7 +80,10 @@ class EvolveUnionTest {
     byte[] bin2string = toBytes(r2string.getSchema(), r2string);
     assertThatThrownBy(() -> fromBytes(v2, v1, bin2string))
         .isInstanceOf(AvroTypeException.class)
-        .hasMessage("Found string, expecting union");
+        .hasMessage(
+            AvroVersion.avro_1_12.before("Improved messages")
+                ? "Found string, expecting union"
+                : "Found string, expecting union[null, long]");
   }
 
   @Test
@@ -119,7 +123,10 @@ class EvolveUnionTest {
       } else {
         assertThatThrownBy(() -> fromBytes(v2, v1, bin2))
             .isInstanceOf(AvroTypeException.class)
-            .hasMessage("Found double, expecting union");
+            .hasMessage(
+                AvroVersion.avro_1_12.before("1.12.0 Improved messages")
+                    ? "Found double, expecting union"
+                    : "Found double, expecting union[null, long]");
       }
     }
   }

@@ -200,7 +200,7 @@ public class SimpleJiraTest {
             AvroRuntimeException.class,
             () -> assertThat(GenericData.get().compare(record1, record2, schema), is(0)));
     assertThat(ex.getMessage(), is("Can't compare maps!"));
-    if (AvroVersion.avro_1_12.orAfter("Fixed character equality")) {
+    if (AvroVersion.avro_1_11.orAfter("Fixed character equality in 1.11.2")) {
       assertThat(record1, is(record2));
       assertThat(record2, is(record1));
     } else {
@@ -237,10 +237,19 @@ public class SimpleJiraTest {
             Schema.createUnion(
                 Arrays.asList(
                     Schema.create(Schema.Type.NULL), Schema.create(Schema.Type.STRING)))));
-    AvroRuntimeException ex =
-        assertThrows(
-            AvroRuntimeException.class,
-            () -> AvroUtil.api().parse(qqify("{'type': ['null','string']}")));
-    assertThat(ex.getMessage(), containsString(qqify("No type: {'type':['null','string']}")));
+
+    if (AvroVersion.avro_1_12.orAfter("NullPointerException changed to specific exception.")) {
+      SchemaParseException e =
+          assertThrows(
+              SchemaParseException.class,
+              () -> api().parse(qqify("{'type': 'enum', 'name': 'Suit', 'symbols' : [null] }")));
+      assertThat(e.getMessage(), is("Null name"));
+    } else {
+      AvroRuntimeException ex =
+          assertThrows(
+              AvroRuntimeException.class,
+              () -> AvroUtil.api().parse(qqify("{'type': ['null','string']}")));
+      assertThat(ex.getMessage(), containsString(qqify("No type: {'type':['null','string']}")));
+    }
   }
 }

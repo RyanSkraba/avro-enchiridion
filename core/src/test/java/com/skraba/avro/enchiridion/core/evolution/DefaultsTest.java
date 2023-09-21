@@ -64,7 +64,8 @@ public class DefaultsTest {
         AvroTestResources.RecordOneFieldWithDefault(
             "InvalidNullDefault", "id", "[\"long\", \"null\"]", jsonify(null));
 
-    if (AvroVersion.avro_1_9.before()) {
+    if (AvroVersion.avro_1_9.before("Any null was accepted")
+        || AvroVersion.avro_1_12.orAfter("Null default is OK even if not first")) {
       // Previous to 1.9, this would have succeeded.
       Schema s = new Schema.Parser().parse(schema);
       assertThat(s, notNullValue());
