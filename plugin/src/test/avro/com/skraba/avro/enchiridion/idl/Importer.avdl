@@ -1,0 +1,10 @@
+
+@namespace("com.skraba.avro.enchiridion.idl")
+protocol Importer {
+  import idl "Imported.avdl";
+  record Outer {
+    string outer0 = "";
+    int outer1 = 0;
+	Inner inner;
+  }
+}

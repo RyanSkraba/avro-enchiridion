@@ -1,0 +1,7 @@
+@namespace("com.skraba.avro.enchiridion.idl")
+protocol Imported {
+  record Inner {
+    string inner0 = "";
+    int inner1 = 0;
+  }
+}
