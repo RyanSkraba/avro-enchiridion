@@ -12,7 +12,7 @@ _[**Enchiridion**](https://en.wikipedia.org/wiki/Enchiridion): **A small manual 
 
 This project describes how to do many common Java tasks using the Avro serialization library.
 
-The main project uses the latest release of [Avro 1.11.0](https://mvnrepository.com/artifact/org.apache.avro/avro/1.11.0), but includes modules that run the same tests on previous versions of Avro.
+The main project uses the latest release of [Avro 1.12.0](https://mvnrepository.com/artifact/org.apache.avro/avro/1.12.0), but includes modules that run the same tests on previous versions of Avro.
 
 Modules
 ------------------------------------------------------------------------------
@@ -24,6 +24,8 @@ Modules
 | [core17x](core17x/readme.md)                           | Helper project for running tests in Avro 1.7.x                                                |
 | [core18x](core18x/readme.md)                           | Helper project for running tests in Avro 1.8.x                                                |
 | [core19x](core19x/readme.md)                           | Helper project for running tests in Avro 1.9.x                                                |
+| [core110x](core110x/readme.md)                         | Helper project for running tests in Avro 1.10.x                                               |  |
+| [core111x](core111x/readme.md)                         | Helper project for running tests in Avro 1.11.x                                               |  |
 | [core-master-snapshot](core-master-snapshot/readme.md) | Helper project for running tests in the latest SNAPSHOT releases from the Avro master branch. |
 | [ipc](ipc/readme.md)                                   | Unit tests and examples for client/server communication with Avro protocols.                  |
 | [plugin](plugin/readme.md)                             | Using the maven plugin to generate Avro classes.                                              |
