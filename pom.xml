@@ -13,6 +13,7 @@
     <module>avro-resources</module>
     <module>core</module>
     <module>core-master-snapshot</module>
+    <module>core111x</module>
     <module>core110x</module>
     <module>core19x</module>
     <module>core18x</module>
@@ -37,7 +38,7 @@
 
     <!-- Dependencies -->
     <assertj.version>3.23.1</assertj.version>
-    <avro.version>1.11.3</avro.version>
+    <avro.version>1.12.0</avro.version>
     <docopt.version>0.6.0.20150202</docopt.version>
     <hamcrest.version>2.2</hamcrest.version>
     <joda.version>2.11.1</joda.version>
@@ -204,6 +205,11 @@
       </dependency>
 
       <!-- Scala -->
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-compiler</artifactId>
+        <version>${scala.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.scala-lang</groupId>
         <artifactId>scala-library</artifactId>

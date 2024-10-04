@@ -336,6 +336,30 @@ object AvroTestResources {
     Base
       .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
       .createDirectory()
+      .resolve("DateLogicalTypeOptionalRecord.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(DateLogicalTypeOptionalRecord))
+    Base
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
+      .createDirectory()
+      .resolve("DateLogicalTypeRecord.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(DateLogicalTypeRecord))
+    Base
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
+      .createDirectory()
+      .resolve("DecimalLogicalTypeRecord.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(DecimalLogicalTypeRecord))
+    Base
+      .resolve("plugin/src/main/avro/com/skraba/avro/enchiridion/recipe")
+      .createDirectory()
+      .resolve("Recipe.avsc")
+      .toFile
+      .writeAll(Json.prettyPrint(Json.parse(Recipe)))
+    Base
+      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
+      .createDirectory()
       .resolve("SimpleEnum.avsc")
       .toFile
       .writeAll(Json.prettyPrint(Json.parse(SimpleEnum)))
@@ -348,49 +372,21 @@ object AvroTestResources {
     Base
       .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
       .createDirectory()
-      .resolve("SimpleEnum.avsc")
+      .resolve("SimpleRecord.avsc")
       .toFile
       .writeAll(Json.prettyPrint(Json.parse(SimpleRecord)))
 
-    Base
-      .resolve("plugin/src/main/avro/com/skraba/avro/enchiridion/recipe")
-      .createDirectory()
-      .resolve("Recipe.avsc")
-      .toFile
-      .writeAll(Json.prettyPrint(Json.parse(Recipe)))
-
-    Base
-      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
-      .createDirectory()
-      .resolve("DateLogicalTypeRecord.avsc")
-      .toFile
-      .writeAll(Json.prettyPrint(DateLogicalTypeRecord))
-
-    Base
-      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
-      .createDirectory()
-      .resolve("DateLogicalTypeOptionalRecord.avsc")
-      .toFile
-      .writeAll(Json.prettyPrint(DateLogicalTypeOptionalRecord))
-
-    Base
-      .resolve("plugin/src/test/avro/com/skraba/avro/enchiridion/simple")
-      .createDirectory()
-      .resolve("DecimalLogicalTypeRecord.avsc")
-      .toFile
-      .writeAll(Json.prettyPrint(DecimalLogicalTypeRecord))
-
     // Rewrite this source itself with prettified JSON.
     val schemasToPrettify: Map[String, String] = Map(
+      "Avro1965" -> Avro1965,
+      "Avro2299CanonicalMisplacedSize" -> Avro2299CanonicalMisplacedSize,
+      "Recursive" -> Recursive,
+      "RecursiveIndirect" -> RecursiveIndirect,
       "SimpleArray" -> SimpleArray,
       "SimpleEnum" -> SimpleEnum,
       "SimpleFixed" -> SimpleFixed,
       "SimpleMap" -> SimpleMap,
-      "SimpleRecord" -> SimpleRecord,
-      "Recursive" -> Recursive,
-      "RecursiveIndirect" -> RecursiveIndirect,
-      "Avro1965" -> Avro1965,
-      "Avro2299CanonicalMisplacedSize" -> Avro2299CanonicalMisplacedSize
+      "SimpleRecord" -> SimpleRecord
     )
     ThisFile.writeAll(
       {

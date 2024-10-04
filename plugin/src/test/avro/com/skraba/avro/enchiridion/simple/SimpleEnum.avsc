@@ -1,13 +1,6 @@
 {
-  "type" : "record",
-  "name" : "SimpleRecord",
+  "type" : "enum",
+  "name" : "SimpleEnum",
   "namespace" : "com.skraba.avro.enchiridion.simple",
-  "doc" : "Simple two column record",
-  "fields" : [ {
-    "name" : "id",
-    "type" : "long"
-  }, {
-    "name" : "name",
-    "type" : "string"
-  } ]
+  "symbols" : [ "e1", "e2", "e3" ]
 }

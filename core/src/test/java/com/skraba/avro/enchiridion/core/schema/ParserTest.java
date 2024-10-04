@@ -10,6 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.apache.avro.generic.GenericData;
@@ -36,6 +37,8 @@ public class ParserTest {
 
   @Test
   public void testNotCaseInsensitive() {
-    assertThrows(SchemaParseException.class, () -> api().parse(qqify("'String'")));
+    if (AvroVersion.avro_1_12.before("TODO: Is this an error in 1.12.0?"))
+      assertThrows(SchemaParseException.class, () -> api().parse(qqify("'String'")));
+    else assertThrows(NullPointerException.class, () -> api().parse(qqify("'String'")));
   }
 }

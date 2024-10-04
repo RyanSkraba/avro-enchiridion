@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.Function;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.*;
@@ -637,13 +638,18 @@ public class SerializeToBytesTest {
                 assertThat((GenericEnumSymbol<?>) fromBytes(GenericData.get(), schema, value))
                     .hasToString("W"));
 
-    // TODO: The error message here doesn't seem quite right!  Raise an AVRO JIRA?
-    assertThatThrownBy(() -> toBytes(schema, new GenericData.EnumSymbol(schema, "A")))
-        .isInstanceOf(NullPointerException.class)
-        .hasMessageContaining(
-            AvroVersion.avro_1_11.before("Changed exception message in 1.11.1")
-                ? "null of E1"
-                : "null value for (non-nullable) E1");
+    if (AvroVersion.avro_1_12.orAfter("Changed exception type in 1.12.0")) {
+      assertThatThrownBy(() -> toBytes(schema, new GenericData.EnumSymbol(schema, "A")))
+          .isInstanceOf(AvroTypeException.class)
+          .hasMessageContaining("enum value 'A' is not in the enum symbol set: [Z, Y, X, W]");
+    } else {
+      assertThatThrownBy(() -> toBytes(schema, new GenericData.EnumSymbol(schema, "A")))
+          .isInstanceOf(NullPointerException.class)
+          .hasMessageContaining(
+              AvroVersion.avro_1_11.before("Changed exception message in 1.11.1")
+                  ? "null of E1"
+                  : "null value for (non-nullable) E1");
+    }
   }
 
   @Test

@@ -11,7 +11,7 @@ public class AggregatedSnapshotTest extends Aggregated {
   @Test
   public void testAvroVersion() {
     assertThat(AvroVersion.avro_infinity.before("Next major version"), is(true));
-    assertThat(AvroVersion.avro_1_12.orAfter("This major version"), is(true));
-    assertThat(AvroVersion.getInstalledAvro(), is(AvroVersion.avro_1_12));
+    assertThat(AvroVersion.avro_1_13.orAfter("This major version"), is(true));
+    assertThat(AvroVersion.getInstalledAvro(), is(AvroVersion.avro_1_13));
   }
 }
