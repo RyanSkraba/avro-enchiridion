@@ -28,8 +28,7 @@ object AvroLogicalTypes {
   lazy val LocalTimestampMicros: JsObject =
     obj("type" -> "long", "logicalType" -> "local-timestamp-micros")
 
-  /** In a field, the logicalType attribute needs to be nested. None of these
-    * fields have logical types.
+  /** In a field, the logicalType attribute needs to be nested. None of these fields have logical types.
     *
     * ==WRONG==
     *

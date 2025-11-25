@@ -15,8 +15,7 @@
   <description>Avro examples using the Maven plugin.</description>
 
   <properties>
-    <!-- <maven.compiler.source>17</maven.compiler.source>-->
-    <!-- <maven.compiler.target>17</maven.compiler.target>-->
+    <project.relBaseDir>..</project.relBaseDir>
     <maven.deploy.skip>false</maven.deploy.skip>
   </properties>
 

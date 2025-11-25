@@ -5,12 +5,10 @@ import play.api.libs.json._
 
 import scala.collection.immutable.ListMap
 
-/** Resources for testing default values in Avro schemas.
-  */
+/** Resources for testing default values in Avro schemas. */
 object AvroFieldDefaults {
 
-  /** Holder for the attributes that can be used in testing default values for a
-    * field in a record.
+  /** Holder for the attributes that can be used in testing default values for a field in a record.
     *
     * @param tag
     *   a tag to identify the configuration, also used as the record name.
@@ -76,18 +74,14 @@ object AvroFieldDefaults {
   ) = AllNumericDefaults.partition {
     case FieldDefaultCfg(_, JsString("double"), _: JsNumber) => true
     case FieldDefaultCfg(_, JsString("float"), _: JsNumber)  => true
-    case FieldDefaultCfg(_, JsString("long"), num: JsNumber)
-        if num.value.isValidLong =>
+    case FieldDefaultCfg(_, JsString("long"), num: JsNumber) if num.value.isValidLong =>
       true
-    case FieldDefaultCfg(_, JsString("int"), num: JsNumber)
-        if num.value.isValidInt =>
+    case FieldDefaultCfg(_, JsString("int"), num: JsNumber) if num.value.isValidInt =>
       true
     case _ => false
   }
 
-  /** A record with a partially specified default. The fields missing from the
-    * default also have defaults.
-    */
+  /** A record with a partially specified default. The fields missing from the default also have defaults. */
   val Avro2844: String =
     """{
       |  "name" : "Zoo",
@@ -115,8 +109,8 @@ object AvroFieldDefaults {
     cfg.tag -> cfg.toJson
   }: _*)
 
-  val Invalid: Map[String, JsObject] = ListMap(invalidNumeric.collect {
-    case cfg => cfg.tag -> cfg.toJson
+  val Invalid: Map[String, JsObject] = ListMap(invalidNumeric.collect { case cfg =>
+    cfg.tag -> cfg.toJson
   }: _*)
 
   /** Create the two files in the /tmp directory. */

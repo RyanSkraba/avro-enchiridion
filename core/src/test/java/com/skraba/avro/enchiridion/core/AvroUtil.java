@@ -39,14 +39,18 @@ public class AvroUtil {
     return "BigDecimal(" + bd.precision() + ":" + bd.scale() + ":" + bd.toString() + ")";
   }
 
-  /** @return the input string as a string, quoting it if it's a {@link CharSequence} */
+  /**
+   * @return the input string as a string, quoting it if it's a {@link CharSequence}
+   */
   public static String jsonify(Object defaultVal) {
     return defaultVal instanceof CharSequence
         ? "\"" + defaultVal + '"'
         : String.valueOf(defaultVal);
   }
 
-  /** @return the input string with all single quotes replaced by double quotes */
+  /**
+   * @return the input string with all single quotes replaced by double quotes
+   */
   public static String qqify(String in) {
     return in.replace('\'', '"');
   }

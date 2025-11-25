@@ -6,8 +6,7 @@ import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 import scala.reflect.io.{Directory, File, Path}
 
-/** Reusable resources for Avro tests.
-  */
+/** Reusable resources for Avro tests. */
 object AvroTestResources {
 
   val Base: Directory = Directory(
@@ -25,8 +24,7 @@ object AvroTestResources {
       .toFile
 
   /** @return
-    *   a JSON object with name, doc and type attributes, useful in Avro field
-    *   arrays.
+    *   a JSON object with name, doc and type attributes, useful in Avro field arrays.
     */
   private[this] def field(
       name: String,
@@ -36,8 +34,8 @@ object AvroTestResources {
     obj("name" -> name, "doc" -> doc, "type" -> fieldType)
 
   /** @return
-    *   a JSON object with name, doc and type attributes, useful in Avro field
-    *   arrays. The type of the field is automatically unioned with "null".
+    *   a JSON object with name, doc and type attributes, useful in Avro field arrays. The type of the field is
+    *   automatically unioned with "null".
     */
   private[this] def fieldOpt(
       name: String,
@@ -52,8 +50,8 @@ object AvroTestResources {
     )
 
   /** @return
-    *   a JSON object with name, doc and type attributes, useful in Avro field
-    *   arrays. The type of the field is an array of with the given itemType.
+    *   a JSON object with name, doc and type attributes, useful in Avro field arrays. The type of the field is an array
+    *   of with the given itemType.
     */
   private[this] def fieldArray(
       name: String,

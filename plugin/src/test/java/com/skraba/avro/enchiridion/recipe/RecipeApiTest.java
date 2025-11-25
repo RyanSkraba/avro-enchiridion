@@ -22,7 +22,9 @@ import org.junit.jupiter.api.Test;
 /** Unit tests for the {@link RecipeApi} API built on top of the {@link Recipe} record. */
 public class RecipeApiTest {
 
-  /** @return A simple recipe that is a flat list of ingredients and steps. */
+  /**
+   * @return A simple recipe that is a flat list of ingredients and steps.
+   */
   public Recipe getPuffedWheatSquares() {
     return RecipeApi.of("Chocolate Puffed Wheat Squares")
         .addIngredient("2L | 8 cups | 120g", "puffed wheat cereal")
@@ -47,7 +49,9 @@ public class RecipeApiTest {
         .build();
   }
 
-  /** @return A more complex recipe with multiple steps. */
+  /**
+   * @return A more complex recipe with multiple steps.
+   */
   public Recipe getBestChocolateSheetCakeEver() {
     return RecipeApi.of("Best Chocolate Sheet Cake Ever")
         .withSource("http://bakingdom.com/2011/02/chocolate-sheet-cake.html")

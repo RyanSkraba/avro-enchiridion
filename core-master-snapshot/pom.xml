@@ -12,9 +12,10 @@
   <packaging>jar</packaging>
 
   <name>Avro Enchiridion :: Core Master Snapshot</name>
-  <description>Avro core examples with the latest 1.12.x-SNAPSHOT version.</description>
+  <description>Avro core examples with the latest 1.13.x-SNAPSHOT version.</description>
 
   <properties>
+    <project.relBaseDir>..</project.relBaseDir>
     <maven.deploy.skip>false</maven.deploy.skip>
     <avro.major.version>1.11</avro.major.version>
     <avro.version>1.13.0-SNAPSHOT</avro.version>

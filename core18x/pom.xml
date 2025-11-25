@@ -15,6 +15,7 @@
   <description>Avro core examples with the latest 1.8.x version.</description>
 
   <properties>
+    <project.relBaseDir>..</project.relBaseDir>
     <maven.deploy.skip>false</maven.deploy.skip>
     <avro.major.version>1.8</avro.major.version>
     <avro.version>1.8.2</avro.version>

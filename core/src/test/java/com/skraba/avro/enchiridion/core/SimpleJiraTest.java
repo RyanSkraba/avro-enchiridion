@@ -32,7 +32,9 @@ import org.junit.jupiter.api.Test;
 
 public class SimpleJiraTest {
 
-  /** @see <a href="https://issues.apache.org/jira/browse/AVRO-1799">AVRO-1799</a> */
+  /**
+   * @see <a href="https://issues.apache.org/jira/browse/AVRO-1799">AVRO-1799</a>
+   */
   @Test
   public void testAvro1799BytesTypeNotRewoundOnToString() throws IOException {
     // Create an input record with a required Schema.Type.BYTES field.
@@ -59,7 +61,9 @@ public class SimpleJiraTest {
     }
   }
 
-  /** @see <a href="https://issues.apache.org/jira/browse/AVRO-2837">AVRO-2837</a> */
+  /**
+   * @see <a href="https://issues.apache.org/jira/browse/AVRO-2837">AVRO-2837</a>
+   */
   @Test
   public void testAvro1965NestedRecordsAndNamespaces() {
 
@@ -92,7 +96,9 @@ public class SimpleJiraTest {
     }
   }
 
-  /** @see <a href="https://issues.apache.org/jira/browse/AVRO-2830">AVRO-2830</a> */
+  /**
+   * @see <a href="https://issues.apache.org/jira/browse/AVRO-2830">AVRO-2830</a>
+   */
   @EnabledForAvroVersion(
       startingFrom = AvroVersion.avro_1_8,
       reason = "Logical types introduced in Avro 1.8")
@@ -174,7 +180,9 @@ public class SimpleJiraTest {
     assertThat(count, is(1));
   }
 
-  /** @see <a href="https://issues.apache.org/jira/browse/AVRO-2943">AVRO-2943</a> */
+  /**
+   * @see <a href="https://issues.apache.org/jira/browse/AVRO-2943">AVRO-2943</a>
+   */
   @Test
   public void testAvro2943MapEquality() {
     Schema schema =

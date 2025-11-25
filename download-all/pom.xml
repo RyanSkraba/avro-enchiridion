@@ -15,6 +15,7 @@
   <description>Does nothing but rely on all artifacts produced by Avro.</description>
 
   <properties>
+    <project.relBaseDir>..</project.relBaseDir>
     <maven.deploy.skip>false</maven.deploy.skip>
   </properties>
 

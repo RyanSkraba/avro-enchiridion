@@ -67,7 +67,9 @@ public enum AvroVersion {
     return orAfter("missing reason");
   }
 
-  /** @return true if the currently used version of Avro before the given version. */
+  /**
+   * @return true if the currently used version of Avro before the given version.
+   */
   public boolean before(String reason) {
     return getInstalledAvro().compareTo(this) < 0;
   }

@@ -72,7 +72,9 @@ class EvolveWidenPrimitivesTest {
             });
   }
 
-  /** @return if a schema change is a permitted widening. */
+  /**
+   * @return if a schema change is a permitted widening.
+   */
   private static boolean isWidening(Schema v1, Schema v2) {
     // Although converting to itself isn't technically a widening, consider that it works.
     if (v1.getType() == v2.getType()) return true;

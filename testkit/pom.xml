@@ -15,6 +15,7 @@
   <description>Utilities for testing Avro structures</description>
 
   <properties>
+    <project.relBaseDir>..</project.relBaseDir>
     <maven.deploy.skip>false</maven.deploy.skip>
   </properties>
 

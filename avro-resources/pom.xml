@@ -15,7 +15,8 @@
   <description>Reusable Avro resources, such as Schemas as JSON strings.</description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- From this file to the root directory of the repo. -->
+    <project.relBaseDir>..</project.relBaseDir>
     <!-- specifies that the system uses Java 8 by default -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -29,7 +30,7 @@
     </dependency>
     <dependency>
       <groupId>com.typesafe.play</groupId>
-      <artifactId>play-json_${scala.minor.version}</artifactId>
+      <artifactId>play-json_${scala.binary.version}</artifactId>
     </dependency>
   </dependencies>
 

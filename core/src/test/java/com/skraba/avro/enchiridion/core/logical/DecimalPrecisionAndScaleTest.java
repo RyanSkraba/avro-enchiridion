@@ -37,22 +37,26 @@ public class DecimalPrecisionAndScaleTest {
   /** The decimal logical type with precision 5 and scale 2 represented on top of bytes data. */
   private final Schema bytesSchema =
       LogicalTypes.decimal(5, 2).addToSchema(SchemaBuilder.builder().bytesType());
+
   /**
    * The decimal logical type with precision 5 and scale 2 represented on top of fixed byte data.
    */
   private final Schema fixedSchema =
       LogicalTypes.decimal(5, 2).addToSchema(SchemaBuilder.builder().fixed("fixed").size(3));
+
   /**
    * The decimal logical type with precision 5 and scale 2 represented on top of fixed byte data,
    * larger than necessary.
    */
   private final Schema fixedSchemaBig =
       LogicalTypes.decimal(5, 2).addToSchema(SchemaBuilder.builder().fixed("fixed").size(10));
+
   /**
    * An example decimal number with precision 5 and scale 2. This is a "good" datum that corresponds
    * to the schema.
    */
   private final String d52 = "123.45";
+
   /** Numbers that can "fit" into the schema by discarding the original scale and precision. */
   private final List<String> dFittable =
       Arrays.asList(
@@ -66,6 +70,7 @@ public class DecimalPrecisionAndScaleTest {
           "123.4", // precision 4, scale 1
           "0123" // precision 4, scale 0
           );
+
   /** Numbers that won't fit into the schema because they overflow. */
   private final List<String> dOverflow =
       Arrays.asList(
@@ -73,6 +78,7 @@ public class DecimalPrecisionAndScaleTest {
           "9123.4", // precision 5, scale 1
           "9123" // precision 4, scale 0
           );
+
   /** Numbers that don't fit into the schema because they lose decimal digits. */
   private final List<String> dApproximate =
       Arrays.asList(
@@ -80,6 +86,7 @@ public class DecimalPrecisionAndScaleTest {
           "23.456", // precision 5, scale 3
           "3.456" // precision 4, scale 3
           );
+
   /** All of the numbers for testing. */
   private final List<String> all =
       Stream.of(dFittable, dOverflow, dApproximate)

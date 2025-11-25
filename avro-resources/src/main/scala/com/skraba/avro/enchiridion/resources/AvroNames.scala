@@ -11,8 +11,8 @@ import scala.collection.immutable.ListMap
   */
 object AvroNames {
 
-  /** Holder for the attributes that can be used in naming a schema type.
-    * Missing optional attributes are not included in the JSON snippet.
+  /** Holder for the attributes that can be used in naming a schema type. Missing optional attributes are not included
+    * in the JSON snippet.
     *
     * @param tag
     *   a tag to identify the configuration (unused in the schema).
@@ -238,8 +238,8 @@ object AvroNames {
     cfg.toJson ++ obj("type" -> "fixed", "size" -> 1)
   }
 
-  val ValidRecord: Map[String, JsObject] = ListMap(NameCfg.Valid.collect {
-    case cfg => s"NameValidationRecord${cfg.tag}" -> simpleRecord(cfg)
+  val ValidRecord: Map[String, JsObject] = ListMap(NameCfg.Valid.collect { case cfg =>
+    s"NameValidationRecord${cfg.tag}" -> simpleRecord(cfg)
   }: _*)
 
   val ValidRecordWithAliases: Map[String, JsObject] = ListMap(
@@ -250,21 +250,18 @@ object AvroNames {
     }: _*
   )
 
-  val ValidField: Map[String, JsObject] = ListMap(NameCfg.ValidField.collect {
-    case cfg =>
-      s"NameValidationField${cfg.tag}" -> simpleRecord(fieldNameCfg = cfg)
+  val ValidField: Map[String, JsObject] = ListMap(NameCfg.ValidField.collect { case cfg =>
+    s"NameValidationField${cfg.tag}" -> simpleRecord(fieldNameCfg = cfg)
   }: _*)
 
   val ValidFieldWithAliases: Map[String, JsObject] = ListMap(
     NameCfg.ValidAliases.collect { case cfg =>
-      s"NameValidationFieldWith${cfg.tag}" -> simpleRecord(fieldNameCfg =
-        cfg.name("id")
-      )
+      s"NameValidationFieldWith${cfg.tag}" -> simpleRecord(fieldNameCfg = cfg.name("id"))
     }: _*
   )
 
-  val ValidEnum: Map[String, JsObject] = ListMap(NameCfg.Valid.collect {
-    case cfg => s"NameValidationEnum${cfg.tag}" -> simpleEnum(cfg)
+  val ValidEnum: Map[String, JsObject] = ListMap(NameCfg.Valid.collect { case cfg =>
+    s"NameValidationEnum${cfg.tag}" -> simpleEnum(cfg)
   }: _*)
 
   val ValidEnumSymbol: Map[String, JsObject] = ListMap(
@@ -279,8 +276,8 @@ object AvroNames {
     }: _*
   )
 
-  val ValidFixed: Map[String, JsObject] = ListMap(NameCfg.Valid.collect {
-    case cfg => s"NameValidationFixed${cfg.tag}" -> simpleFixed(cfg)
+  val ValidFixed: Map[String, JsObject] = ListMap(NameCfg.Valid.collect { case cfg =>
+    s"NameValidationFixed${cfg.tag}" -> simpleFixed(cfg)
   }: _*)
 
   val ValidFixedWithAliases: Map[String, JsObject] = ListMap(
@@ -289,8 +286,8 @@ object AvroNames {
     }: _*
   )
 
-  val InvalidRecord: Map[String, JsObject] = ListMap(NameCfg.Invalid.collect {
-    case cfg => s"NameValidationErrorRecord${cfg.tag}" -> simpleRecord(cfg)
+  val InvalidRecord: Map[String, JsObject] = ListMap(NameCfg.Invalid.collect { case cfg =>
+    s"NameValidationErrorRecord${cfg.tag}" -> simpleRecord(cfg)
   }: _*)
 
   val InvalidRecordWithAliases: Map[String, JsObject] = ListMap(
@@ -308,23 +305,18 @@ object AvroNames {
   )
 
   val InvalidFieldWithAliases: Map[String, JsObject] = ListMap(
-    (NameCfg.ValidAliasesFullname ++ NameCfg.InvalidAliases).collect {
-      case cfg =>
-        s"NameValidationErrorFieldWith${cfg.tag}" -> simpleRecord(fieldNameCfg =
-          cfg.name("id")
-        )
+    (NameCfg.ValidAliasesFullname ++ NameCfg.InvalidAliases).collect { case cfg =>
+      s"NameValidationErrorFieldWith${cfg.tag}" -> simpleRecord(fieldNameCfg = cfg.name("id"))
     }: _*
   )
 
-  val InvalidEnum: Map[String, JsObject] = ListMap(NameCfg.Invalid.collect {
-    case cfg => s"NameValidationErrorEnum${cfg.tag}" -> simpleEnum(cfg)
+  val InvalidEnum: Map[String, JsObject] = ListMap(NameCfg.Invalid.collect { case cfg =>
+    s"NameValidationErrorEnum${cfg.tag}" -> simpleEnum(cfg)
   }: _*)
 
   val InvalidEnumSymbol: Map[String, JsObject] = ListMap(
     NameCfg.InvalidField.collect { case cfg =>
-      s"NameValidationErrorEnumSymbol${cfg.tag}" -> simpleEnum(symbol =
-        cfg.name.get
-      )
+      s"NameValidationErrorEnumSymbol${cfg.tag}" -> simpleEnum(symbol = cfg.name.get)
     }: _*
   )
 
@@ -336,8 +328,8 @@ object AvroNames {
     }: _*
   )
 
-  val InvalidFixed: Map[String, JsObject] = ListMap(NameCfg.Invalid.collect {
-    case cfg => s"NameValidationErrorFixed${cfg.tag}" -> simpleFixed(cfg)
+  val InvalidFixed: Map[String, JsObject] = ListMap(NameCfg.Invalid.collect { case cfg =>
+    s"NameValidationErrorFixed${cfg.tag}" -> simpleFixed(cfg)
   }: _*)
 
   val InvalidFixedWithAliases: Map[String, JsObject] = ListMap(

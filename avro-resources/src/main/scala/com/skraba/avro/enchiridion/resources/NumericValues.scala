@@ -8,8 +8,7 @@ import scala.collection.immutable.ListMap
 /** Lists of useful numeric values that can be applied to tests. */
 object NumericValues {
 
-  /** Examples and edge cases for IEEE 754 64 bit floating point numbers.
-    */
+  /** Examples and edge cases for IEEE 754 64 bit floating point numbers. */
   val Doubles: Map[String, Double] = ListMap(
     "DoubleZero" -> 0d,
     "DoubleNegZero" -> -0d,
@@ -22,8 +21,7 @@ object NumericValues {
     "DoubleMaxValue" -> Double.MaxValue
   )
 
-  /** Examples and edge cases for IEEE 754 32 bit floating point numbers.
-    */
+  /** Examples and edge cases for IEEE 754 32 bit floating point numbers. */
   val Floats: Map[String, Float] = ListMap(
     "FloatZero" -> 0f,
     "FloatNegZero" -> -0f,
@@ -36,8 +34,7 @@ object NumericValues {
     "FloatMaxValue" -> Float.MaxValue
   )
 
-  /** Examples and edge cases for 64 bit integer numbers.
-    */
+  /** Examples and edge cases for 64 bit integer numbers. */
   val Longs: Map[String, Long] = ListMap(
     "LongZero" -> 0L,
     "Long123" -> 12345L,
@@ -45,8 +42,7 @@ object NumericValues {
     "LongMaxValue" -> Long.MaxValue
   )
 
-  /** Examples and edge cases for 32 bit integer numbers.
-    */
+  /** Examples and edge cases for 32 bit integer numbers. */
   val Ints: Map[String, Int] = ListMap(
     "IntZero" -> Int.box(0),
     "Int123" -> Int.box(12345),
@@ -54,8 +50,7 @@ object NumericValues {
     "IntMaxValue" -> Int.MaxValue
   )
 
-  /** Examples and edge cases for 16 bit integer numbers.
-    */
+  /** Examples and edge cases for 16 bit integer numbers. */
   val Shorts: Map[String, Short] = ListMap(
     "ShortZero" -> Short.box(0),
     "Short123" -> Short.box(12345),
@@ -63,8 +58,7 @@ object NumericValues {
     "ShortMaxValue" -> Short.MaxValue
   )
 
-  /** Examples and edge cases for 8 bit integer numbers.
-    */
+  /** Examples and edge cases for 8 bit integer numbers. */
   val Bytes: Map[String, Byte] = ListMap(
     "ByteZero" -> 0,
     "Byte123" -> 123,
@@ -72,8 +66,8 @@ object NumericValues {
     "ByteMaxValue" -> Byte.MaxValue
   )
 
-  /** Valid strings that should be used as text representations for non-finite
-    * floating point values according to IEEE 754 5.12
+  /** Valid strings that should be used as text representations for non-finite floating point values according to IEEE
+    * 754 5.12
     */
   val Strings: Map[String, String] = ListMap(
     "StringInfinity" -> "Infinity",
@@ -91,9 +85,7 @@ object NumericValues {
   val All: Map[String, Any] =
     Doubles ++ Floats ++ Longs ++ Ints ++ Shorts ++ Bytes ++ Strings
 
-  /** All of the numbers as JSON numbers, if possible. JSON string for
-    * non-finite floating points.
-    */
+  /** All of the numbers as JSON numbers, if possible. JSON string for non-finite floating points. */
   val AllJson: Map[String, JsValue] = All.view
     .mapValues {
       case d: Double if java.lang.Double.isFinite(d) => JsNumber(d)

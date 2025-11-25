@@ -15,8 +15,8 @@
   <description>Avro examples using IPC server and the maven plugin.</description>
 
   <properties>
+    <project.relBaseDir>..</project.relBaseDir>
     <maven.deploy.skip>false</maven.deploy.skip>
-    <!-- <avro.version>1.11.0-SNAPSHOT</avro.version> -->
   </properties>
 
   <dependencies>
