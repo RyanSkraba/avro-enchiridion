@@ -12,7 +12,6 @@
   <modules>
     <module>avro-resources</module>
     <module>core</module>
-    <module>core-master-snapshot</module>
     <module>core111x</module>
     <module>core110x</module>
     <module>core19x</module>
@@ -537,6 +536,20 @@
     -->
     <profile>
       <id>local-snapshots</id>
+      <modules>
+        <module>avro-resources</module>
+        <module>core</module>
+        <module>core-master-snapshot</module>
+        <module>core111x</module>
+        <module>core110x</module>
+        <module>core19x</module>
+        <module>core18x</module>
+        <module>core17x</module>
+        <module>download-all</module>
+        <module>ipc</module>
+        <module>plugin</module>
+        <module>testkit</module>
+      </modules>
       <repositories>
         <repository>
           <releases>
@@ -557,6 +570,20 @@
     -->
     <profile>
       <id>apache-snapshots</id>
+      <modules>
+        <module>avro-resources</module>
+        <module>core</module>
+        <module>core-master-snapshot</module>
+        <module>core111x</module>
+        <module>core110x</module>
+        <module>core19x</module>
+        <module>core18x</module>
+        <module>core17x</module>
+        <module>download-all</module>
+        <module>ipc</module>
+        <module>plugin</module>
+        <module>testkit</module>
+      </modules>
       <repositories>
         <repository>
           <releases>
