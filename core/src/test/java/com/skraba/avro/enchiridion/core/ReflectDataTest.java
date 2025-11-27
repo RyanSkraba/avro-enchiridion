@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.apache.avro.io.*;
@@ -222,7 +223,15 @@ public class ReflectDataTest {
     assertThat(reflected.isError(), is(false));
     assertThat(reflected.getFields(), hasSize(1));
     assertThat(reflected.getFields().get(0).name(), is("moment"));
-    assertThat(reflected.getFields().get(0).schema().getType(), is(Schema.Type.RECORD));
+
+    if (AvroVersion.avro_1_12.orAfter("AVRO-3989 fixed these in 1.12.1")) {
+      assertThat(reflected.getFields().get(0).schema().getType(), is(Schema.Type.LONG));
+      assertThat(
+          reflected.getFields().get(0).schema().getLogicalType(),
+          is(LogicalTypes.timestampMillis()));
+    } else {
+      assertThat(reflected.getFields().get(0).schema().getType(), is(Schema.Type.RECORD));
+    }
   }
 
   @Test
