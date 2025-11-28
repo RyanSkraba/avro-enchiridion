@@ -228,7 +228,7 @@ public class ReflectDataTest {
       assertThat(reflected.getFields().get(0).schema().getType(), is(Schema.Type.LONG));
       assertThat(
           reflected.getFields().get(0).schema().getLogicalType(),
-          is(LogicalTypes.timestampMillis()));
+          is(LogicalTypes.timestampMicros()));
     } else {
       assertThat(reflected.getFields().get(0).schema().getType(), is(Schema.Type.RECORD));
     }
