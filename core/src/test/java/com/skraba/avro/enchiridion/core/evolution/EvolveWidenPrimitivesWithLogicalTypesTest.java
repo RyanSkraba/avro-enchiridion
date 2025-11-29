@@ -5,16 +5,20 @@ import static com.skraba.avro.enchiridion.core.SerializeToBytesTest.toBytes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.stream.Stream;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.io.DatumReader;
-import org.apache.avro.io.Decoder;
-import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.io.*;
+import org.apache.avro.specific.SpecificData;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -70,6 +74,8 @@ class EvolveWidenPrimitivesWithLogicalTypesTest extends EvolveWidenPrimitivesTes
 
   public static <T> T fromBytes(
       GenericData model, Schema writerSchema, Schema readerSchema, byte[] serialized) {
+    if (AvroVersion.avro_1_12.orAfter("TODO: This is a bug and shouldn't be necessary"))
+      model.setFastReaderEnabled(false);
     try (ByteArrayInputStream bais = new ByteArrayInputStream(serialized)) {
       Decoder decoder = DecoderFactory.get().directBinaryDecoder(bais, null);
       DatumReader<T> r = new GenericDatumReader<>(writerSchema, readerSchema, model);
@@ -245,5 +251,37 @@ class EvolveWidenPrimitivesWithLogicalTypesTest extends EvolveWidenPrimitivesTes
 
     Object xy = fromBytes(api().withTimeConversions(), writeSchema, readSchema, x);
     assertThat(xy, hasToString("00:00:00.001"));
+  }
+
+  @Test
+  @Disabled("AVRO-4215")
+  public void testWidenUnionIntToDateJira() {
+    GenericData model = SpecificData.get().setFastReaderEnabled(true);
+
+    // ["int"]
+    final Schema writeSchema = SchemaBuilder.unionOf().intType().endUnion();
+    final byte[] serialized;
+    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+      Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
+      DatumWriter<Integer> w = new GenericDatumWriter<>(writeSchema, model);
+      w.write(1000, encoder);
+      encoder.flush();
+      serialized = baos.toByteArray();
+    } catch (IOException ioe) {
+      throw new RuntimeException((ioe));
+    }
+
+    // {"type":"int","logicalType":"date"}
+    final Schema readSchema = LogicalTypes.date().addToSchema(Schema.create(Schema.Type.INT));
+    final Object deserialized;
+    try (ByteArrayInputStream bais = new ByteArrayInputStream(serialized)) {
+      Decoder decoder = DecoderFactory.get().directBinaryDecoder(bais, null);
+      DatumReader<?> r = new GenericDatumReader<>(writeSchema, readSchema, model);
+      deserialized = r.read(null, decoder);
+    } catch (IOException ioe) {
+      throw new RuntimeException((ioe));
+    }
+
+    assertThat(deserialized, hasToString(containsString("1972-09-27")));
   }
 }

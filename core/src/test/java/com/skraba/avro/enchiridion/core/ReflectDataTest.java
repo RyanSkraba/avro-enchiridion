@@ -24,8 +24,9 @@ import org.junit.jupiter.api.Test;
 /** Unit tests for working with the {@link ReflectData} class. */
 public class ReflectDataTest {
 
-  public static <T> byte[] toBytes(T datum) {
-    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+  public static <T> byte[] toBytes(T datum, Class<?>... trusted) {
+    try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        var ignored = AvroUtil.api().trustClasses(trusted)) {
       Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
       DatumWriter<T> w = new ReflectDatumWriter<>(ReflectData.get().getSchema(datum.getClass()));
       w.write(datum, encoder);
@@ -37,7 +38,8 @@ public class ReflectDataTest {
   }
 
   public static <T> byte[] toBytes(T datum, Class<T> c, ReflectData model) {
-    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+    try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        var ignored = AvroUtil.api().trustClasses(c)) {
       Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
       DatumWriter<T> w = new ReflectDatumWriter<>(c, model);
       w.write(datum, encoder);
@@ -177,7 +179,7 @@ public class ReflectDataTest {
 
     Issue issue = new IssueImpl(true, 123, "AVRO");
 
-    byte[] serialized = toBytes(issue);
+    byte[] serialized = toBytes(issue, IssueImpl.class);
     assertThat(serialized.length, is(8));
 
     Issue roundTrip = fromBytes(reflected, serialized);
@@ -255,7 +257,7 @@ public class ReflectDataTest {
     EnumRecord r = new EnumRecord();
     r.count = NumbersEnum.TWO;
 
-    byte[] serialized = toBytes(r);
+    byte[] serialized = toBytes(r, EnumRecord.class, NumbersEnum.class);
     assertThat(serialized.length, is(1));
     assertThat(serialized[0], is((byte) 0x04));
 

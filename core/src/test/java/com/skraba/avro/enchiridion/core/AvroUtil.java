@@ -2,6 +2,7 @@ package com.skraba.avro.enchiridion.core;
 
 import com.skraba.avro.enchiridion.resources.AvroTestResources;
 import com.skraba.avro.enchiridion.testkit.AvroVersion;
+import java.io.Closeable;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,6 +69,18 @@ public class AvroUtil {
     public Schema createRecord(
         String name, String namespace, String doc, boolean isError, List<Schema.Field> fields) {
       return Schema.createRecord(name, namespace, doc, isError, fields);
+    }
+
+    /**
+     * Sets the classes as trusted serializable classes temporarily.
+     *
+     * @param trusted The new system property to use for trusted serializable classes.
+     * @return A closeable that resets the system properties to their original values.
+     */
+    public Closeable trustClasses(Class<?>... trusted) {
+      // 1.12.1 introduced a short-lived mechanism based on properties
+      // 1.12.2 changed it to a predicate and builder
+      return () -> {};
     }
 
     public Schema.Field createField(String name, Schema schema) {
