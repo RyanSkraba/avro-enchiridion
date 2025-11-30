@@ -1,4 +1,4 @@
-package com.skraba.avro.enchiridion.core;
+package com.skraba.avro.enchiridion.core.extra;
 
 import static com.skraba.avro.enchiridion.core.AvroUtil.api;
 import static com.skraba.avro.enchiridion.core.AvroUtil.qqify;
@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.skraba.avro.enchiridion.core.AvroUtil;
 import com.skraba.avro.enchiridion.testkit.AvroVersion;
 import com.skraba.avro.enchiridion.testkit.EnabledForAvroVersion;
 import java.io.ByteArrayOutputStream;
@@ -28,6 +29,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.util.Utf8;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 public class SimpleJiraTest {
@@ -234,7 +236,8 @@ public class SimpleJiraTest {
   @Test
   public void testAvro3182UnionType() {
     // This works.
-    assertThat(AvroUtil.api().parse(qqify("'string'")), is(Schema.create(Schema.Type.STRING)));
+    MatcherAssert.assertThat(
+        AvroUtil.api().parse(qqify("'string'")), is(Schema.create(Schema.Type.STRING)));
     assertThat(
         AvroUtil.api().parse(qqify("{'type': 'string'}")), is(Schema.create(Schema.Type.STRING)));
 
