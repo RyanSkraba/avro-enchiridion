@@ -37,9 +37,9 @@ public class ReflectDataTest {
     }
   }
 
-  public static <T> byte[] toBytes(T datum, Class<T> c, ReflectData model) {
+  public static <T> byte[] toBytes(T datum, Class<T> c, ReflectData model, Class<?>... trusted) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        var ignored = AvroUtil.api().trustClasses(c)) {
+        var ignored = AvroUtil.api().trustClasses(trusted)) {
       Encoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
       DatumWriter<T> w = new ReflectDatumWriter<>(c, model);
       w.write(datum, encoder);
@@ -269,7 +269,13 @@ public class ReflectDataTest {
     assertThat(serialized[0], is((byte) 0x04));
 
     if (AvroVersion.avro_1_11.orAfter("Bug in parsing enums in a union fixed in 1.11.1")) {
-      serialized = toBytes(r, EnumRecord.class, ReflectData.AllowNull.get());
+      serialized =
+          toBytes(
+              r,
+              EnumRecord.class,
+              ReflectData.AllowNull.get(),
+              EnumRecord.class,
+              NumbersEnum.class);
       assertThat(serialized.length, is(2));
       assertThat(serialized[0], is((byte) 0x02));
       assertThat(serialized[1], is((byte) 0x04));
