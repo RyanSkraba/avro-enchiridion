@@ -119,10 +119,12 @@ public class SerializeToJsonTest {
     assertThat(infNeg, is("\"-Infinity\""));
 
     // But nobody can decode them yet.
-    if (AvroVersion.avro_infinity.orAfter()) {
+    if (AvroVersion.avro_1_13.orAfter("Fixed in 1.11.6 and 1.12.2")) {
       assertThat(fromJson(GenericData.get(), schema, nan), is(Double.NaN));
       assertThat(fromJson(GenericData.get(), schema, infPos), is(Double.POSITIVE_INFINITY));
       assertThat(fromJson(GenericData.get(), schema, infNeg), is(Double.NEGATIVE_INFINITY));
+      for (Double d : new double[] {Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY})
+        assertThat(roundTripJson(GenericData.get(), schema, (Number) d), is(d));
     }
   }
 }
