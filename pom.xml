@@ -42,7 +42,7 @@
     <avro.version>1.12.1</avro.version>
     <docopt.version>0.6.0.20150202</docopt.version>
     <hamcrest.version>3.0</hamcrest.version>
-    <joda.version>2.13.0</joda.version>
+    <joda.version>2.14.0</joda.version>
     <junit5.version>5.11.4</junit5.version>
     <play-json.version>2.10.6</play-json.version>
     <scala.binary.version>2.13</scala.binary.version>
