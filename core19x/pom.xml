@@ -18,7 +18,7 @@
     <project.relBaseDir>..</project.relBaseDir>
     <maven.deploy.skip>false</maven.deploy.skip>
     <avro.major.version>1.9</avro.major.version>
-    <avro.version>1.9.2</avro.version>
+    <avro.version>${avro9.version}</avro.version>
   </properties>
 
   <dependencies>

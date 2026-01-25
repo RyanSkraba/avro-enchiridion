@@ -39,7 +39,14 @@
 
     <!-- Dependencies -->
     <assertj.version>3.27.0</assertj.version>
-    <avro.version>1.12.1</avro.version>
+    <avro.version>${avro12.version}</avro.version>
+    <avro13.version>1.13.0-SNAPSHOT</avro13.version>
+    <avro12.version>1.12.1</avro12.version>
+    <avro11.version>1.11.5</avro11.version>
+    <avro10.version>1.10.2</avro10.version>
+    <avro9.version>1.9.2</avro9.version>
+    <avro8.version>1.8.2</avro8.version>
+    <avro7.version>1.7.7</avro7.version>
     <docopt.version>0.6.0.20150202</docopt.version>
     <hamcrest.version>3.0</hamcrest.version>
     <joda.version>2.13.0</joda.version>
