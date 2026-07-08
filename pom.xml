@@ -38,7 +38,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Dependencies -->
-    <assertj.version>3.27.0</assertj.version>
+    <assertj.version>3.27.7</assertj.version>
     <avro.version>${avro12.version}</avro.version>
     <avro13.version>1.13.0-SNAPSHOT</avro13.version>
     <avro12.version>1.12.1</avro12.version>
