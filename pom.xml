@@ -79,7 +79,7 @@
     <plugin.site.maven.version>4.0.0-M16</plugin.site.maven.version>
     <plugin.source.maven.version>3.4.0</plugin.source.maven.version>
     <plugin.maven.spotless.version>3.1.0</plugin.maven.spotless.version>
-    <plugin.surefire.maven.version>3.5.4</plugin.surefire.maven.version>
+    <plugin.surefire.maven.version>3.5.6</plugin.surefire.maven.version>
     <plugin.war.maven.version>3.5.1</plugin.war.maven.version>
   </properties>
 
