@@ -56,7 +56,7 @@
     <scala.version>2.13.18</scala.version>
     <scalafmt.version>3.8.0</scalafmt.version>
     <scalatest.version>3.2.20</scalatest.version>
-    <slf4j.version>2.0.17</slf4j.version>
+    <slf4j.version>2.0.18</slf4j.version>
 
     <!-- The main class that can be overridden in subprojects -->
     <exec.mainClass>com.skraba.byexample.ToDoGo</exec.mainClass>
