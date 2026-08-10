@@ -73,7 +73,7 @@
     <plugin.maven.scala.version>4.9.7</plugin.maven.scala.version>
     <plugin.maven.scalatest.version>2.2.0</plugin.maven.scalatest.version>
     <plugin.maven.scalatest.exclude>org.scalatest.tags.Slow</plugin.maven.scalatest.exclude>
-    <plugin.report.surefire.maven.version>3.5.4</plugin.report.surefire.maven.version>
+    <plugin.report.surefire.maven.version>3.5.6</plugin.report.surefire.maven.version>
     <plugin.resources.maven.version>3.4.0</plugin.resources.maven.version>
     <plugin.shade.maven.version>3.6.2</plugin.shade.maven.version>
     <plugin.site.maven.version>4.0.0-M16</plugin.site.maven.version>
